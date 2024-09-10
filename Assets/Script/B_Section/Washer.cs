@@ -12,13 +12,19 @@ public class Washer : MonoBehaviour
     [SerializeField] Transform EndPos1;
     [SerializeField] Transform EndPos2;
     [SerializeField] Transform EndPos3;
+    [SerializeField] Transform EndPos4;
+    [SerializeField] Transform EndPos5;
+    [SerializeField] Transform EndPos6;
+    [SerializeField] Transform EndPos7;
+
     [SerializeField] Transform Conveyor;
 
-    public float speed = 1f;
+
 
     void Start()
     {
         StartCoroutine(ConveyorRoutine());
+        WahserController.instance.GetSpeed();
     }
 
     // 코루틴의 코루틴 yield return 값으로 처리가능하다.
@@ -32,14 +38,18 @@ public class Washer : MonoBehaviour
             yield return MoveConveyor(StartPos3.localPosition, StartPos3.localRotation, EndPos1.localPosition, EndPos1.localRotation);
             yield return MoveConveyor(EndPos1.localPosition, EndPos1.localRotation, EndPos2.localPosition, EndPos2.localRotation);
             yield return MoveConveyor(EndPos2.localPosition, EndPos2.localRotation, EndPos3.localPosition, EndPos3.localRotation);
-            yield return MoveConveyor(EndPos3.localPosition, EndPos3.localRotation, StartPos1.localPosition, EndPos3.localRotation);
+            yield return MoveConveyor(EndPos3.localPosition, EndPos3.localRotation, EndPos4.localPosition, EndPos4.localRotation);
+            yield return MoveConveyor(EndPos4.localPosition, EndPos4.localRotation, EndPos5.localPosition, EndPos5.localRotation);
+            yield return MoveConveyor(EndPos5.localPosition, EndPos5.localRotation, EndPos6.localPosition, EndPos6.localRotation);
+            yield return MoveConveyor(EndPos6.localPosition, EndPos6.localRotation, EndPos7.localPosition, EndPos7.localRotation);
+            yield return MoveConveyor(EndPos7.localPosition, EndPos7.localRotation, StartPos1.localPosition, StartPos1.localRotation);
         }
     }
 
     private IEnumerator MoveConveyor(Vector3 startPos, Quaternion startRot, Vector3 endPos, Quaternion endRot)
     {
         float journeyLength = Vector3.Distance(startPos, endPos);
-        float journeyTime = journeyLength / speed;// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
+        float journeyTime = journeyLength / WahserController.instance.GetSpeed();// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
         float time = 0f;
 
         while (time < journeyTime)
