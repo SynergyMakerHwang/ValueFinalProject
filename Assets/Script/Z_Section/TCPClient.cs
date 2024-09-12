@@ -17,17 +17,21 @@ public class TCPClient : MonoBehaviour
     NetworkStream stream;
     [SerializeField] bool isConnected = false;
     [SerializeField] float waitTime = 0.1f;
+    [SerializeField] int loadCnt = 5; // 도트 적재 수량
     Process ps;
-    int blockNum = 16;
+    int blockNum = 10;
+    int blockSize = 16;
 
     //GET Param
     string requestGetBlock = "@GET,X0,10";
 
-    //SET Param
 
-
-    /****공정별 센서 연결****/
+    //SET Param block
+    //(예시) @SET,Y0,1
     
+    //SET Param Device
+    //(예시) @SETDevice,D0,1
+
 
 
     private void Awake()
@@ -49,7 +53,7 @@ public class TCPClient : MonoBehaviour
             client = new TcpClient("127.0.0.1", 7000);
 
             stream = client.GetStream();
-
+            
             //MX Componet 연결 및 연동 요청
             requestConnect();
         }
@@ -61,8 +65,20 @@ public class TCPClient : MonoBehaviour
     }
 
 
-    
+
     /***********************A-Section START *****************************/
+    // 제어판 - 실행 이벤트
+    public void OnProcessStartBtnClk() {
+
+        //도트 적재 수량 - PLC 설정
+        StartCoroutine(setDevice("@SETDevice,D0,"+ loadCnt));
+
+
+        //전체 공정 PLC <-> Unity 연동
+        //StartCoroutine(ScanPlc());
+    }
+
+
     /***********************A-Section END *****************************/
 
     /***********************B-Section START *****************************/
@@ -79,10 +95,10 @@ public class TCPClient : MonoBehaviour
     /***********************E-Section START *****************************/
     /***********************E-Section END *****************************/
 
-   
-    
-    
-    /***********************Z-Section START *****************************/ 
+
+
+
+    /***********************Z-Section START *****************************/
 
     /*****************TCP 통신 관련 *********************/
     //mx component 연결 요청 
@@ -96,8 +112,7 @@ public class TCPClient : MonoBehaviour
 
             if (retrunMsg.Contains("성공"))
             {
-                isConnected = true;
-                communicateEvent();
+                isConnected = true;               
 
             }
         }
@@ -114,21 +129,9 @@ public class TCPClient : MonoBehaviour
         }
     }
 
+       
 
-
-    public void communicateEvent()
-    {
-        if (isConnected)
-        {
-            StartCoroutine(ScanPlc());
-        }
-        else
-        {
-            print("연결 해제된 상태입니다.");
-        }
-    }
-
-    //PLC 데이터 블럭단위로 스캔해오기
+    //PLC 데이터 블럭단위로 스캔 및 제어 하기
 
     IEnumerator ScanPlc()
     {
@@ -140,9 +143,29 @@ public class TCPClient : MonoBehaviour
 
             yield return new WaitForSeconds(waitTime);
         }
+        else {
+            print("연결 해제된 상태입니다.");
+        }
 
     }
 
+
+    IEnumerator setDevice(string requsetMsg)
+    {
+
+        yield return new WaitUntil(() => isConnected);
+        if (isConnected)
+        {
+            Task task = RequestSetDeviceAsync(requsetMsg);
+
+            yield return new WaitForSeconds(waitTime);
+        }
+        else
+        {
+            print("연결 해제된 상태입니다.");
+        }
+
+    }
 
 
 
@@ -216,18 +239,52 @@ public class TCPClient : MonoBehaviour
     }
 
 
+    private async Task RequestSetDeviceAsync(string requestMsg)
+    {
+        string returnMsg = "";
+
+        if (requestMsg == "")
+        {
+            returnMsg = "서버 요청값을 입력해주세요.";
+            print(returnMsg);
+        }
+        else
+        {
+            while (true)
+            {
+                try
+                {
+
+                    // Connect -> data
+                    byte[] buffer = Encoding.UTF8.GetBytes(requestMsg);
+
+
+                    // NetworkStream에 데이터 쓰기
+                    await stream.WriteAsync(buffer, 0, buffer.Length);
+
+                    byte[] buffer2 = new byte[1024];
+                    int nBytes = await stream.ReadAsync(buffer2, 0, buffer2.Length);
+                    string resultMsg = Encoding.UTF8.GetString(buffer2, 0, nBytes);
+                    print(resultMsg);
+
+                    if (!isConnected) break;
+                }
+                catch (Exception e)
+                {
+                    print(e.ToString());
+                }
+            }
+        }
+
+    }
+
 
 
     private int[][] TransTCPtoDeviceBlock(string returnData)
     {
-        int blockSize = 16;
-
-
-
+        
         returnData = returnData.Substring(returnData.IndexOf(",") + 1);
         string[] returnArr = returnData.Split(",");
-
-
 
         if (returnArr.Length > 0)
         {
