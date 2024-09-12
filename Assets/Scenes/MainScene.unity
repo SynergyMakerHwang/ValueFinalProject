@@ -16685,6 +16685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isConnected: 0
+  waitTime: 0.1
 --- !u!4 &1874270962
 Transform:
   m_ObjectHideFlags: 0
