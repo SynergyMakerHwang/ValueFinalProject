@@ -1,0 +1,87 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v5.4.0)
+
+newmtl Mat_1
+Kd 0.603827357 0.603827357 0.603827357
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_5
+Kd 0.376262128 0.376262128 0.376262128
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_10
+Kd 0.590618849 0.590618849 0.590618849
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_45
+Kd 0.00604883302 0.00604883302 0.00604883302
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_48
+Kd 0 0 0
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_50
+Kd 1 0.0865004584 0.0251868591
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_74
+Kd 0 0.0684781671 0
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_138
+Kd 1 1 1
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_464
+Kd 0.242281124 0.000910580973 0.000910580973
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_645
+Kd 0.337163627 0.623960376 0.846873224
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_646
+Kd 0.043735031 0.119538426 0.456411034
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+
+newmtl Mat_647
+Kd 0.644479692 0.644479692 1
+Ke 0 0 0
+d 1
+Ns 490
+illum 2
+

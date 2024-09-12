@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class Washer : MonoBehaviour
 {
     // 왼쪽 시작 각도 위치들
+    //[SerializeField] Transform StartPos1;
+
     [SerializeField] Transform StartPos1;
     [SerializeField] Transform StartPos2;
     [SerializeField] Transform StartPos3;
@@ -19,12 +21,17 @@ public class Washer : MonoBehaviour
 
     [SerializeField] Transform Conveyor;
 
-
+    public static Washer instance;
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     void Start()
     {
         StartCoroutine(ConveyorRoutine());
-        WahserController.instance.GetSpeed();
+        WashserController.instance.GetSpeed();
     }
 
     // 코루틴의 코루틴 yield return 값으로 처리가능하다.
@@ -49,7 +56,7 @@ public class Washer : MonoBehaviour
     private IEnumerator MoveConveyor(Vector3 startPos, Quaternion startRot, Vector3 endPos, Quaternion endRot)
     {
         float journeyLength = Vector3.Distance(startPos, endPos);
-        float journeyTime = journeyLength / WahserController.instance.GetSpeed();// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
+        float journeyTime = journeyLength / WashserController.instance.GetSpeed();// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
         float time = 0f;
 
         while (time < journeyTime)
@@ -67,4 +74,5 @@ public class Washer : MonoBehaviour
         Conveyor.localPosition = endPos;
         Conveyor.localRotation = endRot;
     }
+
 }
