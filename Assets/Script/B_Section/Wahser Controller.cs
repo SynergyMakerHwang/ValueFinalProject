@@ -51,7 +51,7 @@ public class WashserController : MonoBehaviour
     }
     private IEnumerator WaterFlow()
     {
-        float moveDistance = 5f; // 이동 속도
+        float moveDistance = 0.01f; // 이동 속도
 
         // Instantiate(waters); // Instantiate는 필요 없을 경우 주석 처리
         Vector3 originalPosition = waters.transform.localPosition; // 원래 위치 저장
