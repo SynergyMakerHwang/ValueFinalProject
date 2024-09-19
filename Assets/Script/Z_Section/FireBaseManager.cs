@@ -5,7 +5,6 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
-using Unity.Android.Gradle.Manifest;
 using System.Threading.Tasks;
 
 /// <summary>

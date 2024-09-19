@@ -150,7 +150,7 @@ public class AuthManager : MonoBehaviour
 
     public void OnSignInBtnClkEvent()
     {
-        signInPanel.SetActive(true);
+        signInPanel.SetActive(false);
         signUpPanel.SetActive(false);
 
         StartCoroutine(SignIn(signInEmailInput.text, signInPWInput.text));
@@ -228,6 +228,8 @@ public class AuthManager : MonoBehaviour
 
         try
         {
+            print("user.IsEmailVerified");
+            print(user.IsEmailVerified);
             if (user.IsEmailVerified)
             {
                 StartCoroutine(TurnMessagePanel("로그인이 성공적으로 완료 되었습니다."));
@@ -235,15 +237,11 @@ public class AuthManager : MonoBehaviour
 
                 wrongPWCnt = 0;
 
-                //공정 설정으로 페이지 전환
-                UserInterfaceManager.instance.transUserMode();
-
-            }
-            else
-            {
-                StartCoroutine(TurnMessagePanel($"인증메일을 {email}로 보냈습니다.\n이메일을 확인해 주세요."));
-                print($"인증메일을 {email}로 보냈습니다.\n이메일을 확인해 주세요.");
-            }
+                //공정 설정으로 페이지 전환                
+                signInPanel.SetActive(false);
+                signUpPanel.SetActive(false);
+                userPanel.SetActive(true);
+            }            
         }
         catch (Exception e)
         {
@@ -300,6 +298,7 @@ public class AuthManager : MonoBehaviour
 
     IEnumerator TurnMessagePanel(string message)
     {
+        print("TurnMessagePanel");
         verificationPanel.SetActive(true);
         verficationMsg.text = message;
 

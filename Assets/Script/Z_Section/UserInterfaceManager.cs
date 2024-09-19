@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,7 +34,8 @@ public class UserInterfaceManager : MonoBehaviour
     }
 
     //사용자 설정 페이지로 전환
-    public void transUserMode() {        
+    public void transUserMode() {
+        print("transUserMode");
         signInPanel.SetActive(false);
         userSettingPanel.SetActive(true);
     }
