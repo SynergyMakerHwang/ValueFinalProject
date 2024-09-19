@@ -228,8 +228,7 @@ public class AuthManager : MonoBehaviour
 
         try
         {
-            print("user.IsEmailVerified");
-            print(user.IsEmailVerified);
+            
             if (user.IsEmailVerified)
             {
                 StartCoroutine(TurnMessagePanel("로그인이 성공적으로 완료 되었습니다."));
@@ -241,6 +240,12 @@ public class AuthManager : MonoBehaviour
                 signInPanel.SetActive(false);
                 signUpPanel.SetActive(false);
                 userPanel.SetActive(true);
+
+                UserInterfaceManager.instance.getUserProcessData();
+                print("user 전환==========");
+            }
+            else {
+                StartCoroutine(TurnMessagePanel("로그인 정보가 없습니다."));
             }            
         }
         catch (Exception e)
@@ -433,7 +438,7 @@ public class AuthManager : MonoBehaviour
 
         void SetID()
         {
-            string json = $"{{\"role\":\"admin\",\"name\":\"{signUpNameInput.text}\",\"email\":\"{user.Email}\"}}";
+            string json = $"{{\"role\":\"user\",\"name\":\"{signUpNameInput.text}\",\"email\":\"{user.Email}\"}}";
 
             print(json);
 
