@@ -71,5 +71,34 @@ public class FirebaseManager : MonoBehaviour
     }
 
 
+    [SerializeField] Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
+    [SerializeField] Dictionary<string, string> product = new Dictionary<string, string>();
+
+
+    //데이터 가져오기
+    public string ReadDataWithNewtonJson()
+    {
+        string result = "";
+        dbRef.GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                Product product;
+                foreach (var item in snapshot.Children)
+                {
+                    string json = item.GetRawJsonValue();
+                    print(json);
+
+                    product = JsonConvert.DeserializeObject<Product>(json);                    
+                }
+
+                print("데이터를 잘 받았습니다.");
+                
+            }
+        });
+        return result;
+    }
+
 
 }

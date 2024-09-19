@@ -39,21 +39,28 @@ public class AuthManager : MonoBehaviour
     [SerializeField] TMP_InputField signInEmailInput;
     [SerializeField] TMP_InputField signInPWInput;
     [SerializeField] Button signInBtn;
-    [SerializeField] Button signUpBtn;
-    [SerializeField] Button exitBtn;
-    [SerializeField] TMP_Text infoTxt;
-    [SerializeField] UserInfo userSignedIn;
-
+    [SerializeField] Button signUpBtn;        
+    
     [Header("회원가입 UI")]
-    [SerializeField] GameObject signUpPanel;
-    [SerializeField] GameObject verificationPanel;
+    [SerializeField] GameObject signUpPanel;    
     [SerializeField] TMP_InputField signUpNameInput;
     [SerializeField] TMP_InputField signUpEmailInput;
     [SerializeField] TMP_InputField signUpPWInput;
     [SerializeField] TMP_InputField signUpPWCheckInput;
     [SerializeField] Button signUpCheckBtn;
     [SerializeField] Button cancelBtn;
+    
+
+    [Header("사용자 UI")]
+    [SerializeField] GameObject userPanel;
+    [SerializeField] Button signOutBtn;
+    [SerializeField] TMP_Text infoTxt;
+    [SerializeField] UserInfo userSignedIn;
+
+    [Header("Alert UI")]
+    [SerializeField] GameObject verificationPanel;
     [SerializeField] TMP_Text verficationMsg;
+    
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -73,6 +80,7 @@ public class AuthManager : MonoBehaviour
 
         //auth.SignOut();
     }
+
 
     void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
@@ -94,14 +102,71 @@ public class AuthManager : MonoBehaviour
         }
     }
 
+
+    /****************** Button Event Start********************/
+
+    public void OnMoveSignUpPageBtnClkEvent()
+    {
+        signInPanel.SetActive(false);
+        signUpPanel.SetActive(true);
+    }
+
+    public void OnSignUpBtnClkEvent()
+    {
+        StartCoroutine(SignUp(signUpEmailInput.text, signUpPWInput.text, signUpPWCheckInput.text));
+    }
+
+    public void OnResetPWBtnClkEvent()
+    {
+        StartCoroutine(ResetPassword(signInEmailInput.text));
+    }
+
+
+    public void OnSignOutBtnClkEvent()
+    {
+        if (user == auth.CurrentUser)
+        {
+            auth.SignOut();
+            StartCoroutine(TurnMessagePanel("로그아웃 되었습니다."));
+        }
+    }
+
+
+
+    public void OnCancelBtnClkEvent()
+    {
+        signUpPanel.SetActive(false);
+    }
+
+    public void OnExitBtnClkEvent()
+    {
+        Application.Quit();
+    }
+
+    public void OnShowInfoBtnClkEvent()
+    {
+        StartCoroutine(ShowInfo());
+    }
+
     public void OnSignInBtnClkEvent()
     {
         signInPanel.SetActive(true);
         signUpPanel.SetActive(false);
 
         StartCoroutine(SignIn(signInEmailInput.text, signInPWInput.text));
-     
+
     }
+
+    /****************** Button Event End ********************/
+
+
+
+
+
+
+
+
+    /****************** 로그인 Start********************/
 
     Coroutine timerCoroutine;
     int timerTime;
@@ -170,6 +235,9 @@ public class AuthManager : MonoBehaviour
 
                 wrongPWCnt = 0;
 
+                //공정 설정으로 페이지 전환
+                UserInterfaceManager.instance.transUserMode();
+
             }
             else
             {
@@ -189,17 +257,125 @@ public class AuthManager : MonoBehaviour
             verificationPanel.SetActive(false);
         }
     }
-
-    public void OnSignUpBtnClkEvent()
+    //인증 메일 발송
+    private IEnumerator SendVerificationEmail(string email)
     {
-        signInPanel.SetActive(false);
-        signUpPanel.SetActive(true);
+        FirebaseUser user = auth.CurrentUser;
+        print(user.UserId);
+
+        Task task = null;
+        if (user != null)
+        {
+            task = user.SendEmailVerificationAsync();
+
+            yield return new WaitUntil(() => task.IsCompleted == true);
+
+            if (task.Exception != null)
+            {
+                FirebaseException e = task.Exception.GetBaseException() as FirebaseException;
+                AuthError authError = (AuthError)e.ErrorCode;
+                print(authError);
+            }
+
+        }
+
+        StartCoroutine(TurnMessagePanel($"인증메일을 {email}로 보냈습니다.\n이메일을 확인해 주세요."));
+
+        yield return new WaitForSeconds(3);
+
+        signInPanel.SetActive(true);
+        signUpPanel.SetActive(false);
+        verificationPanel.SetActive(false);
     }
 
-    public void OnSignUpCheckBtnClkEvent()
+    /******************로그인 End ********************/
+
+
+
+    /******************회원가입 Start********************/
+    /******************회원가입 End ********************/
+
+
+    /****************** 알림 영역 Start********************/
+
+    IEnumerator TurnMessagePanel(string message)
     {
-        StartCoroutine(SignUp(signUpEmailInput.text, signUpPWInput.text, signUpPWCheckInput.text));
+        verificationPanel.SetActive(true);
+        verficationMsg.text = message;
+
+        yield return new WaitForSeconds(3);
+
+        verificationPanel.SetActive(false);
     }
+
+
+
+    IEnumerator ShowInfo()
+    {
+        if (user != null)
+        {
+            string userInfo = string.Empty;
+
+            if (FirebaseManager.instance != null)
+            {
+                DatabaseReference dbref = FirebaseManager.instance.dbRef;
+
+                Task t = dbref.Child("users").Child(user.UserId).GetValueAsync().ContinueWith(task =>
+                {
+                    string json = task.Result.GetRawJsonValue();
+
+                    userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
+
+                    if (userSignedIn.role == "user")
+                    {
+                        DataSnapshot userData = task.Result;
+
+                        foreach (var item in userData.Children)
+                        {
+                            userInfo += $"{item.Key}: {item.Value}\n";
+                        }
+                    }
+
+                    if (task.Exception != null)
+                        print(task.Exception);
+                });
+
+                yield return new WaitUntil(() => t.IsCompleted);
+
+                if (userSignedIn.role == "admin")
+                {
+                    Task getAlluser = dbref.Child("users").GetValueAsync().ContinueWith(adminTask =>
+                    {
+                        if (adminTask.IsCompleted)
+                        {
+                            DataSnapshot adminData = adminTask.Result;
+
+                            foreach (var item in adminData.Children)
+                            {
+                                IDictionary value = (IDictionary)item.Value;
+
+                                userInfo += $"{item.Key}: {value["email"]}, {value["name"]}, {value["role"]}\n";
+                            }
+
+                            print(userInfo);
+                        }
+                    });
+
+                    yield return new WaitUntil(() => getAlluser.IsCompleted);
+
+                }
+
+                infoTxt.text = userInfo;
+
+                print("데이터 읽기가 완료되었습니다.");
+            }
+        }
+    }
+    /****************** 알림 영역 End ********************/
+
+
+
+    /****************** 기타 ( 비밀번호 재설정) Start********************/
 
     bool isInvalid = false;
     public IEnumerator SignUp(string email, string password, string passwordCheck)
@@ -273,10 +449,10 @@ public class AuthManager : MonoBehaviour
         }
     }
 
-    public void OnResetPWBtnClkEvent()
-    {
-        StartCoroutine(ResetPassword(signInEmailInput.text));
-    }
+
+
+
+
 
     public IEnumerator ResetPassword(string email)
     {
@@ -303,130 +479,7 @@ public class AuthManager : MonoBehaviour
 
         StartCoroutine(TurnMessagePanel($"{email}로 비밀번호 재설정 이메일을 보냈습니다. \n이메일을 확인해 주세요."));
     }
+    /****************** 기타 ( 비밀번호 재설정) End ********************/
 
-    public void OnSignOutBtnClkEvent()
-    {
-        if (user == auth.CurrentUser)
-        {
-            auth.SignOut();
-            StartCoroutine(TurnMessagePanel("로그아웃 되었습니다."));
-        }
-    }
 
-    IEnumerator TurnMessagePanel(string message)
-    {
-        verificationPanel.SetActive(true);
-        verficationMsg.text = message;
-
-        yield return new WaitForSeconds(3);
-
-        verificationPanel.SetActive(false);
-    }
-
-    private IEnumerator SendVerificationEmail(string email)
-    {
-        FirebaseUser user = auth.CurrentUser;
-        print(user.UserId);
-
-        Task task = null;
-        if (user != null)
-        {
-            task = user.SendEmailVerificationAsync();
-
-            yield return new WaitUntil(() => task.IsCompleted == true);
-
-            if (task.Exception != null)
-            {
-                FirebaseException e = task.Exception.GetBaseException() as FirebaseException;
-                AuthError authError = (AuthError)e.ErrorCode;
-                print(authError);
-            }
-
-        }
-
-        StartCoroutine(TurnMessagePanel($"인증메일을 {email}로 보냈습니다.\n이메일을 확인해 주세요."));
-
-        yield return new WaitForSeconds(3);
-
-        signInPanel.SetActive(true);
-        signUpPanel.SetActive(false);
-        verificationPanel.SetActive(false);
-    }
-
-    public void OnCancelBtnClkEvent()
-    {
-        signUpPanel.SetActive(false);
-    }
-
-    public void OnExitBtnClkEvent()
-    {
-        Application.Quit();
-    }
-
-    public void OnShowInfoBtnClkEvent()
-    {
-        StartCoroutine(ShowInfo());
-    }
-
-    IEnumerator ShowInfo()
-    {
-        if (user != null)
-        {
-            string userInfo = string.Empty;
-
-            if (FirebaseManager.instance != null)
-            {
-                DatabaseReference dbref = FirebaseManager.instance.dbRef;
-
-                Task t = dbref.Child("users").Child(user.UserId).GetValueAsync().ContinueWith(task =>
-                {
-                    string json = task.Result.GetRawJsonValue();
-
-                    userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
-
-                    if (userSignedIn.role == "user")
-                    {
-                        DataSnapshot userData = task.Result;
-
-                        foreach (var item in userData.Children)
-                        {
-                            userInfo += $"{item.Key}: {item.Value}\n";
-                        }
-                    }
-
-                    if (task.Exception != null)
-                        print(task.Exception);
-                });
-
-                yield return new WaitUntil(() => t.IsCompleted);
-
-                if (userSignedIn.role == "admin")
-                {
-                    Task getAlluser = dbref.Child("users").GetValueAsync().ContinueWith(adminTask =>
-                    {
-                        if (adminTask.IsCompleted)
-                        {
-                            DataSnapshot adminData = adminTask.Result;
-
-                            foreach (var item in adminData.Children)
-                            {
-                                IDictionary value = (IDictionary)item.Value;
-
-                                userInfo += $"{item.Key}: {value["email"]}, {value["name"]}, {value["role"]}\n";
-                            }
-
-                            print(userInfo);
-                        }
-                    });
-
-                    yield return new WaitUntil(() => getAlluser.IsCompleted);
-
-                }
-
-                infoTxt.text = userInfo;
-
-                print("데이터 읽기가 완료되었습니다.");
-            }
-        }
-    }
 }
