@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "566857773523",
+    "firebase_url": "https://robotics-2gi-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "robotics-2gi",
+    "storage_bucket": "robotics-2gi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566857773523:android:dd8a1acf35bd6164963f26",
+        "android_client_info": {
+          "package_name": "com.CodeLab.Robotics2gi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9j-GiONYfAotifP2iYVAdZEmBiv9HKDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
