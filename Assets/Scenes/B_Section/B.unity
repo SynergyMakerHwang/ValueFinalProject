@@ -330,6 +330,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Apple (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4008610799542497148, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Apples
+      objectReference: {fileID: 0}
     - target: {fileID: 4389499887083206086, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -455,6 +460,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Apple
+      objectReference: {fileID: 0}
+    - target: {fileID: 4008610799542497148, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Apples
       objectReference: {fileID: 0}
     - target: {fileID: 4389499887083206086, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
         type: 3}
@@ -743,6 +753,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Apple (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4008610799542497148, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Apples
       objectReference: {fileID: 0}
     - target: {fileID: 4389499887083206086, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
         type: 3}
@@ -1158,15 +1173,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892799560}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5.325}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 3.51, y: 0, z: 8.26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8679558276747910222}
   - {fileID: 1816689415}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!114 &1892799562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1197,6 +1212,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Apple (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4008610799542497148, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Apples
       objectReference: {fileID: 0}
     - target: {fileID: 4389499887083206086, guid: 54545446ea7bb1d49a60e927b5cc5fe6,
         type: 3}
@@ -1447,13 +1467,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6810572135192938777}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.04551159, w: 0.99896383}
-  m_LocalPosition: {x: 0.75, y: 0.1, z: -0.146}
-  m_LocalScale: {x: 4, y: 0.034000017, z: 1.9950596}
+  m_LocalRotation: {x: -0, y: -0, z: 0.07976157, w: 0.996814}
+  m_LocalPosition: {x: 0.81, y: 0.11, z: -0.146}
+  m_LocalScale: {x: 3.90136, y: 0.034000017, z: 1.9950596}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1892799561}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 5.217}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 9.15}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
