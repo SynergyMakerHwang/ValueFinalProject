@@ -2,10 +2,12 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +35,7 @@ public class AuthManager : MonoBehaviour
         public string products;
         public string history;
     }
+    [SerializeField] GameObject[] panelList;
 
     [Header("로그인 UI")]
     [SerializeField] GameObject signInPanel;
@@ -64,6 +67,12 @@ public class AuthManager : MonoBehaviour
 
     FirebaseAuth auth;
     FirebaseUser user;
+
+    private void Awake()
+    {
+        closePanel();
+        signInPanel.SetActive(true);    
+    }
 
     void Start()
     {
@@ -107,7 +116,7 @@ public class AuthManager : MonoBehaviour
 
     public void OnMoveSignUpPageBtnClkEvent()
     {
-        signInPanel.SetActive(false);
+        closePanel();
         signUpPanel.SetActive(true);
     }
 
@@ -128,10 +137,12 @@ public class AuthManager : MonoBehaviour
         {
             auth.SignOut();
             StartCoroutine(TurnMessagePanel("로그아웃 되었습니다."));
+            closePanel();
+            signInPanel.SetActive(true);
         }
     }
 
-
+   
 
     public void OnCancelBtnClkEvent()
     {
@@ -143,19 +154,16 @@ public class AuthManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void OnShowInfoBtnClkEvent()
-    {
-        StartCoroutine(ShowInfo());
-    }
 
     public void OnSignInBtnClkEvent()
     {
-        signInPanel.SetActive(false);
-        signUpPanel.SetActive(false);
-
+     
         StartCoroutine(SignIn(signInEmailInput.text, signInPWInput.text));
 
     }
+
+
+   
 
     /****************** Button Event End ********************/
 
@@ -231,21 +239,32 @@ public class AuthManager : MonoBehaviour
             
             if (user.IsEmailVerified)
             {
+                //공정 설정으로 페이지 전환                
+                closePanel();
+                userPanel.SetActive(true);
+
+
                 StartCoroutine(TurnMessagePanel("로그인이 성공적으로 완료 되었습니다."));
                 print("로그인이 되었습니다.");
 
                 wrongPWCnt = 0;
 
-                //공정 설정으로 페이지 전환                
-                signInPanel.SetActive(false);
-                signUpPanel.SetActive(false);
-                userPanel.SetActive(true);
 
-                UserInterfaceManager.instance.getUserProcessData();
-                print("user 전환==========");
+
+                //UserInterfaceManager.instance.getUserProcessData();                
+                StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("process", (returnValue) =>
+                {
+                    print(returnValue);
+
+                }));
+
+
+
             }
             else {
                 StartCoroutine(TurnMessagePanel("로그인 정보가 없습니다."));
+                closePanel();
+                signInPanel.SetActive(true);
             }            
         }
         catch (Exception e)
@@ -286,9 +305,8 @@ public class AuthManager : MonoBehaviour
 
         yield return new WaitForSeconds(3);
 
+        closePanel();
         signInPanel.SetActive(true);
-        signUpPanel.SetActive(false);
-        verificationPanel.SetActive(false);
     }
 
     /******************로그인 End ********************/
@@ -314,72 +332,11 @@ public class AuthManager : MonoBehaviour
 
 
 
-    IEnumerator ShowInfo()
-    {
-        if (user != null)
-        {
-            string userInfo = string.Empty;
-
-            if (FirebaseManager.instance != null)
-            {
-                DatabaseReference dbref = FirebaseManager.instance.dbRef;
-
-                Task t = dbref.Child("users").Child(user.UserId).GetValueAsync().ContinueWith(task =>
-                {
-                    string json = task.Result.GetRawJsonValue();
-
-                    userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
-
-                    if (userSignedIn.role == "user")
-                    {
-                        DataSnapshot userData = task.Result;
-
-                        foreach (var item in userData.Children)
-                        {
-                            userInfo += $"{item.Key}: {item.Value}\n";
-                        }
-                    }
-
-                    if (task.Exception != null)
-                        print(task.Exception);
-                });
-
-                yield return new WaitUntil(() => t.IsCompleted);
-
-                if (userSignedIn.role == "admin")
-                {
-                    Task getAlluser = dbref.Child("users").GetValueAsync().ContinueWith(adminTask =>
-                    {
-                        if (adminTask.IsCompleted)
-                        {
-                            DataSnapshot adminData = adminTask.Result;
-
-                            foreach (var item in adminData.Children)
-                            {
-                                IDictionary value = (IDictionary)item.Value;
-
-                                userInfo += $"{item.Key}: {value["email"]}, {value["name"]}, {value["role"]}\n";
-                            }
-
-                            print(userInfo);
-                        }
-                    });
-
-                    yield return new WaitUntil(() => getAlluser.IsCompleted);
-
-                }
-
-                infoTxt.text = userInfo;
-
-                print("데이터 읽기가 완료되었습니다.");
-            }
-        }
-    }
     /****************** 알림 영역 End ********************/
 
 
 
-    /****************** 기타 ( 비밀번호 재설정) Start********************/
+    /****************** 기타  Start********************/
 
     bool isInvalid = false;
     public IEnumerator SignUp(string email, string password, string passwordCheck)
@@ -483,7 +440,16 @@ public class AuthManager : MonoBehaviour
 
         StartCoroutine(TurnMessagePanel($"{email}로 비밀번호 재설정 이메일을 보냈습니다. \n이메일을 확인해 주세요."));
     }
-    /****************** 기타 ( 비밀번호 재설정) End ********************/
+
+    public void closePanel() {
+        GameObject target = null;
+        for(int i=0; i< panelList.Length; i++) {
+            target = panelList[i].gameObject;
+            target.SetActive(false);
+        }
+    }
+
+    /****************** 기타 End ********************/
 
 
 }

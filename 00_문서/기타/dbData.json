@@ -1,0 +1,166 @@
+{
+
+  "product": {
+    "사과": [
+      {
+        "productName": "칩",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      },
+      {
+        "productName": "말랭이",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      }
+    ],
+    "딸기": [
+      {
+        "productName": "칩",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      },
+      {
+        "productName": "말랭이",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      }
+    ],
+    "감": [
+      {
+        "productName": "칩",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      },
+      {
+        "productName": "말랭이",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      }
+    ],
+    "무": [
+      {
+        "productName": "칩",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      },
+      {
+        "productName": "말랭이",
+        "processList": [ 30, 40, 50, 60, 70 ]
+      }
+    ]
+  },
+  "process": {
+    "30": {
+      "processId": "30",
+      "processName": "세척",
+      "section": "B",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "40": {
+      "processId": "40",
+      "processName": "절단",
+      "section": "C",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "50": {
+      "processId": "50",
+      "processName": "열건조",
+      "section": "C",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "60": {
+      "processId": "60",
+      "processName": "동결건조",
+      "section": "C",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "70": {
+      "processId": "70",
+      "processName": "파우치포장",
+      "section": "D",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "80": {
+      "processId": "80",
+      "processName": "박스포장",
+      "section": "B",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    },
+    "90": {
+      "processId": "90",
+      "processName": "적재",
+      "section": "E",
+      "startPosition": "0",
+      "endPosition": "0",
+      "startHight": "0",
+      "endHight": "0",
+      "startRotation": "0",
+      "endRotation": "0",
+      "agvStartPosition": "0",
+      "agvEndPosition": "0",
+      "canvayorSpeed": "0",
+      "loadingWeight": "0",
+      "cuttingSpacing": "0",
+      "dryingTemperature": "0"
+    }
+  }
+}
