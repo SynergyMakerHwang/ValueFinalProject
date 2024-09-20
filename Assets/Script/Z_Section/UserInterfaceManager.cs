@@ -51,11 +51,10 @@ public class UserInterfaceManager : MonoBehaviour
         toPanel.SetActive(true);
     }
 
-
     /*** 데이터 가져오기 ***/
-    public void getUserProcessData()
+  /*  public void getUserProcessData()
     {
-        print("데이터 가져오기");
+        print("데이터 가져오기==1");
         IEnumerable<DataSnapshot> readProduct = FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot();
 
         foreach (var item in readProduct)
@@ -63,23 +62,23 @@ public class UserInterfaceManager : MonoBehaviour
             string json = item.GetRawJsonValue();
             print(json);
             productClass = JsonConvert.DeserializeObject<ProductClass>(json);
-
         }
-     }
+        print("데이터 가져오기==2");
+    }*/
 
-        /** 공정 설정 - 1단계 START **/
+    /** 공정 설정 - 1단계 START **/
 
-        ///1. infoText 바꾸고,
-        ///2. 상품리스트 가져오기
+    ///1. infoText 바꾸고,
+    ///2. 상품리스트 가져오기
 
-        /** 공정 설정 - 1단계 END **/
-
-
-        /** 공정 설정 - 2단계-1 START **/
-        /** 공정 설정 - 2단계-1 END **/
+    /** 공정 설정 - 1단계 END **/
 
 
-        /** 공정 설정 - 2단계-2 (기타 설정) START **/
-        /** 공정 설정 - 2단계-2 (기타 설정) END **/
+    /** 공정 설정 - 2단계-1 START **/
+    /** 공정 설정 - 2단계-1 END **/
+
+
+    /** 공정 설정 - 2단계-2 (기타 설정) START **/
+    /** 공정 설정 - 2단계-2 (기타 설정) END **/
     
 }

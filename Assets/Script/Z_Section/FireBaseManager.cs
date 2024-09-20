@@ -6,6 +6,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using UnityEngine.InputSystem;
+using Firebase.Extensions;
+using static AuthManager;
+using static FirebaseManager;
+using System.Runtime.Remoting;
+using System.Security.Policy;
+using UnityEngine.Networking;
+using Google.MiniJSON;
 
 /// <summary>
 /// Firebase Realtime Database에 접속, 데이터를 읽고 쓴다.
@@ -50,44 +58,61 @@ public class FirebaseManager : MonoBehaviour
 
 
     //데이터 가져오기
-   /* public string ReadDataWithNewtonJson()
+    /* public string ReadDataWithNewtonJson()
+     {
+         string result = "";
+         dbRef.GetValueAsync().ContinueWith(task =>
+         {
+             if (task.IsCompleted)
+             {
+                 DataSnapshot snapshot = task.Result;
+
+                 foreach (var item in snapshot.Children)
+                 {
+                     string json = item.GetRawJsonValue();
+                     print(json);
+
+                     product = JsonConvert.DeserializeObject<Product>(json);                    
+                 }
+
+                 print("데이터를 잘 받았습니다.");
+
+             }
+         });
+         return result;
+     }*/
+
+   public IEnumerator ReadDataWithNewtonJsonData(string key, System.Action<string> callback)
     {
-        string result = "";
-        dbRef.GetValueAsync().ContinueWith(task =>
+           
+        string userInfo = string.Empty;
+        string json = "";
+        if (instance != null)
         {
-            if (task.IsCompleted)
+            // DatabaseReference dbref = FirebaseDatabase.DefaultInstance.GetReference(key);
+            DatabaseReference dbref = instance.dbRef;
+
+            Task t = dbref.GetValueAsync().ContinueWithOnMainThread(task =>
             {
-                DataSnapshot snapshot = task.Result;
-               
-                foreach (var item in snapshot.Children)
+                json = task.Result.GetRawJsonValue();
+                print(json);            
+
+                if (task.Exception != null)
                 {
-                    string json = item.GetRawJsonValue();
-                    print(json);
-
-                    product = JsonConvert.DeserializeObject<Product>(json);                    
+                    print(task.Exception);
                 }
+                callback(json);
+            });
+            
+   
+            yield return new WaitUntil(() => t.IsCompleted);
 
-                print("데이터를 잘 받았습니다.");
-                
-            }
-        });
-        return result;
-    }*/
-    public IEnumerable<DataSnapshot> ReadDataWithNewtonJsonDataSnapshot()
-    {
-        IEnumerable<DataSnapshot> result = null;
-        dbRef.GetValueAsync().ContinueWith(task =>
-        {
-            if (task.IsCompleted)
-            {
-                DataSnapshot snapshot = task.Result;                
-                result = snapshot.Children;               
-                print("데이터를 잘 받았습니다.");
-                
-            }
-        });
-        return result;
+            
+
+            print("데이터 읽기가 완료되었습니다.");
+        }
     }
+     
 
 
 }
