@@ -1,11 +1,14 @@
+using Firebase.Database;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UserInterfaceManager : MonoBehaviour
 {
     static public UserInterfaceManager instance;
-    
-    
+
+
     [SerializeField] GameObject signInPanel;
     [SerializeField] GameObject userSettingPanel;
 
@@ -14,8 +17,10 @@ public class UserInterfaceManager : MonoBehaviour
     [SerializeField] GameObject stepEtcPanel;
 
 
-    [SerializeField] Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
-    [SerializeField] Dictionary<string, string> product = new Dictionary<string, string>();
+    Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
+    Dictionary<string, string> product = new Dictionary<string, string>();
+    ProductClass productClass;
+    ProcessClass processClass;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -29,11 +34,13 @@ public class UserInterfaceManager : MonoBehaviour
         stepFirstPanel.SetActive(true);
         stepSecondPanel.SetActive(false);
         stepEtcPanel.SetActive(false);
-        
+
     }
 
     //사용자 설정 페이지로 전환
-    public void transUserMode() {        
+    public void transUserMode()
+    {
+        print("transUserMode");
         signInPanel.SetActive(false);
         userSettingPanel.SetActive(true);
     }
@@ -45,15 +52,34 @@ public class UserInterfaceManager : MonoBehaviour
     }
 
 
-    /** 공정 설정 - 1단계 START **/
+    /*** 데이터 가져오기 ***/
+    public void getUserProcessData()
+    {
+        print("데이터 가져오기");
+        IEnumerable<DataSnapshot> readProduct = FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot();
 
-    /** 공정 설정 - 1단계 END **/
+        foreach (var item in readProduct)
+        {
+            string json = item.GetRawJsonValue();
+            print(json);
+            productClass = JsonConvert.DeserializeObject<ProductClass>(json);
+
+        }
+     }
+
+        /** 공정 설정 - 1단계 START **/
+
+        ///1. infoText 바꾸고,
+        ///2. 상품리스트 가져오기
+
+        /** 공정 설정 - 1단계 END **/
 
 
-    /** 공정 설정 - 2단계  START **/
-    /** 공정 설정 - 2단계 END **/
+        /** 공정 설정 - 2단계-1 START **/
+        /** 공정 설정 - 2단계-1 END **/
 
 
-    /** 공정 설정 - 기타 설정 START **/
-    /** 공정 설정 - 기타 설정 END **/
+        /** 공정 설정 - 2단계-2 (기타 설정) START **/
+        /** 공정 설정 - 2단계-2 (기타 설정) END **/
+    
 }
