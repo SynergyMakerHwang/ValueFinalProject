@@ -10,7 +10,7 @@ public class Belts : MonoBehaviour
     Vector3 StartPos = new Vector3(0.1580003f, 0.05900013f, -0.01700032f);
     Vector3 MiddlePos1 = new Vector3(-1.99f, 0.05900013f, -0.01699984f);
     Vector3 MiddlePos2 = new Vector3(-2.351001f, 0.3090003f, -0.01699948f);
-    Vector3 EndPos = new Vector3(-7.653f, 0.3090003f, -0.017f);
+    Vector3 EndPos = new Vector3(-7.308f, 0.3090003f, -0.017f);
 
     //private void OnTriggerEnter(Collider other)
     //{

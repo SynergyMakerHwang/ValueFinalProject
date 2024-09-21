@@ -18,12 +18,13 @@ public class Sensor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.Contains("Banana") || other.name.Contains("Apple") || other.name.Contains("Orange"))
+        if (other.name.Contains("LeaderApple"))
         {
+           
             Cutter.Instance.TurnOnOff();
             // 관성떄문에 컨베이어가 멈추어도 칸막이로 막아주어야됨
 
-            CreatedWall = Instantiate(칸막이, transform);
+            // CreatedWall = Instantiate(칸막이, transform);
             IsSensor = true;
 
             if (IsSensor)
@@ -40,7 +41,7 @@ public class Sensor : MonoBehaviour
         yield return StartCoroutine(CuttingGo(EndPos.localPosition, StartPos.localPosition));
 
         yield return Cutter.Instance.TurnOnOff();
-        Destroy(CreatedWall);
+       // Destroy(CreatedWall);
 
     }
 

@@ -9,7 +9,7 @@ public class Cutter : MonoBehaviour
     // 조절하는 값들
     [SerializeField] bool ConveyorOn;
     [SerializeField] float ConveyorSpeed;
-   
+
 
     //벨트 프레펩들
     [SerializeField] GameObject BeltPrefebs;
@@ -43,7 +43,7 @@ public class Cutter : MonoBehaviour
     {
         return ConveyorSpeed;
     }
- 
+
 
 
     IEnumerator Spawn()
@@ -57,7 +57,7 @@ public class Cutter : MonoBehaviour
             }
 
             // Conveyor가 켜져 있을 경우 생성
-            yield return new WaitForSeconds(0.55f); // 간격으로 생성
+            yield return new WaitForSeconds(0.7f); // 간격으로 생성
             Instantiate(BeltPrefebs, parents);
         }
     }
