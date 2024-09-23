@@ -89,8 +89,7 @@ public class FirebaseManager : MonoBehaviour
         string json = "";
         if (instance != null)
         {
-            // DatabaseReference dbref = FirebaseDatabase.DefaultInstance.GetReference(key);
-            DatabaseReference dbref = instance.dbRef;
+            DatabaseReference dbref = FirebaseDatabase.DefaultInstance.GetReference(key);          
 
             Task t = dbref.GetValueAsync().ContinueWithOnMainThread(task =>
             {

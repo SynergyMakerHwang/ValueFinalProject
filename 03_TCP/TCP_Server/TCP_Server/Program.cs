@@ -11,6 +11,7 @@ using static TCPServer.MxComponent;
 class TCPServer
 {
 
+
     // PLC - TCP Server - Unity
     // PLC로 데이터 송수신
     // 클라이언트(Unitiy)로 데이터 송수신
@@ -22,20 +23,20 @@ class TCPServer
     //@Response
     //data
     //MX Componet 객체 생성
-
+    static int blockNum = 10;
+    static int blockSize = 16;
+    static MxComponent mxComponent = new MxComponent();
     public static void Main()
     {
 
         try
         {
 
-            MxComponent mxComponent;
 
-            mxComponent = new MxComponent();
             mxComponent.Init();
 
             //종료 이벤트
-            //AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
             TcpListener listener = new TcpListener(IPAddress.Any, 7000); //TCP/IP port는 7000
             listener.Start();
@@ -86,6 +87,11 @@ class TCPServer
 
                         returnMsg = mxComponent.Connect();
 
+                    }
+                    else if (responseMsg.Contains("SETDevice"))
+                    {
+
+                        returnMsg = mxComponent.setDevice(responseMsg);
 
                     }
                     else if (responseMsg.Contains("SET") || responseMsg.Contains("GET"))
@@ -102,7 +108,7 @@ class TCPServer
                                 /**SET한 값의 블럭값 가져오기**/
                                 str.Replace("SET", "GET");
                                 string[] tmp_str = str.Split(",");
-                                returnMsg = mxComponent.ReadDeviceBlockTCPServer(tmp_str[0] + "," + tmp_str[1] + ",6");
+                                returnMsg = mxComponent.ReadDeviceBlockTCPServer(tmp_str[0] + "," + tmp_str[1] + "," + blockNum);
                             }
                             else if (str.Contains("GET"))
                             {
@@ -145,15 +151,16 @@ class TCPServer
             e.ToString();
 
         }
+
     }
 
-    /* private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
-     {
-         //throw new NotImplementedException();
-         mxComponent.DisConnect();
+    private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+    {
+        //throw new NotImplementedException();
+        mxComponent.DisConnect();
 
 
-     }*/
+    }
 
 
     //Unity MxComponet Method
@@ -169,8 +176,7 @@ class TCPServer
     {
         ActUtlType64 mxComponent;
         string log;
-        //int blockNum = 5;
-        int blockSize = 16;
+
         int[] devices;
         public Status status = Status.DISCONNECTED;
 
@@ -248,7 +254,6 @@ class TCPServer
             string returnMsg;
             string[] requestData = requestMsg.Split(",");
             string deviceName = requestData[1];
-            int blockNum = 6;
             //Console.WriteLine(requestData.Length);
             if (requestData.Length > 2)
             {
@@ -271,7 +276,7 @@ class TCPServer
             }
             else
             {
-                Console.WriteLine("ERROR ReadDeviceBlock" + ret);
+
                 returnMsg = "ERROR ReadDeviceBlock" + ret;
 
             }
@@ -300,11 +305,35 @@ class TCPServer
 
         }
 
-        public void setDevice(string deviceName, string requestData)
+        public string setDevice(string requestMsg)
         {
+            string returnMsg = "";
+            if (requestMsg.Contains(","))
+            {
+                string[] requestDataArr = requestMsg.Split(",");
+                if (requestDataArr.Length > 2)
+                {
 
-            mxComponent.SetDevice(deviceName, int.Parse(requestData));
+                    string deviceName = requestDataArr[1];
+                    string requestData = requestDataArr[2];
 
+                    int ret = mxComponent.SetDevice(deviceName, int.Parse(requestData));
+                    if (ret == 0)
+                    {
+                        returnMsg = "SETDevice Success - " + deviceName + ":" + requestData;
+                    }
+                    else
+                    {
+                        returnMsg = "ERROR SETDevice - " + ret;
+
+                    }
+
+                }
+
+            }
+
+            Console.WriteLine(returnMsg);
+            return returnMsg;
         }
 
     }
