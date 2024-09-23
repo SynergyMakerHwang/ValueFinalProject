@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class ConveyorSensor : MonoBehaviour
+public class LocationSensor : MonoBehaviour
 {
+    [SerializeField] GameObject 토트박스;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,7 +18,8 @@ public class ConveyorSensor : MonoBehaviour
     {
         if (other.name.Contains("토트박스")) 
         {
-            Conveyor.Instance.ReadPower();
+            SubConveyor.Instance.SubConveyorOnOff();
         }
+  
     }
 }

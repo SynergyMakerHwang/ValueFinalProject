@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Conveyor : MonoBehaviour
+public class SubConveyor : MonoBehaviour
 {
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;
@@ -9,7 +9,7 @@ public class Conveyor : MonoBehaviour
     [SerializeField] float duration;
     [SerializeField] bool Power;
 
-    public static Conveyor Instance;
+    public static SubConveyor Instance;
 
     public void Awake()
     {
@@ -18,9 +18,9 @@ public class Conveyor : MonoBehaviour
             Instance = this;
         }
     }
-    public bool ReadPower()
+    public bool SubConveyorOnOff()
     {
-        return Power = false ;
+        return Power = !Power ;
     }
     private void Start()
     {

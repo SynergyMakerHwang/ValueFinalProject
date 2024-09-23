@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public class WasherController : MonoBehaviour
+public class MainConveyor : MonoBehaviour
 {
     //¼Ó¼º °ª
  
@@ -17,7 +17,7 @@ public class WasherController : MonoBehaviour
     [SerializeField] GameObject Apples;
 
     
-    public static WasherController instance;
+    public static MainConveyor instance;
 
     private void Awake()
     {
@@ -33,9 +33,9 @@ public class WasherController : MonoBehaviour
     {
         return ConveyorOn;
     }
-    public bool CommuteTott()
+    public bool MainConveyorOnOff()
     {
-        return ConveyorOn = false;
+        return ConveyorOn =!ConveyorOn;
     }    
 
     void Start()

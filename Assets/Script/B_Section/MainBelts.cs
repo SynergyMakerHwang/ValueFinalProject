@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Washers : MonoBehaviour
+public class MainBelts : MonoBehaviour
 {
     [SerializeField] Transform Conveyor;
     Vector3 StartPos1position = new Vector3(-6.533f, 0.158f, -0.5f);
@@ -27,21 +27,21 @@ public class Washers : MonoBehaviour
     Quaternion EndPos6Rotation = Quaternion.Euler(0, 0, 180);
     Quaternion EndPos7Rotation = Quaternion.Euler(0, 0, -205);
 
-    public static Washers instance;
+    public static MainBelts instance;
 
     private bool isMoving = true;
 
     void Start()
     {
         StartCoroutine(ConveyorRoutine());
-        WasherController.instance.GetSpeed();
+        MainConveyor.instance.GetSpeed();
     }
 
     private void Update()
     {
-        WasherController.instance.IsOn();
+        MainConveyor.instance.IsOn();
         // 여기서 isMoving 상태를 체크하여 필요시 멈춤
-        if (!WasherController.instance.IsOn())
+        if (!MainConveyor.instance.IsOn())
         {
             isMoving = false;
         }
@@ -76,10 +76,10 @@ public class Washers : MonoBehaviour
             yield return null; // 대기
         }
 
-        if (WasherController.instance.IsOn())
+        if (MainConveyor.instance.IsOn())
         {
             float journeyLength = Vector3.Distance(startPos, endPos);
-            float journeyTime = journeyLength / WasherController.instance.GetSpeed();
+            float journeyTime = journeyLength / MainConveyor.instance.GetSpeed();
             float time = 0f;
 
             while (time < journeyTime)
