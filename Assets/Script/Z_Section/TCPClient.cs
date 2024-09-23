@@ -124,18 +124,31 @@ public class TCPClient : MonoBehaviour
 
     /***********************B-Section START *****************************/
 
+    //세척 공정
     private void excuteWasherProcess(int[][] point)
     {
-        
 
+        //세척공정 - 도트 발생 
+        SubConveyor.Instance.SpawnTottPLC();
+
+        //세척 공정 - 펌핑모터
+        StartCoroutine(MainConveyor.instance.WaterFlowPLC()); 
+
+        //세척 공정 - subConvayor 
+        SubConveyor.Instance.SubConveyorOnOffPLC();
+
+        //세척 공정 - mainConvayor
+        MainConveyor.instance.MainConveyorOnOffPLC();
 
     }
 
+    //세척 공정 - 로봇팔 동작 - get
+
     //SET -
-    //AGV 도착센서
-    //로봇팔 동작완료 센서
-    //정위치 센서
-    //무게센서
+    //도트 정위치 센서 set
+    //무게센서 - set
+    //하역 로봇팔 동작 완료 sensor - set
+
 
 
 

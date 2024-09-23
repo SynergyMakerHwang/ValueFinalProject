@@ -64,7 +64,7 @@ public class MainConveyor : MonoBehaviour
 
 
     }
-    private IEnumerator WaterFlowPLC()
+    public IEnumerator WaterFlowPLC()
     {
         float moveDistance = 0.01f; // 이동 속도
 

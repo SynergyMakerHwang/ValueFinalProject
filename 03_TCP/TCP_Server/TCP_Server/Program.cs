@@ -87,20 +87,18 @@ class TCPServer
 
                         returnMsg = mxComponent.Connect();
 
-                    }
-                    else if (responseMsg.Contains("SETDevice"))
-                    {
-
-                        returnMsg = mxComponent.setDevice(responseMsg);
-
-                    }
+                    }                   
                     else if (responseMsg.Contains("SET") || responseMsg.Contains("GET"))
                     {
                         string[] responseArr = responseMsg.Split("@");
                         //string[] response
                         foreach (string str in responseArr)
                         {
-                            if (str.Contains("SET"))
+                            if (str.Contains("SETDevice"))
+                            {
+                                returnMsg = mxComponent.setDevice(responseMsg);
+                            }
+                            else if (str.Contains("SET"))
                             {
                                 //SET,Y0,1,2                         
                                 mxComponent.WriteDeviceBlockTCPServer(str);

@@ -1,4 +1,5 @@
 using Firebase.Database;
+using Google.MiniJSON;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -55,16 +56,12 @@ public class UserInterfaceManager : MonoBehaviour
     public void getUserProcessData()
     {
         print("데이터 가져오기==1");       
-
-        /*foreach (var item in readProduct)
-        {
-            string json = item.GetRawJsonValue();
-            print(json);
-            productClass = JsonConvert.DeserializeObject<ProductClass>(json);
-        }*/
+                
         StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
         {
             print(returnValue);
+            productClass = JsonConvert.DeserializeObject<ProductClass>(returnValue);
+          
 
         }));
 
