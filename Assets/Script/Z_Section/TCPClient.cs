@@ -17,10 +17,11 @@ public class TCPClient : MonoBehaviour
     NetworkStream stream;
     [SerializeField] bool isConnected = false;
     [SerializeField] float waitTime = 0.1f;
-    [SerializeField] int loadCnt = 5; // 도트 적재 수량
+    [SerializeField] int loadCnt = 10; // 도트 적재 수량
     Process ps;
-    int blockNum = 10;
-    int blockSize = 16;
+    int blockNum = 10; //블럭들의 수량
+    int blockSize = 16; // 블럭의 수량
+
 
     //GET Param
     string requestGetBlock = "@GET,X0,10";
@@ -66,7 +67,6 @@ public class TCPClient : MonoBehaviour
 
 
 
-    /***********************A-Section START *****************************/
     // 제어판 - 실행 이벤트
     public void OnProcessStartBtnClk() {
 
@@ -75,13 +75,70 @@ public class TCPClient : MonoBehaviour
 
 
         //전체 공정 PLC <-> Unity 연동
-        //StartCoroutine(ScanPlc());
+        StartCoroutine(ScanPlc());
     }
+
+    public void excuteProcess(int[][] plcPoint)
+    {
+        /***********************A-Section START *****************************/
+
+
+        /***********************A-Section END *****************************/
+
+
+        /***********************B-Section START *****************************/
+
+        //세척공정
+        excuteWasherProcess(plcPoint);
+
+
+        /***********************B-Section END *****************************/
+
+
+
+        /***********************C-Section START *****************************/
+        /***********************C-Section END *****************************/
+
+        /***********************D-Section START *****************************/
+        /***********************D-Section END *****************************/
+
+        /***********************E-Section START *****************************/
+        /***********************E-Section END *****************************/
+
+
+
+
+        /***********************Z-Section START *****************************/
+        /***********************Z-Section END *****************************/
+
+    }
+
+
+
+
+    /***********************A-Section START *****************************/
 
 
     /***********************A-Section END *****************************/
 
+
     /***********************B-Section START *****************************/
+
+    private void excuteWasherProcess(int[][] point)
+    {
+        
+
+
+    }
+
+    //SET -
+    //AGV 도착센서
+    //로봇팔 동작완료 센서
+    //정위치 센서
+    //무게센서
+
+
+
     /***********************B-Section END *****************************/
 
 
@@ -99,6 +156,8 @@ public class TCPClient : MonoBehaviour
 
 
     /***********************Z-Section START *****************************/
+    /***********************Z-Section END *****************************/
+
 
     /*****************TCP 통신 관련 *********************/
     //mx component 연결 요청 
@@ -203,6 +262,9 @@ public class TCPClient : MonoBehaviour
                     if (msg != null && msg != "")
                     {
                         point = TransTCPtoDeviceBlock(msg);
+
+                        excuteProcess(point);
+
                     }
 
 
