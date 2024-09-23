@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -571,7 +572,7 @@ Transform:
   m_GameObject: {fileID: 642261502}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0011378146, y: 0.7104582, z: -0.0014988887, w: 0.70373684}
-  m_LocalPosition: {x: 7.64, y: 0.76, z: 5.64}
+  m_LocalPosition: {x: 7.66, y: 0.76, z: 7.49}
   m_LocalScale: {x: 1.342, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1642,7 +1643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  ConveyorOn: 0
+  ConveyorOn: 1
   WaterLevel: 0.5
   Prefebs: {fileID: 2538980376471271607, guid: 88d69b40c2ccf734e982c5f0f57e8fc4, type: 3}
   PrefebsMom: {fileID: 1298172457}
