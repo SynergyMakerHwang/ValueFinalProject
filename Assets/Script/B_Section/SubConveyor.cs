@@ -11,6 +11,7 @@ public class SubConveyor : MonoBehaviour
     [SerializeField] float duration;
     [SerializeField] bool Power;
     [SerializeField] GameObject TottBox;
+    [SerializeField] Transform SpawnPoint;
 
     public static SubConveyor Instance;
 
@@ -76,7 +77,7 @@ public class SubConveyor : MonoBehaviour
     }
     public void SpawnTottPLC()
     {
-        Instantiate(TottBox);
+        Instantiate(TottBox,SpawnPoint);
     }
 }
 

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -572,7 +571,7 @@ Transform:
   m_GameObject: {fileID: 642261502}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0011378146, y: 0.7104582, z: -0.0014988887, w: 0.70373684}
-  m_LocalPosition: {x: 7.65, y: 0.76, z: 6.33}
+  m_LocalPosition: {x: 7.64, y: 0.76, z: 5.64}
   m_LocalScale: {x: 1.342, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -583,6 +582,7 @@ Transform:
   - {fileID: 115675061}
   - {fileID: 1723722578}
   - {fileID: 1551278826}
+  - {fileID: 1499621505}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.214, y: 90.545, z: -0.028}
 --- !u!114 &642261504
@@ -605,6 +605,7 @@ MonoBehaviour:
   duration: 2
   Power: 0
   TottBox: {fileID: 8740459034247669583, guid: 2982d1a166f9a014480df722920c3715, type: 3}
+  SpawnPoint: {fileID: 1499621505}
 --- !u!1 &649318371
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,6 +1193,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!1 &1499621504
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1499621505}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1499621505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499621504}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.051, y: 1.56, z: -3.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 642261503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1551278825
 GameObject:
   m_ObjectHideFlags: 0
