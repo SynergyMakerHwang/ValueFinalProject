@@ -30,7 +30,7 @@ public class SubConveyor : MonoBehaviour
     {
         //초기설정
         Belt.localPosition = StartPos.localPosition;
-        SpawnTott();
+        SpawnTottPLC();
     }
     // Update is called once per frame
     void Update()
