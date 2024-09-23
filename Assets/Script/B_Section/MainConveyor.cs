@@ -5,7 +5,7 @@ using System.Collections;
 public class MainConveyor : MonoBehaviour
 {
     //속성 값
- 
+
     [SerializeField] float speed;
     [SerializeField] bool ConveyorOn;
     [SerializeField] float WaterLevel;
@@ -16,7 +16,7 @@ public class MainConveyor : MonoBehaviour
     [SerializeField] GameObject waters;
     [SerializeField] GameObject Apples;
 
-    
+
     public static MainConveyor instance;
 
     private void Awake()
@@ -33,22 +33,36 @@ public class MainConveyor : MonoBehaviour
     {
         return ConveyorOn;
     }
- 
+
     void Start()
     {
-        StartCoroutine(SpawnPrefabs());
+
 
     }
+    int CurrentNums = 0;
+    private void Update()
+    {
+        if (CurrentNums == 0 && ConveyorOn)
+            StartCoroutine(SpawnPrefabs());
+    }
 
+  
     private IEnumerator SpawnPrefabs()
     {
 
+
+
         for (int i = 0; i < 12; i++)
         {
+            CurrentNums++;
             yield return new WaitForSeconds(0.55f); // 0.5초 대기
             Instantiate(Prefebs, PrefebsMom);
 
         }
+        if (CurrentNums == 11)
+            yield return null;
+
+
     }
     private IEnumerator WaterFlowPLC()
     {
@@ -62,8 +76,8 @@ public class MainConveyor : MonoBehaviour
             waters.transform.localPosition = new Vector3(originalPosition.x, waters.transform.localPosition.y + moveDistance, originalPosition.z);
             yield return new WaitForSeconds(0.01f);
         }
-      
-       
+
+
     }
     public bool MainConveyorOnOffPLC()
     {
