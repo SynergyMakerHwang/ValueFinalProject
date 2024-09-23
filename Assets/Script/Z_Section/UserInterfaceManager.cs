@@ -52,19 +52,24 @@ public class UserInterfaceManager : MonoBehaviour
     }
 
     /*** 데이터 가져오기 ***/
-  /*  public void getUserProcessData()
+    public void getUserProcessData()
     {
-        print("데이터 가져오기==1");
-        IEnumerable<DataSnapshot> readProduct = FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot();
+        print("데이터 가져오기==1");       
 
-        foreach (var item in readProduct)
+        /*foreach (var item in readProduct)
         {
             string json = item.GetRawJsonValue();
             print(json);
             productClass = JsonConvert.DeserializeObject<ProductClass>(json);
-        }
+        }*/
+        StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
+        {
+            print(returnValue);
+
+        }));
+
         print("데이터 가져오기==2");
-    }*/
+    }
 
     /** 공정 설정 - 1단계 START **/
 

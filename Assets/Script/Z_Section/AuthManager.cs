@@ -251,13 +251,7 @@ public class AuthManager : MonoBehaviour
 
 
 
-                //UserInterfaceManager.instance.getUserProcessData();                
-                StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("process", (returnValue) =>
-                {
-                    print(returnValue);
-
-                }));
-
+                UserInterfaceManager.instance.getUserProcessData();                
 
 
             }

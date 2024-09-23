@@ -62,10 +62,7 @@ public class MainConveyor : MonoBehaviour
             waters.transform.localPosition = new Vector3(originalPosition.x, waters.transform.localPosition.y + moveDistance, originalPosition.z);
             yield return new WaitForSeconds(0.01f);
         }
-        if(waters.transform.localPosition.y ==WaterLevel)
-        {
-
-        }
+      
        
     }
     public bool MainConveyorOnOffPLC()
