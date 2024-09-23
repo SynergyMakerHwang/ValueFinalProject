@@ -33,15 +33,11 @@ public class MainConveyor : MonoBehaviour
     {
         return ConveyorOn;
     }
-    public bool MainConveyorOnOff()
-    {
-        return ConveyorOn =!ConveyorOn;
-    }    
-
+ 
     void Start()
     {
         StartCoroutine(SpawnPrefabs());
-        StartCoroutine(WaterFlow());
+
     }
 
     private IEnumerator SpawnPrefabs()
@@ -54,19 +50,29 @@ public class MainConveyor : MonoBehaviour
 
         }
     }
-    private IEnumerator WaterFlow()
+    private IEnumerator WaterFlowPLC()
     {
         float moveDistance = 0.01f; // 이동 속도
 
         // Instantiate(waters); // Instantiate는 필요 없을 경우 주석 처리
         Vector3 originalPosition = waters.transform.localPosition; // 원래 위치 저장
 
-        while (waters.transform.localPosition.y < WaterLevel)
+        while (waters.transform.localPosition.y <= WaterLevel)
         {
             waters.transform.localPosition = new Vector3(originalPosition.x, waters.transform.localPosition.y + moveDistance, originalPosition.z);
             yield return new WaitForSeconds(0.01f);
         }
+        if(waters.transform.localPosition.y ==WaterLevel)
+        {
+
+        }
+       
     }
+    public bool MainConveyorOnOffPLC()
+    {
+        return ConveyorOn = !ConveyorOn;
+    }
+
 }
 
 

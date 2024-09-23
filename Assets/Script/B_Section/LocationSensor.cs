@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LocationSensor : MonoBehaviour
 {
-    [SerializeField] GameObject 토트박스;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,10 +16,10 @@ public class LocationSensor : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.Contains("토트박스")) 
+        if (other.name.Contains("토트박스"))
         {
-            SubConveyor.Instance.SubConveyorOnOff();
+            
         }
-  
+
     }
 }

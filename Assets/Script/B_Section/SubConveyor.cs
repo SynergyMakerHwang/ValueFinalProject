@@ -5,12 +5,16 @@ public class SubConveyor : MonoBehaviour
 {
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;
+    [SerializeField] Transform MiddlePos1;
+    [SerializeField] Transform MiddlePos2;
     [SerializeField] Transform EndPos;
     [SerializeField] float duration;
     [SerializeField] bool Power;
+    [SerializeField] GameObject TottBox;
 
     public static SubConveyor Instance;
 
+    
     public void Awake()
     {
         if (Instance == null)
@@ -18,28 +22,37 @@ public class SubConveyor : MonoBehaviour
             Instance = this;
         }
     }
-    public bool SubConveyorOnOff()
+    public bool SubConveyorOnOffPLC()
     {
-        return Power = !Power ;
+        return Power = !Power;
     }
     private void Start()
     {
         //초기설정
         Belt.localPosition = StartPos.localPosition;
+        SpawnTott();
     }
     // Update is called once per frame
     void Update()
     {
 
         if (Power && Belt.localPosition == StartPos.localPosition)
-            StartCoroutine(Moving(StartPos.localPosition, EndPos.localPosition));
+        {
+            StartCoroutine(Moving(StartPos.localPosition, MiddlePos1.localPosition));
 
+
+        }
+        else if (Power && Belt.localPosition == MiddlePos1.localPosition)
+        {
+            StartCoroutine(Moving(MiddlePos2.localPosition, EndPos.localPosition));
+
+        }
 
     }
     IEnumerator Moving(Vector3 from, Vector3 to)
     {
         float CurrentTIme = 0;
-
+        Belt.localPosition = from;
         while (CurrentTIme < duration)
         {
             if (Power)
@@ -50,11 +63,20 @@ public class SubConveyor : MonoBehaviour
             }
             else if (!Power)
             {
-                Belt.localPosition = from;
+                Belt.localPosition = StartPos.localPosition;
                 yield break;
             }
         }
-        Belt.localPosition = from;
+        Belt.localPosition = to;
+        if (Belt.localPosition == EndPos.localPosition)
+        {
+            Belt.localPosition = StartPos.localPosition;
+        }
+
+    }
+    public void SpawnTottPLC()
+    {
+        Instantiate(TottBox);
     }
 }
 

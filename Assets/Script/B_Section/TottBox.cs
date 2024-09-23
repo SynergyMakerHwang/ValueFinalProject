@@ -2,30 +2,35 @@ using UnityEngine;
 
 public class TottBox : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    bool WeightSensorPLC = false;
+    bool rightlocationSensorPLC = false;
     void Start()
     {
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag.Contains("Apples"))
+        if (other.CompareTag("Apples")) // 태그 비교
         {
             other.transform.SetParent(transform);
+
+
             if (transform.childCount >= 5)
             {
-            //새로운 필드추가해서 PLC 에 갑보낼수있게   
-                MainConveyor.instance.MainConveyorOnOff();
-
+                //무게센서 트루값 반환
+                WeightSensorPLC = true;
             }
-
         }
+        else if (other.name.Contains("Sensor"))
+        {
+            //정위치센서 트루값 반환
+            rightlocationSensorPLC = true;
+        }
+
 
     }
 }
