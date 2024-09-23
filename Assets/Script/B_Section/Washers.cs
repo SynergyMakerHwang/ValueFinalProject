@@ -6,8 +6,8 @@ public class Washers : MonoBehaviour
 {
     [SerializeField] Transform Conveyor;
     Vector3 StartPos1position = new Vector3(-6.533f, 0.158f, -0.5f);
-    Vector3 StartPos2position = new Vector3(-4.63f, 0.96f, -0.5f);
-    Vector3 StartPos3position = new Vector3(-5.173f, 2.7f, -0.5f);
+    Vector3 StartPos2position = new Vector3(-3.9f, 0.45f, -0.5f);
+    Vector3 StartPos3position = new Vector3(-4.47f, 2.21f, -0.5f);
     Vector3 EndPos1position = new Vector3(-15.879f, 10f, -0.5f);
     Vector3 EndPos2position = new Vector3(-16.5f, 10f, -0.5f);
     Vector3 EndPos3position = new Vector3(-20.4f, 10f, -0.5f);
@@ -34,14 +34,14 @@ public class Washers : MonoBehaviour
     void Start()
     {
         StartCoroutine(ConveyorRoutine());
-        WashserController.instance.GetSpeed();
+        WasherController.instance.GetSpeed();
     }
 
     private void Update()
     {
-        WashserController.instance.IsOn();
+        WasherController.instance.IsOn();
         // 여기서 isMoving 상태를 체크하여 필요시 멈춤
-        if (!WashserController.instance.IsOn())
+        if (!WasherController.instance.IsOn())
         {
             isMoving = false;
         }
@@ -76,10 +76,10 @@ public class Washers : MonoBehaviour
             yield return null; // 대기
         }
 
-        if (WashserController.instance.IsOn())
+        if (WasherController.instance.IsOn())
         {
             float journeyLength = Vector3.Distance(startPos, endPos);
-            float journeyTime = journeyLength / WashserController.instance.GetSpeed();
+            float journeyTime = journeyLength / WasherController.instance.GetSpeed();
             float time = 0f;
 
             while (time < journeyTime)

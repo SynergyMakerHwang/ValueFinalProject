@@ -1,0 +1,23 @@
+using UnityEngine;
+
+public class ConveyorSensor : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.name.Contains("토트박스")) 
+        {
+            Conveyor.Instance.ReadPower();
+        }
+    }
+}

@@ -31,7 +31,7 @@ public class Washer : MonoBehaviour
     void Start()
     {
         StartCoroutine(ConveyorRoutine());
-        WashserController.instance.GetSpeed();
+        WasherController.instance.GetSpeed();
     }
 
     // 코루틴의 코루틴 yield return 값으로 처리가능하다.
@@ -56,7 +56,7 @@ public class Washer : MonoBehaviour
     private IEnumerator MoveConveyor(Vector3 startPos, Quaternion startRot, Vector3 endPos, Quaternion endRot)
     {
         float journeyLength = Vector3.Distance(startPos, endPos);
-        float journeyTime = journeyLength / WashserController.instance.GetSpeed();// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
+        float journeyTime = journeyLength / WasherController.instance.GetSpeed();// 반비례 특성 이용해 speed 높아질수록 도달시간 짧아짐
         float time = 0f;
 
         while (time < journeyTime)

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7441083485193048569}
   - component: {fileID: 1702874995965629898}
   - component: {fileID: 1746842660049168387}
-  - component: {fileID: 9195242710257666554}
   - component: {fileID: -4250164699378033185}
+  - component: {fileID: -4902978091122624288}
   m_Layer: 0
   m_Name: Belt 1 Prefebs
   m_TagString: Untagged
@@ -88,7 +88,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &9195242710257666554
+--- !u!114 &-4250164699378033185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2538980376471271607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eb8939ae161273439a926c98855a144, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Conveyor: {fileID: 7441083485193048569}
+--- !u!65 &-4902978091122624288
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,18 +120,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 1, z: 0.99999994}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-4250164699378033185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2538980376471271607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7eb8939ae161273439a926c98855a144, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Conveyor: {fileID: 7441083485193048569}
