@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1191912963142270176}
   - component: {fileID: 3315819526244193459}
   - component: {fileID: 1036370830616309590}
-  - component: {fileID: 4766565187751130512}
   m_Layer: 0
   m_Name: Belts
   m_TagString: Untagged
@@ -31,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.099, y: 0.211, z: 0}
-  m_LocalScale: {x: 0.10362271, y: 0.2474403, z: 0.38591}
+  m_LocalScale: {x: 0.024800586, y: 0.2474403, z: 0.38591}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -96,7 +95,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5282530659110022595}
-  m_Material: {fileID: 13400000, guid: 0116dd1d4381c4a45b024070ed8b16ba, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -122,30 +121,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21964f86d39d9fe4cb7b78f54214fa10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &4766565187751130512
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5282530659110022595}
-  serializedVersion: 4
-  m_Mass: 10000
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0

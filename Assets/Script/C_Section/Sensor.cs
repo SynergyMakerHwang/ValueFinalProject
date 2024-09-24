@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class Sensor : MonoBehaviour
+public class CutterSensor : MonoBehaviour
 {
     [SerializeField] GameObject CuttingPart;
     [SerializeField] Transform StartPos;
@@ -18,7 +18,7 @@ public class Sensor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.Contains("LeaderApple"))
+        if (other.tag.Contains("토트박스"))
         {
            
             Cutter.Instance.TurnOnOff();
