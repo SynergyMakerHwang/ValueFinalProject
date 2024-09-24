@@ -48,9 +48,7 @@ public class TCPClient : MonoBehaviour
     private void Awake()
     {
         //TCP Server 연결        
-        string fullPath = Path.GetFullPath("03_TCP")+ "\\TCPServer\\TCPServer\\bin\\Debug\\net8.0";
-        print("fullPath");
-        print(fullPath);
+        string fullPath = Path.GetFullPath("03_TCP")+ "\\TCPServer\\TCPServer\\bin\\Debug\\net8.0";       
         ps = new Process();
         ps.StartInfo = new ProcessStartInfo("TCPServer.exe");
         ps.StartInfo.WorkingDirectory = fullPath;
@@ -102,7 +100,7 @@ public class TCPClient : MonoBehaviour
         /***********************B-Section START *****************************/
 
         //세척공정
-        excuteWasherProcess(plcPoint);
+       // excuteWasherProcess(plcPoint);
 
 
         /***********************B-Section END *****************************/
@@ -334,7 +332,7 @@ public class TCPClient : MonoBehaviour
                         //reWrite = WriteTCPDeviceBlock(msg);
                         reWrite += requestWasherProcess();
                         print(reWrite);
-
+                        reWrite = "";
                         if (reWrite != "")
                         {
                             buffer = new byte[1024];
