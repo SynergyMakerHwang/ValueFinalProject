@@ -82,6 +82,7 @@ public class FirebaseManager : MonoBehaviour
          return result;
      }*/
 
+
    public IEnumerator ReadDataWithNewtonJsonData(string key, System.Action<string> callback)
     {
            

@@ -1,0 +1,17 @@
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\bin\Debug\net8.0\TCPServer.exe
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\bin\Debug\net8.0\TCPServer.deps.json
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\bin\Debug\net8.0\TCPServer.runtimeconfig.json
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\bin\Debug\net8.0\TCPServer.dll
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\bin\Debug\net8.0\TCPServer.pdb
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\Interop.ActUtlType64Lib.dll
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.csproj.ResolveComReference.cache
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.AssemblyInfoInputs.cache
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.AssemblyInfo.cs
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.csproj.CoreCompileInputs.cache
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.sourcelink.json
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.dll
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\refint\TCPServer.dll
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.pdb
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\TCPServer.genruntimeconfig.cache
+C:\Project\ValueFinalProject\03_TCP\TCPServer\TCPServer\obj\Debug\net8.0\ref\TCPServer.dll

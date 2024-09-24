@@ -7,6 +7,7 @@ TagManager:
   - Apples
   - Banana
   - "\uD1A0\uD2B8\uBC15\uC2A4"
+  - AGV
   layers:
   - Default
   - TransparentFX

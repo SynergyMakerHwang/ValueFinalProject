@@ -23,11 +23,16 @@ public class TCPClient : MonoBehaviour
     int blockNum = 10; //블럭들의 수량
     int blockSize = 16; // 블럭의 수량
 
-    [Header("Unity 공정")]
 
+    [Header("Z) AGV 관련")]
+    [SerializeField] AGVParkingSensor agvWasherParkingSensor;
+    [SerializeField] AGVParkingSensor agvDryerParkingSensor;
+   
+
+    [Header("B) 세척 공정")]
+    [SerializeField] SubWeightSensor washerWeightSensor;
+    [SerializeField] SubLocationSensor washerLocationSensor;
     
-
-
 
     //GET Param
     string requestGetBlock = "@GET,Y0,10";
@@ -35,20 +40,22 @@ public class TCPClient : MonoBehaviour
 
     //SET Param block
     //(예시) @SET,Y0,1
-    
+
     //SET Param Device
     //(예시) @SETDevice,D0,1
-
 
 
     private void Awake()
     {
         //TCP Server 연결        
-        string fullPath = Path.GetFullPath("03_TCP")+ "\\TCP_Server";        
+        string fullPath = Path.GetFullPath("03_TCP")+ "\\TCPServer\\TCPServer\\bin\\Debug\\net8.0";
+        print("fullPath");
+        print(fullPath);
         ps = new Process();
-        ps.StartInfo = new ProcessStartInfo("TCPServer.exe");               
+        ps.StartInfo = new ProcessStartInfo("TCPServer.exe");
         ps.StartInfo.WorkingDirectory = fullPath;
         ps.StartInfo.CreateNoWindow = true;
+       
         ps.Start(); 
     }
 
@@ -95,7 +102,7 @@ public class TCPClient : MonoBehaviour
         /***********************B-Section START *****************************/
 
         //세척공정
-        //excuteWasherProcess(plcPoint);
+        excuteWasherProcess(plcPoint);
 
 
         /***********************B-Section END *****************************/
@@ -168,15 +175,17 @@ public class TCPClient : MonoBehaviour
         string requestMsg = "";
 
         //세척공정 - AGV 도착센서  (X30)
+        int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X30," + agvParkingSensor;
 
         //세척공정 - 도트 정위치센서 (X31)
-        /*int tottSensor = (sensorA.isDetecte == true) ? 1 : 0;
-        if () {
-            requestMsg = "@SETDevice,D0," + tottSensor);
-        }*/
-
+        int tottSensor = (washerLocationSensor.RightLocationSensorPLC == true) ? 1 : 0;       
+        requestMsg += "@SETDevice,X31," + tottSensor;
+      
 
         //세척공정 - 무게센서  (X32)
+        int weightSensor = (washerWeightSensor.WeightSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X32," + weightSensor;
 
         //(추가)세척공정 - 하역 로봇팔 동작 완료 sensor (X33)
 
@@ -322,7 +331,10 @@ public class TCPClient : MonoBehaviour
                        
                         // SET
                         string reWrite = "";
-                        reWrite = WriteTCPDeviceBlock(msg);
+                        //reWrite = WriteTCPDeviceBlock(msg);
+                        reWrite += requestWasherProcess();
+                        print(reWrite);
+
                         if (reWrite != "")
                         {
                             buffer = new byte[1024];

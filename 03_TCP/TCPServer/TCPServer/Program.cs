@@ -42,7 +42,7 @@ class TCPServer
             listener.Start();
 
 
-            Console.WriteLine("TCP 서버를 시작");
+            Console.WriteLine("TCP SEVER START");
 
             TcpClient client;
             NetworkStream stream;
@@ -87,7 +87,7 @@ class TCPServer
 
                         returnMsg = mxComponent.Connect();
 
-                    }                   
+                    }
                     else if (responseMsg.Contains("SET") || responseMsg.Contains("GET"))
                     {
                         string[] responseArr = responseMsg.Split("@");

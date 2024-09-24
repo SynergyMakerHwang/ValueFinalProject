@@ -51,12 +51,12 @@ public class UserInterfaceManager : MonoBehaviour
         fromPanel.SetActive(false);
         toPanel.SetActive(true);
     }
-
+    
     /*** 데이터 가져오기 ***/
     public void getUserProcessData()
     {
-        print("데이터 가져오기==1");       
-                
+        print("데이터 가져오기==1");
+        
         StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
         {
             print(returnValue);

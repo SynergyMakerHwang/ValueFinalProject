@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("TCP_Server")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("TCPServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b0b7913345cf64ff33ffab924343c729ba4af62")]
-[assembly: System.Reflection.AssemblyProductAttribute("TCP_Server")]
-[assembly: System.Reflection.AssemblyTitleAttribute("TCP_Server")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fad42a908e6a87c14db7fbec394cc1c1d7793862")]
+[assembly: System.Reflection.AssemblyProductAttribute("TCPServer")]
+[assembly: System.Reflection.AssemblyTitleAttribute("TCPServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // MSBuild WriteCodeFragment 클래스에서 생성되었습니다.
