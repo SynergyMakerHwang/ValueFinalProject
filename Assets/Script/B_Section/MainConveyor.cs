@@ -1,6 +1,7 @@
 using UnityEngine;
-using System;
+
 using System.Collections;
+
 
 public class MainConveyor : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class MainConveyor : MonoBehaviour
     [SerializeField] GameObject Prefebs;
     [SerializeField] Transform PrefebsMom;
     [SerializeField] GameObject waters;
-    [SerializeField] GameObject Apples;
+    [SerializeField] GameObject[] Fruits;
+    [SerializeField] int FruitsCount;
+    // 0 = Apple , 1= orange , 2=Strawberry
 
 
     public static MainConveyor instance;
-
+    int CurrentNums = 0;
     private void Awake()
     {
         if (instance == null)
@@ -36,17 +39,17 @@ public class MainConveyor : MonoBehaviour
 
     void Start()
     {
-
+        SpawnFruit(Fruits[0]);
 
     }
-    int CurrentNums = 0;
+
     private void Update()
     {
         if (CurrentNums == 0 && ConveyorOn)
             StartCoroutine(SpawnPrefabs());
     }
 
-  
+
     private IEnumerator SpawnPrefabs()
     {
 
@@ -83,6 +86,22 @@ public class MainConveyor : MonoBehaviour
     {
         return ConveyorOn = !ConveyorOn;
     }
+
+    public void SpawnFruit(GameObject WhichFruit)
+    {
+        for (int i = 0; i < FruitsCount; i++)
+        {
+            // ·£´ý ÁÂÇ¥ »ý¼º
+            float Xrandom = Random.Range(waters.transform.position.x - 0.6f, waters.transform.position.x + 1.7f);
+            float Yvalue = waters.transform.position.y + 2;
+            float Zrandom = Random.Range(waters.transform.position.z - 0.8f, waters.transform.position.z + 0.8f);
+            Vector3 RandomSpot = new Vector3(Xrandom, Yvalue, Zrandom);
+
+           Instantiate(WhichFruit,RandomSpot,Quaternion.identity);
+            
+        }
+    }
+
 
 }
 
