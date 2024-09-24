@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Linq;
+using static UnityEngine.InputSystem.Controls.AxisControl;
 
 public class TCPClient : MonoBehaviour
 {
@@ -22,9 +23,14 @@ public class TCPClient : MonoBehaviour
     int blockNum = 10; //블럭들의 수량
     int blockSize = 16; // 블럭의 수량
 
+    [Header("Unity 공정")]
+
+    
+
+
 
     //GET Param
-    string requestGetBlock = "@GET,X0,10";
+    string requestGetBlock = "@GET,Y0,10";
 
 
     //SET Param block
@@ -89,7 +95,7 @@ public class TCPClient : MonoBehaviour
         /***********************B-Section START *****************************/
 
         //세척공정
-        excuteWasherProcess(plcPoint);
+        //excuteWasherProcess(plcPoint);
 
 
         /***********************B-Section END *****************************/
@@ -127,27 +133,56 @@ public class TCPClient : MonoBehaviour
     //세척 공정
     private void excuteWasherProcess(int[][] point)
     {
+        //세척공정 - 도트 발생 (Y0)
+        if (point[0][0] == 1)
+        {
+            SubConveyor.Instance.SpawnTottPLC();
+        }
 
-        //세척공정 - 도트 발생 
-        SubConveyor.Instance.SpawnTottPLC();
+        //세척 공정 - 펌핑모터 (Y30)
+        if (point[3][0] == 1)
+        {
+            StartCoroutine(MainConveyor.instance.WaterFlowPLC());
+        }
+               
 
-        //세척 공정 - 펌핑모터
-        StartCoroutine(MainConveyor.instance.WaterFlowPLC()); 
+        //세척 공정 - subConvayor (Y31)
+        if (point[3][1] == 1)
+        {
+            SubConveyor.Instance.SubConveyorOnOffPLC();
+        }
 
-        //세척 공정 - subConvayor 
-        SubConveyor.Instance.SubConveyorOnOffPLC();
+        //세척 공정 - mainConvayor(Y32)
+        if (point[3][2] == 1)
+        {
+            MainConveyor.instance.MainConveyorOnOffPLC();
+        }
 
-        //세척 공정 - mainConvayor
-        MainConveyor.instance.MainConveyorOnOffPLC();
-
+        //(추가)세척 공정 - 로봇팔 동작 - get
     }
 
-    //세척 공정 - 로봇팔 동작 - get
+    //세척 공정
+    private string requestWasherProcess()
+    {
 
-    //SET -
-    //도트 정위치 센서 set
-    //무게센서 - set
-    //하역 로봇팔 동작 완료 sensor - set
+        string requestMsg = "";
+
+        //세척공정 - AGV 도착센서  (X30)
+
+        //세척공정 - 도트 정위치센서 (X31)
+        /*int tottSensor = (sensorA.isDetecte == true) ? 1 : 0;
+        if () {
+            requestMsg = "@SETDevice,D0," + tottSensor);
+        }*/
+
+
+        //세척공정 - 무게센서  (X32)
+
+        //(추가)세척공정 - 하역 로봇팔 동작 완료 sensor (X33)
+
+        return requestMsg;
+    }
+
 
 
 
@@ -169,6 +204,7 @@ public class TCPClient : MonoBehaviour
 
 
     /***********************Z-Section START *****************************/
+    
     /***********************Z-Section END *****************************/
 
 
@@ -228,7 +264,7 @@ public class TCPClient : MonoBehaviour
         yield return new WaitUntil(() => isConnected);
         if (isConnected)
         {
-            Task task = RequestSetDeviceAsync(requsetMsg);
+            Task task = RequestSetDeviceAsynOnce(requsetMsg);
 
             yield return new WaitForSeconds(waitTime);
         }
@@ -314,7 +350,7 @@ public class TCPClient : MonoBehaviour
     }
 
 
-    private async Task RequestSetDeviceAsync(string requestMsg)
+    private async Task RequestSetDeviceAsynOnce(string requestMsg)
     {
         string returnMsg = "";
 
@@ -324,10 +360,7 @@ public class TCPClient : MonoBehaviour
             print(returnMsg);
         }
         else
-        {
-            while (true)
-            {
-                try
+        {   try
                 {
 
                     // Connect -> data
@@ -342,13 +375,13 @@ public class TCPClient : MonoBehaviour
                     string resultMsg = Encoding.UTF8.GetString(buffer2, 0, nBytes);
                     print(resultMsg);
 
-                    if (!isConnected) break;
+                   
                 }
                 catch (Exception e)
                 {
                     print(e.ToString());
                 }
-            }
+           
         }
 
     }
