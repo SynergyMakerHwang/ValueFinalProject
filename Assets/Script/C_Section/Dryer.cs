@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 public class Dryer : MonoBehaviour
 {
+    static public Dryer Instance ;
     // ÇÇº¿°ª°ú ¹®Â¦ ¿©´ÝÀÌ
     [SerializeField] bool DoorValue;
 
@@ -17,10 +18,17 @@ public class Dryer : MonoBehaviour
 
     [SerializeField] GameObject Inside;
     //PLC X°ªµé
-    bool IsOpened;
+    public bool IsOpened;
     bool DoorCheck = true;
     float duration = 1;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
     //2ÃÊ¾È¿¡ ¿©´Ý±â °¡´É
 
     private void Update()

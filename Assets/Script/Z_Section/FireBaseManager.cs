@@ -112,7 +112,36 @@ public class FirebaseManager : MonoBehaviour
             print("데이터 읽기가 완료되었습니다.");
         }
     }
-     
+  
+    public IEnumerator ReadDataWithNewtonJsonDataSnapshot(string key, System.Action<DataSnapshot> callback)
+    {
 
+        string userInfo = string.Empty;
+        DataSnapshot snapshot;
+        if (instance != null)
+        {
+            DatabaseReference dbref = FirebaseDatabase.DefaultInstance.GetReference(key);
+
+            Task t = dbref.GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+
+                snapshot = task.Result;
+                print(snapshot);
+
+                if (task.Exception != null)
+                {
+                    print(task.Exception);
+                }
+                callback(snapshot);
+            });
+
+
+            yield return new WaitUntil(() => t.IsCompleted);
+
+
+
+            print("데이터 읽기가 완료되었습니다.");
+        }
+    }
 
 }

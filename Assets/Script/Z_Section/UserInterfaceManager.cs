@@ -22,6 +22,7 @@ public class UserInterfaceManager : MonoBehaviour
     Dictionary<string, string> product = new Dictionary<string, string>();
     ProductClass productClass;
     ProcessClass processClass;
+    List<ProductClass> productList = new List<ProductClass>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -55,17 +56,35 @@ public class UserInterfaceManager : MonoBehaviour
     /*** 데이터 가져오기 ***/
     public void getUserProcessData()
     {
-        print("데이터 가져오기==1");
-        
-        StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
+                
+      StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
         {
-            print(returnValue);
             productClass = JsonConvert.DeserializeObject<ProductClass>(returnValue);
-          
+            print(returnValue);          
 
         }));
 
-        print("데이터 가져오기==2");
+       /* StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot("product", (returnValue) =>
+        {
+           
+            print(returnValue);
+            DataSnapshot snapshot = returnValue;
+
+            foreach (var item in snapshot.Children)
+            {
+                string json = item.GetRawJsonValue();
+                print("json");
+                print(json);
+                productClass = JsonConvert.DeserializeObject<ProductClass>(json);
+
+                productList.Add(productClass);
+            }
+            print("productList");
+            print(productList);
+        }));*/
+
+
+     
     }
 
     /** 공정 설정 - 1단계 START **/

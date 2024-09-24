@@ -96,7 +96,7 @@ class TCPServer
                         {
                             if (str.Contains("SETDevice"))
                             {
-                                returnMsg = mxComponent.setDevice(responseMsg);
+                                mxComponent.setDevice(responseMsg);
                             }
                             else if (str.Contains("SET"))
                             {

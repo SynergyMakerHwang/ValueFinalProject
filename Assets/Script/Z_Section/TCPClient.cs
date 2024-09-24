@@ -23,16 +23,22 @@ public class TCPClient : MonoBehaviour
     int blockNum = 10; //블럭들의 수량
     int blockSize = 16; // 블럭의 수량
 
-
-    [Header("Z) AGV 관련")]
-    [SerializeField] AGVParkingSensor agvWasherParkingSensor;
-    [SerializeField] AGVParkingSensor agvDryerParkingSensor;
-   
-
-    [Header("B) 세척 공정")]
+    [Header("[B] 세척 공정")]
     [SerializeField] SubWeightSensor washerWeightSensor;
     [SerializeField] SubLocationSensor washerLocationSensor;
-    
+
+
+    [Header("[C] 열풍건조 공정")]
+    [SerializeField] Dryer dryerOpenSensor;
+
+
+    [Header("[Z] AGV 관련")]
+    [SerializeField] AGVParkingSensor agvWasherParkingSensor;
+    [SerializeField] AGVParkingSensor agvDryerParkingSensor;
+    [SerializeField] AGVParkingSensor agvCuttingParkingSensor;
+        
+
+
 
     //GET Param
     string requestGetBlock = "@GET,Y0,10";
@@ -89,40 +95,6 @@ public class TCPClient : MonoBehaviour
         StartCoroutine(ScanPlc());
     }
 
-    public void excuteProcess(int[][] plcPoint)
-    {
-        /***********************A-Section START *****************************/
-
-
-        /***********************A-Section END *****************************/
-
-
-        /***********************B-Section START *****************************/
-
-        //세척공정
-       // excuteWasherProcess(plcPoint);
-
-
-        /***********************B-Section END *****************************/
-
-
-
-        /***********************C-Section START *****************************/
-        /***********************C-Section END *****************************/
-
-        /***********************D-Section START *****************************/
-        /***********************D-Section END *****************************/
-
-        /***********************E-Section START *****************************/
-        /***********************E-Section END *****************************/
-
-
-
-
-        /***********************Z-Section START *****************************/
-        /***********************Z-Section END *****************************/
-
-    }
 
 
 
@@ -145,23 +117,23 @@ public class TCPClient : MonoBehaviour
         }
 
         //세척 공정 - 펌핑모터 (Y30)
-        if (point[3][0] == 1)
+       /* if (point[3][0] == 1)
         {
             StartCoroutine(MainConveyor.instance.WaterFlowPLC());
-        }
+        }*/
                
 
         //세척 공정 - subConvayor (Y31)
-        if (point[3][1] == 1)
+        /*if (point[3][1] == 1)
         {
             SubConveyor.Instance.SubConveyorOnOffPLC();
         }
-
+*/
         //세척 공정 - mainConvayor(Y32)
-        if (point[3][2] == 1)
+        /*if (point[3][2] == 1)
         {
             MainConveyor.instance.MainConveyorOnOffPLC();
-        }
+        }*/
 
         //(추가)세척 공정 - 로봇팔 동작 - get
     }
@@ -172,10 +144,7 @@ public class TCPClient : MonoBehaviour
 
         string requestMsg = "";
 
-        //세척공정 - AGV 도착센서  (X30)
-        int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
-        requestMsg += "@SETDevice,X30," + agvParkingSensor;
-
+      
         //세척공정 - 도트 정위치센서 (X31)
         int tottSensor = (washerLocationSensor.RightLocationSensorPLC == true) ? 1 : 0;       
         requestMsg += "@SETDevice,X31," + tottSensor;
@@ -199,6 +168,34 @@ public class TCPClient : MonoBehaviour
 
 
     /***********************C-Section START *****************************/
+
+    //열풍건조 공정
+    private void excuteDryerProcess(int[][] point)
+    {
+        //열풍건조 공정 - 도어 오픈 발생 (Y50)
+        if (point[5][0] == 1)
+        {
+            Dryer.Instance.DryerOpenClosePLC();
+        }
+       
+    }
+
+    //열풍건조 공정
+    private string requestDryerProcess()
+    {
+
+        string requestMsg = "";
+
+
+        //열풍건조 공정  - 도어 오픈 센서 (X51)
+        int openSensor = (dryerOpenSensor.IsOpened == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X51," + openSensor;
+
+
+        return requestMsg;
+    }
+
+
     /***********************C-Section END *****************************/
 
     /***********************D-Section START *****************************/
@@ -211,7 +208,31 @@ public class TCPClient : MonoBehaviour
 
 
     /***********************Z-Section START *****************************/
-    
+
+    //AGV 도착센서
+    private string requestAgvParkingSensor()
+    {
+
+        string requestMsg = "";
+
+        //세척공정 - AGV 도착센서  (X30)
+        int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X30," + agvParkingSensor;
+
+
+        //절단공정 - AGV 도착센서  (X40)
+        agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X40," + agvParkingSensor;
+
+
+        //건조공정 - AGV 도착센서  (X50)
+        agvParkingSensor = (agvDryerParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X50," + agvParkingSensor;
+
+
+        return requestMsg;
+    }
+
     /***********************Z-Section END *****************************/
 
 
@@ -318,21 +339,36 @@ public class TCPClient : MonoBehaviour
                     if (msg != null && msg != "")
                     {
                         point = TransTCPtoDeviceBlock(msg);
+                        // ******************** GET *************************
+                        //(B)세척공정
+                        excuteWasherProcess(point);
 
-                        excuteProcess(point);
-
+                        //(C)열풍건조공정
+                        //excuteDryerProcess(point);
                     }
 
 
+                    //열풍건조 공정
+                    
                     if (point != null)
                     {
                        
-                        // SET
+                        // ******************** SET *************************
                         string reWrite = "";
                         //reWrite = WriteTCPDeviceBlock(msg);
+
+                        //(B)세척공정 
                         reWrite += requestWasherProcess();
+
+                        //(C)열풍공정 
+                        reWrite += requestDryerProcess();
+
+                        //(Z)AGV - 공정별 도착센서
+                        reWrite += requestAgvParkingSensor();
+
+
                         print(reWrite);
-                        reWrite = "";
+                        
                         if (reWrite != "")
                         {
                             buffer = new byte[1024];
