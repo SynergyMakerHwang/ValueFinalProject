@@ -17,6 +17,7 @@ public class Dryer : MonoBehaviour
 
 
 
+
     bool DoorCheck = true;
     float duration = 1;
 
@@ -26,6 +27,7 @@ public class Dryer : MonoBehaviour
     {
 
         // 조건에 따라 값을 받는다.
+        // PLC 값실행시키기 위해서 있어야한다.
         if (DoorCheck && DoorValue)
         {
             StartCoroutine(Open());
@@ -135,5 +137,10 @@ public class Dryer : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    public bool DryerOnOffPLC()
+    {
+        return DoorValue = !DoorValue;
     }
 }
