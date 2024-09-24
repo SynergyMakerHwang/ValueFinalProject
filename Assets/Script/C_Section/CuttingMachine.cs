@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class CutterSensor : MonoBehaviour
+public class CuttingMachine : MonoBehaviour
 {
     [SerializeField] GameObject CuttingPart;
     [SerializeField] Transform StartPos;
@@ -11,10 +11,7 @@ public class CutterSensor : MonoBehaviour
     [SerializeField] GameObject 칸막이;
     GameObject CreatedWall;
     bool IsSensor;
-    void Start()
-    {
 
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -22,10 +19,7 @@ public class CutterSensor : MonoBehaviour
         {
            
             Cutter.Instance.TurnOnOff();
-            // 관성떄문에 컨베이어가 멈추어도 칸막이로 막아주어야됨
 
-            // CreatedWall = Instantiate(칸막이, transform);
-            IsSensor = true;
 
             if (IsSensor)
             {
