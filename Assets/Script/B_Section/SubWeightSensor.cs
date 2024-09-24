@@ -8,7 +8,7 @@ public class SubWeightSensor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 과일 태그 확인
-        if (other.CompareTag("Apples") || other.CompareTag("Tomatoes") || other.CompareTag("Oranges"))
+        if (other.CompareTag("Apples") || other.CompareTag("Strawberrys") || other.CompareTag("Oranges"))
         {
             fruitCount++; // 통과 횟수 증가
 

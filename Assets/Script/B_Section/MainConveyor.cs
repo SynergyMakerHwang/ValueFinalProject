@@ -39,7 +39,7 @@ public class MainConveyor : MonoBehaviour
 
     void Start()
     {
-        SpawnFruit(Fruits[0]);
+        SpawnFruit(Fruits[2]);
 
     }
 
@@ -94,11 +94,11 @@ public class MainConveyor : MonoBehaviour
             // ·£´ý ÁÂÇ¥ »ý¼º
             float Xrandom = Random.Range(waters.transform.position.x - 0.6f, waters.transform.position.x + 1.7f);
             float Yvalue = waters.transform.position.y + 2;
-            float Zrandom = Random.Range(waters.transform.position.z - 0.8f, waters.transform.position.z + 0.8f);
+            float Zrandom = Random.Range(waters.transform.position.z - 0.15f, waters.transform.position.z + 0.3f);
             Vector3 RandomSpot = new Vector3(Xrandom, Yvalue, Zrandom);
 
-           Instantiate(WhichFruit,RandomSpot,Quaternion.identity);
-            
+            Instantiate(WhichFruit, RandomSpot, Quaternion.identity);
+
         }
     }
 
