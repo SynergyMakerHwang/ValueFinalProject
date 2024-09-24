@@ -5,8 +5,6 @@ public class SubConveyor : MonoBehaviour
 {
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;
-    [SerializeField] Transform MiddlePos1;
-    [SerializeField] Transform MiddlePos2;
     [SerializeField] Transform EndPos;
     [SerializeField] float duration;
     [SerializeField] bool Power;
@@ -23,10 +21,7 @@ public class SubConveyor : MonoBehaviour
             Instance = this;
         }
     }
-    public bool SubConveyorOnOffPLC()
-    {
-        return Power = !Power;
-    }
+ 
     private void Start()
     {
         //초기설정
@@ -39,15 +34,9 @@ public class SubConveyor : MonoBehaviour
 
         if (Power && Belt.localPosition == StartPos.localPosition)
         {
-            StartCoroutine(Moving(StartPos.localPosition, MiddlePos1.localPosition));
-
-
+            StartCoroutine(Moving(StartPos.localPosition, EndPos.localPosition));
         }
-        else if (Power && Belt.localPosition == MiddlePos1.localPosition)
-        {
-            StartCoroutine(Moving(MiddlePos2.localPosition, EndPos.localPosition));
-
-        }
+ 
 
     }
     IEnumerator Moving(Vector3 from, Vector3 to)
@@ -69,15 +58,16 @@ public class SubConveyor : MonoBehaviour
             }
         }
         Belt.localPosition = to;
-        if (Belt.localPosition == EndPos.localPosition)
-        {
-            Belt.localPosition = StartPos.localPosition;
-        }
+        Belt.localPosition = from;
 
     }
     public void SpawnTottPLC()
     {
-        Instantiate(TottBox,SpawnPoint);
+        Instantiate(TottBox,SpawnPoint.position,Quaternion.identity);
+    }
+    public bool SubConveyorOnOffPLC()
+    {
+        return Power = !Power;
     }
 }
 
