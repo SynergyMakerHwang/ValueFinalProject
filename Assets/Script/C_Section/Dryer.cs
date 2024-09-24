@@ -15,9 +15,9 @@ public class Dryer : MonoBehaviour
     [SerializeField] Transform LinkPivot2;
 
 
-
-
-
+    [SerializeField] GameObject Inside;
+    //PLC X값들
+    bool IsOpened;
     bool DoorCheck = true;
     float duration = 1;
 
@@ -86,10 +86,9 @@ public class Dryer : MonoBehaviour
 
             yield return null;
 
-
         }
-
-
+        //PLC 값바꾸기
+        IsOpened = true;
 
     }
     //반전이동만 하면됨
@@ -136,11 +135,34 @@ public class Dryer : MonoBehaviour
             LinkPivot2.localRotation = Quaternion.Slerp(StartPivot2, EndPivot2, CurrentTime2 / duration);
             yield return null;
         }
+        IsOpened = false;
+    }
+    IEnumerator ChangeColor()
+    {
+        Renderer insideRenderer = Inside.GetComponent<Renderer>();
+        Color startColor = new Color(0f, 0f, 0f, 0f); // 완전 투명 (아무것도 없음)
+        Color endColor = new Color(1f, 0f, 0f, 1f); // 불투명한 빨간색
+        float elapsedTime = 0f;
 
+        while (elapsedTime < 5f)
+        {
+            insideRenderer.material.color = Color.Lerp(startColor, endColor, elapsedTime / 5f);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        insideRenderer.material.color = endColor; // 마지막 색상 설정
+    }
+    public void RunDryerPLC()
+    {
+        StartCoroutine(ChangeColor());
     }
 
-    public bool DryerOnOffPLC()
+    public bool DryerOpenClosePLC()
     {
         return DoorValue = !DoorValue;
     }
+
+
+
 }
