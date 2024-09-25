@@ -166,11 +166,14 @@ public class Dryer : MonoBehaviour
         StartCoroutine(ChangeColor());
     }
 
-    public bool DryerOpenClosePLC()
+    public bool DryerOpenPLC()
     {
-        return DoorValue = !DoorValue;
+        return DoorValue = true;
     }
 
-
+    public bool DryerClosePLC()
+    {
+        return DoorValue = false;
+    }
 
 }
