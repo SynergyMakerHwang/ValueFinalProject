@@ -99,7 +99,7 @@ public class Dryer : MonoBehaviour
         IsOpened = true;
 
     }
-    //반전이동만 하면됨
+
     IEnumerator Close()
     {
         DoorCheck = !DoorCheck;

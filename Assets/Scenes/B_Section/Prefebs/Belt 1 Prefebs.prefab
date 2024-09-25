@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1702874995965629898}
   - component: {fileID: 1746842660049168387}
   - component: {fileID: -4250164699378033185}
-  - component: {fileID: -4902978091122624288}
+  - component: {fileID: 3060286645893503506}
   m_Layer: 0
   m_Name: Belt 1 Prefebs
   m_TagString: Untagged
@@ -101,8 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Conveyor: {fileID: 7441083485193048569}
---- !u!65 &-4902978091122624288
-BoxCollider:
+--- !u!64 &3060286645893503506
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -119,6 +119,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.99999994}
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}

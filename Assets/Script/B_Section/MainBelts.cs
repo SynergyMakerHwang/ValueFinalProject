@@ -3,14 +3,15 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class MainBelts : MonoBehaviour
-{
+{   
     [SerializeField] Transform Conveyor;
+
     Vector3 StartPos1position = new Vector3(-6.533f, 0.158f, -0.5f);
     Vector3 StartPos2position = new Vector3(-3.9f, 0.45f, -0.5f);
     Vector3 StartPos3position = new Vector3(-4.47f, 2.21f, -0.5f);
     Vector3 EndPos1position = new Vector3(-15.879f, 10f, -0.5f);
     Vector3 EndPos2position = new Vector3(-16.5f, 10f, -0.5f);
-    Vector3 EndPos3position = new Vector3(-20.4f, 10f, -0.5f);
+    Vector3 EndPos3position = new Vector3(-21f, 10f, -0.5f);
     Vector3 EndPos4position = new Vector3(-21.5f, 8.54f, -0.6f);
     Vector3 EndPos5position = new Vector3(-20.4f, 8f, -0.6f);
     Vector3 EndPos6position = new Vector3(-16.5f, 8f, -0.6f);
