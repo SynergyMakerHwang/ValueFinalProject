@@ -82,6 +82,11 @@ public class TCPClient : MonoBehaviour
         }
     }
 
+    public void OnDisConnectTCPSever() {
+
+        Request("Disconnect");
+        Request("quit");
+    }
 
 
     // 제어판 - 실행 이벤트
@@ -128,10 +133,17 @@ public class TCPClient : MonoBehaviour
         {
             SubConveyor.Instance.SubConveyorOnPLC();
         }
+        else
+        {
+            SubConveyor.Instance.SubConveyorOffPLC();
+        }
 
         //세척 공정 - mainConvayor(Y32)
         if (point[3][2] == 1)
         {
+            MainConveyor.instance.MainConveyorOnPLC();
+        }
+        else {
             MainConveyor.instance.MainConveyorOffPLC();
         }
 
@@ -169,7 +181,7 @@ public class TCPClient : MonoBehaviour
 
     /***********************C-Section START *****************************/
 
-    //열풍건조 공정
+    //열풍건조 공정 - GET
     private void excuteDryerProcess(int[][] point)
     {
         //열풍건조 공정 - 도어 오픈 발생 (Y50)
@@ -177,10 +189,25 @@ public class TCPClient : MonoBehaviour
         {
             Dryer.Instance.DryerOpenClosePLC();
         }
-       
+
+
+        //열풍건조 공정 - 도어 클로즈 발생 (Y51)
+        if (point[5][1] == 1)
+        {
+            Dryer.Instance.DryerOpenClosePLC();
+        }
+
+        // 열풍건조 공정 
+        if (point[5][2] == 1)
+        {
+            Dryer.Instance.RunDryerPLC();
+        }
+
+
+
     }
 
-    //열풍건조 공정
+    //열풍건조 공정 - SET
     private string requestDryerProcess()
     {
 
@@ -190,6 +217,11 @@ public class TCPClient : MonoBehaviour
         //열풍건조 공정  - 도어 오픈 센서 (X51)
         int openSensor = (dryerOpenSensor.IsOpened == true) ? 1 : 0;
         requestMsg += "@SETDevice,X51," + openSensor;
+
+
+        //열풍건조 공정  - 도어 클로즈 센서 (X53)
+        openSensor = (dryerOpenSensor.IsOpened == false) ? 1 : 0;
+        requestMsg += "@SETDevice,X53," + openSensor;
 
 
         return requestMsg;
@@ -334,15 +366,14 @@ public class TCPClient : MonoBehaviour
                     string msg = Encoding.UTF8.GetString(buffer2, 0, nBytes);
 
 
-                    int[][] point = null;
-                    print("0==============");
+                    int[][] point = null;                    
                     if (msg != null && msg != "")
                     {
                         point = TransTCPtoDeviceBlock(msg);
                         // ******************** GET *************************
                         //(B)세척공정
                         excuteWasherProcess(point);
-                        print("01==============");
+                        
                         //(C)열풍건조공정
                         //excuteDryerProcess(point);
                     }
@@ -352,10 +383,14 @@ public class TCPClient : MonoBehaviour
                     
                     if (point != null)
                     {
-                        print("02==============");
+
                         // ******************** SET *************************
                         string reWrite = "";
                         //reWrite = WriteTCPDeviceBlock(msg);
+
+                        //(Z)AGV - 공정별 도착센서
+                        reWrite += requestAgvParkingSensor();
+
 
                         //(B)세척공정 
                         reWrite += requestWasherProcess();
@@ -363,15 +398,13 @@ public class TCPClient : MonoBehaviour
                         //(C)열풍공정 
                         reWrite += requestDryerProcess();
 
-                        //(Z)AGV - 공정별 도착센서
-                        reWrite += requestAgvParkingSensor();
 
 
                         print(reWrite);
                         
                         if (reWrite != "")
                         {
-                            print("03==============");
+                            
                             buffer = new byte[1024];
                             buffer = Encoding.UTF8.GetBytes(reWrite);
                             // NetworkStream에 데이터 쓰기
@@ -384,7 +417,7 @@ public class TCPClient : MonoBehaviour
                     }
 
 
-                    print("04==============");
+                    
                     if (!isConnected) break;
                 }
                 catch (Exception e)
