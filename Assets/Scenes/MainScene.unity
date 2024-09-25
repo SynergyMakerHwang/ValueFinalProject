@@ -14560,6 +14560,7 @@ MonoBehaviour:
     history: 
   verificationPanel: {fileID: 62099393}
   verficationMsg: {fileID: 541795593}
+  isInvalid: 0
 --- !u!1001 &873847842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32648,7 +32649,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c43495bb2845d7440a86c36fd25b97d1, type: 2}
+  - {fileID: 2100000, guid: b2bba24536a6dcc4ab1d24ca20093105, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33398,7 +33399,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c43495bb2845d7440a86c36fd25b97d1, type: 2}
+  - {fileID: 2100000, guid: b2bba24536a6dcc4ab1d24ca20093105, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

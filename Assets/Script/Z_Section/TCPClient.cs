@@ -117,23 +117,23 @@ public class TCPClient : MonoBehaviour
         }
 
         //세척 공정 - 펌핑모터 (Y30)
-       /* if (point[3][0] == 1)
+        if (point[3][0] == 1)
         {
             StartCoroutine(MainConveyor.instance.WaterFlowPLC());
-        }*/
+        }
                
 
         //세척 공정 - subConvayor (Y31)
-        /*if (point[3][1] == 1)
+        if (point[3][1] == 1)
         {
             SubConveyor.Instance.SubConveyorOnOffPLC();
         }
-*/
+
         //세척 공정 - mainConvayor(Y32)
-        /*if (point[3][2] == 1)
+        if (point[3][2] == 1)
         {
             MainConveyor.instance.MainConveyorOnOffPLC();
-        }*/
+        }
 
         //(추가)세척 공정 - 로봇팔 동작 - get
     }
@@ -218,7 +218,7 @@ public class TCPClient : MonoBehaviour
         //세척공정 - AGV 도착센서  (X30)
         int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X30," + agvParkingSensor;
-
+        print("dl;fjal;ksdjflskjd("+ agvParkingSensor + ")");
 
         //절단공정 - AGV 도착센서  (X40)
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
@@ -335,14 +335,14 @@ public class TCPClient : MonoBehaviour
 
 
                     int[][] point = null;
-
+                    print("0==============");
                     if (msg != null && msg != "")
                     {
                         point = TransTCPtoDeviceBlock(msg);
                         // ******************** GET *************************
                         //(B)세척공정
                         excuteWasherProcess(point);
-
+                        print("01==============");
                         //(C)열풍건조공정
                         //excuteDryerProcess(point);
                     }
@@ -352,7 +352,7 @@ public class TCPClient : MonoBehaviour
                     
                     if (point != null)
                     {
-                       
+                        print("02==============");
                         // ******************** SET *************************
                         string reWrite = "";
                         //reWrite = WriteTCPDeviceBlock(msg);
@@ -371,6 +371,7 @@ public class TCPClient : MonoBehaviour
                         
                         if (reWrite != "")
                         {
+                            print("03==============");
                             buffer = new byte[1024];
                             buffer = Encoding.UTF8.GetBytes(reWrite);
                             // NetworkStream에 데이터 쓰기
@@ -383,7 +384,7 @@ public class TCPClient : MonoBehaviour
                     }
 
 
-
+                    print("04==============");
                     if (!isConnected) break;
                 }
                 catch (Exception e)

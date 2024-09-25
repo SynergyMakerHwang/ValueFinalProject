@@ -332,7 +332,7 @@ public class AuthManager : MonoBehaviour
 
     /****************** ±‚≈∏  Start********************/
 
-    bool isInvalid = false;
+    public bool isInvalid = false;
     public IEnumerator SignUp(string email, string password, string passwordCheck)
     {
         if (email == "" || password == "" || passwordCheck == "")
