@@ -3922,8 +3922,8 @@ Transform:
   m_GameObject: {fileID: 166450614}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.185, y: 1.872, z: -3.519}
-  m_LocalScale: {x: 0.8227417, y: -0.062341407, z: -0.73852205}
+  m_LocalPosition: {x: -3.185, y: 1.528, z: -3.519}
+  m_LocalScale: {x: 1.2024345, y: -0.24442756, z: -0.73852205}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 642261503}
@@ -11712,7 +11712,7 @@ Transform:
   m_GameObject: {fileID: 622775922}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.757, y: 1.607, z: -3.496}
+  m_LocalPosition: {x: -3.683, y: 1.607, z: -3.496}
   m_LocalScale: {x: 0.0039829, y: 0.62179023, z: -1.0396403}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12157,7 +12157,7 @@ MonoBehaviour:
   StartPos: {fileID: 916657481}
   EndPos: {fileID: 1551278826}
   duration: 2.5
-  Power: 0
+  Power: 1
   TottBox: {fileID: 3806670046508410692, guid: 2982d1a166f9a014480df722920c3715, type: 3}
   SpawnPoint: {fileID: 1499621505}
 --- !u!65 &643316486
@@ -28405,7 +28405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  ConveyorOn: 0
+  ConveyorOn: 1
   WaterLevel: 0.5
   Prefebs: {fileID: 2538980376471271607, guid: 88d69b40c2ccf734e982c5f0f57e8fc4, type: 3}
   PrefebsMom: {fileID: 1298172457}
