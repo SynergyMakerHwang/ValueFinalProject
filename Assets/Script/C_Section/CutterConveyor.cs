@@ -20,15 +20,14 @@ public class CutterConveyor : MonoBehaviour
 
     private void Start()
     {
+        // 초기설정
         MainBelt.transform.localPosition = MainStart.localPosition;
         SubBelt.transform.localPosition = SubStart.localPosition;
-        StartCoroutine(SubGo());
-        StartCoroutine(MainGo());
     }
 
     void Update()
     {
-        
+
     }
 
     IEnumerator Go(float Speed, Vector3 from, Vector3 to, GameObject Belt, bool IsOn)
@@ -79,12 +78,6 @@ public class CutterConveyor : MonoBehaviour
             yield return StartCoroutine(Go(MainConveyorSpeed, MainMiddle2.localPosition, MainEnd.localPosition, MainBelt, IsMain));
         }
     }
-
-    public void MaingGoPLC()
-    {
-        StartCoroutine(MainGo());
-    }
-
     IEnumerator SubGo()
     {
         while (IsSub)
@@ -93,8 +86,15 @@ public class CutterConveyor : MonoBehaviour
         }
     }
 
+    public void MaingGoPLC()
+    {
+        if (MainBelt.transform.localPosition == MainStart.localPosition)
+            StartCoroutine(MainGo());
+    }
+
     public void SubGoPLC()
     {
+        if(SubStart.transform.localPosition == SubStart.localPosition)
         StartCoroutine(SubGo());
     }
 }
