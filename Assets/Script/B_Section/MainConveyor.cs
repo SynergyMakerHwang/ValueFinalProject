@@ -67,7 +67,7 @@ public class MainConveyor : MonoBehaviour
 
 
     }
-    public IEnumerator WaterFlow()
+    public IEnumerator WaterFlowPLC()
     {
         float moveDistance = 0.01f; // 이동 속도
 
@@ -82,14 +82,15 @@ public class MainConveyor : MonoBehaviour
 
 
     }
-    public void WaterFlowPLC()
-    {
-        StartCoroutine(WaterFlow());
-    }
+   
  
-    public bool MainConveyorOnOffPLC()
+    public bool MainConveyorOnPLC()
     {
-        return ConveyorOn = !ConveyorOn;
+        return ConveyorOn = true;
+    }
+    public bool MainConveyorOffPLC()
+    {
+        return ConveyorOn =false;
     }
 
     public void SpawnFruit(GameObject WhichFruit)
