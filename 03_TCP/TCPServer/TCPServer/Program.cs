@@ -42,7 +42,7 @@ class TCPServer
             listener.Start();
 
 
-            Console.WriteLine("TCP SEVER START");
+            Console.WriteLine("TCP SEVER START 3");
 
             TcpClient client;
             NetworkStream stream;
@@ -96,7 +96,7 @@ class TCPServer
                         {
                             if (str.Contains("SETDevice"))
                             {
-                                mxComponent.setDevice(responseMsg);
+                                mxComponent.setDevice(str);
                             }
                             else if (str.Contains("SET"))
                             {
