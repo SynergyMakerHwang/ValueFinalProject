@@ -82,9 +82,15 @@ public class MainConveyor : MonoBehaviour
 
 
     }
-    public bool MainConveyorOnOffPLC()
+   
+ 
+    public bool MainConveyorOnPLC()
     {
-        return ConveyorOn = !ConveyorOn;
+        return ConveyorOn = true;
+    }
+    public bool MainConveyorOffPLC()
+    {
+        return ConveyorOn =false;
     }
 
     public void SpawnFruit(GameObject WhichFruit)

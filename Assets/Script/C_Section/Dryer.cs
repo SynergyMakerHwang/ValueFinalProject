@@ -34,17 +34,7 @@ public class Dryer : MonoBehaviour
     private void Update()
     {
 
-        // 조건에 따라 값을 받는다.
-        // PLC 값실행시키기 위해서 있어야한다.
-        if (DoorCheck && DoorValue)
-        {
-            StartCoroutine(Open());
-        }
-        else if (!DoorCheck && !DoorValue)
-        {
-            StartCoroutine(Close());
-        }
-
+  
     }
 
 
@@ -99,7 +89,7 @@ public class Dryer : MonoBehaviour
         IsOpened = true;
 
     }
-
+    //반전이동만 하면됨
     IEnumerator Close()
     {
         DoorCheck = !DoorCheck;
@@ -166,14 +156,21 @@ public class Dryer : MonoBehaviour
         StartCoroutine(ChangeColor());
     }
 
-    public bool DryerOpenPLC()
+    public void DryerOpenClosePLC()
     {
-        return DoorValue = true;
+        // 조건에 따라 값을 받는다.
+        // PLC 값실행시키기 위해서 있어야한다.
+        if (DoorCheck && !IsOpened)
+        {
+            StartCoroutine(Open());
+        }
+        else if (!DoorCheck && IsOpened)
+        {
+            StartCoroutine(Close());
+        }
+
     }
 
-    public bool DryerClosePLC()
-    {
-        return DoorValue = false;
-    }
+
 
 }

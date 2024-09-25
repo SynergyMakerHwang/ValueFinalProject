@@ -13,7 +13,7 @@ public class SubConveyor : MonoBehaviour
 
     public static SubConveyor Instance;
 
-    
+
     public void Awake()
     {
         if (Instance == null)
@@ -21,7 +21,7 @@ public class SubConveyor : MonoBehaviour
             Instance = this;
         }
     }
- 
+
     private void Start()
     {
         //초기설정
@@ -36,7 +36,7 @@ public class SubConveyor : MonoBehaviour
         {
             StartCoroutine(Moving(StartPos.localPosition, EndPos.localPosition));
         }
- 
+
 
     }
     IEnumerator Moving(Vector3 from, Vector3 to)
@@ -63,11 +63,15 @@ public class SubConveyor : MonoBehaviour
     }
     public void SpawnTottPLC()
     {
-        Instantiate(TottBox,SpawnPoint.position,Quaternion.identity);
+        Instantiate(TottBox, SpawnPoint.position, Quaternion.identity);
     }
-    public bool SubConveyorOnOffPLC()
+    public bool SubConveyorOnPLC()
     {
-        return Power = !Power;
+        return Power = true;
+    }
+    public bool SubConveyorOffPLC()
+    {
+        return Power = false;
     }
 }
 

@@ -126,13 +126,13 @@ public class TCPClient : MonoBehaviour
         //¼¼Ã´ °øÁ¤ - subConvayor (Y31)
         if (point[3][1] == 1)
         {
-            SubConveyor.Instance.SubConveyorOnOffPLC();
+            SubConveyor.Instance.SubConveyorOnPLC();
         }
 
         //¼¼Ã´ °øÁ¤ - mainConvayor(Y32)
         if (point[3][2] == 1)
         {
-            MainConveyor.instance.MainConveyorOnOffPLC();
+            MainConveyor.instance.MainConveyorOffPLC();
         }
 
         //(Ãß°¡)¼¼Ã´ °øÁ¤ - ·Îº¿ÆÈ µ¿ÀÛ - get
