@@ -121,14 +121,14 @@ public class TCPClient : MonoBehaviour
             SubConveyor.Instance.SpawnTottPLC();
         }
 
-        //세척 공정 - 펌핑모터 (Y30)
+        //세척 공정 - MainConveyor (Y30)
         if (point[3][0] == 1)
         {
             StartCoroutine(MainConveyor.instance.WaterFlowPLC());
         }
                
 
-        //세척 공정 - subConvayor (Y31)
+        //세척 공정 - SubConveyor (Y31)
         if (point[3][1] == 1)
         {
             SubConveyor.Instance.SubConveyorOnPLC();
@@ -138,7 +138,7 @@ public class TCPClient : MonoBehaviour
             SubConveyor.Instance.SubConveyorOffPLC();
         }
 
-        //세척 공정 - mainConvayor(Y32)
+        //세척 공정 - MainConveyor (Y32)
         if (point[3][2] == 1)
         {
             MainConveyor.instance.MainConveyorOnPLC();
@@ -188,19 +188,18 @@ public class TCPClient : MonoBehaviour
         //열풍건조 공정 - 도어 오픈 발생 (Y50)
         if (point[5][0] == 1)
         {
-
             Dryer.Instance.DryerOpenPLC();
         }
 
 
-        //열풍건조 공정 - 도어 클로즈 발생 (Y51)
-        if (point[5][1] == 1)
+        //열풍건조 공정 - 도어 클로즈 발생 (Y52)
+        if (point[5][2] == 1)
         {
             Dryer.Instance.DryerClosePLC();
         }
 
-        // 열풍건조 공정 
-        if (point[5][2] == 1)
+        // 열풍건조 공정 (Y55)
+        if (point[5][5] == 1)
         {
             Dryer.Instance.RunDryerPLC();
         }
@@ -377,7 +376,7 @@ public class TCPClient : MonoBehaviour
                         excuteWasherProcess(point);
                         
                         //(C)열풍건조공정
-                        excuteDryerProcess(point);
+                       excuteDryerProcess(point);
                     }
 
 
