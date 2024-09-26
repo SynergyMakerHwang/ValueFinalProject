@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public class Dryer : MonoBehaviour
 {
-    static public Dryer Instance;
+    static public Dryer Instance ;
     // 피봇값과 문짝 여닫이
     [SerializeField] bool DoorValue;
 
@@ -18,7 +18,7 @@ public class Dryer : MonoBehaviour
 
     [SerializeField] GameObject Inside;
     //PLC X값들
-    public bool IsOpened =false;
+    public bool IsOpened;
     bool DoorCheck = true;
     float duration = 1;
 
@@ -31,12 +31,10 @@ public class Dryer : MonoBehaviour
     }
     //2초안에 여닫기 가능
 
-    private void Start()
-    {
-
-    }
     private void Update()
     {
+
+  
     }
 
 
@@ -156,26 +154,32 @@ public class Dryer : MonoBehaviour
     public void RunDryerPLC()
     {
         StartCoroutine(ChangeColor());
-
     }
 
     public void DryerOpenPLC()
     {
+        // 조건에 따라 값을 받는다.
+        // PLC 값실행시키기 위해서 있어야한다.
         if (DoorCheck && !IsOpened)
         {
             StartCoroutine(Open());
-   
         }
-
+       
     }
 
 
     public void DryerClosePLC()
     {
-
+        // 조건에 따라 값을 받는다.
+        // PLC 값실행시키기 위해서 있어야한다.
         if (!DoorCheck && IsOpened)
         {
             StartCoroutine(Close());
         }
+
     }
+
+
+
+
 }
