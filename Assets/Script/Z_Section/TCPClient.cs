@@ -187,14 +187,14 @@ public class TCPClient : MonoBehaviour
         //열풍건조 공정 - 도어 오픈 발생 (Y50)
         if (point[5][0] == 1)
         {
-            Dryer.Instance.DryerOpenClosePLC();
+            Dryer.Instance.DryerOpenPLC();
         }
 
 
         //열풍건조 공정 - 도어 클로즈 발생 (Y51)
         if (point[5][1] == 1)
         {
-            Dryer.Instance.DryerOpenClosePLC();
+            Dryer.Instance.DryerClosePLC();
         }
 
         // 열풍건조 공정 

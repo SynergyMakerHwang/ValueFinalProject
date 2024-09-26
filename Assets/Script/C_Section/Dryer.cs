@@ -156,7 +156,7 @@ public class Dryer : MonoBehaviour
         StartCoroutine(ChangeColor());
     }
 
-    public void DryerOpenClosePLC()
+    public void DryerOpenPLC()
     {
         // 조건에 따라 값을 받는다.
         // PLC 값실행시키기 위해서 있어야한다.
@@ -164,12 +164,21 @@ public class Dryer : MonoBehaviour
         {
             StartCoroutine(Open());
         }
-        else if (!DoorCheck && IsOpened)
+       
+    }
+
+
+    public void DryerClosePLC()
+    {
+        // 조건에 따라 값을 받는다.
+        // PLC 값실행시키기 위해서 있어야한다.
+        if (!DoorCheck && IsOpened)
         {
             StartCoroutine(Close());
         }
 
     }
+
 
 
 
