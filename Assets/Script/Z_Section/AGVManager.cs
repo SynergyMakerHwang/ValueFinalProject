@@ -11,7 +11,7 @@ public class AGVManager : MonoBehaviour
 
     public int waitSec = 1;
     //[Range(0f, 10f)]
-    public int duration = 10;
+    public int duration = 5;
     float currentTime;
 
 
@@ -26,15 +26,12 @@ public class AGVManager : MonoBehaviour
         int next = 0;
         for (int i = 0; i < posList.Length; i++)
         {
-            // 1. Position 0에서 3초간 대기 
-            yield return new WaitForSeconds(3);
-
+            
             next = (i + 1);
             if (next >= posList.Length)
             {
                 next = 0;
-            }
-            // 2. Position 0 -> Positon 1까지 1초 동안 이동
+            }            
             yield return MovingAct(target, posList[i], posList[next], 1);
         }
 
@@ -53,7 +50,13 @@ public class AGVManager : MonoBehaviour
                 break;
 
             }
+            
             target.transform.position = Vector3.Lerp(fromPos.position, toPos.position, currentTime / duration);
+
+           // Quaternion rot = Quaternion.LookRotation(toPos.position.normalized);
+            target.transform.Rotate(new Vector3(toPos.position.x, 0, 0) * Time.deltaTime);
+            //target.transform.rotation = rot;
+            //target.transform.rotation = Quaternion.Slerp(toPos.transform.rotation, Quaternion.LookRotation(Vector3.forward), currentTime / duration, Space.World);
             yield return new WaitForEndOfFrame();
         }
     }
