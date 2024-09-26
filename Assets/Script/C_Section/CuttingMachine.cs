@@ -10,23 +10,30 @@ public class CuttingMachine : MonoBehaviour
     [SerializeField] Transform EndPos;
 
 
-    bool BladeLsPLC;
-    bool TottSensorPLC;
+  public  bool BladeLsPLC;
+    bool RightTottSensorPLC;
 
-  
+
     // 정위치 센서 펄링 펄스로 한번만 불러오기때문에, exit 없어도 됨
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag.Contains("토트박스"))
         {
-            TottSensorPLC = true;
+            RightTottSensorPLC = true;
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.Contains("토트박스"))
+        {
+            RightTottSensorPLC = false;
+        }
 
-
-
-
-
+    }
+    private void Start()
+    {
+  
+    }
 
     IEnumerator Go()
     {
@@ -60,17 +67,12 @@ public class CuttingMachine : MonoBehaviour
         CuttingPart.transform.localPosition = StartPos.localPosition;
         BladeLsPLC = false;
     }
-    public void BladeGoBackPLC()
+    public void BladeGoPLC()
     {
-        if (CuttingPart.transform.localPosition == StartPos.transform.localPosition)
-        {
-            StartCoroutine(Go());
-        }
-        else if (CuttingPart.transform.localPosition == EndPos.transform.localPosition)
-        {
-            StartCoroutine(Back());
-        }
-
+        StartCoroutine(Go());
     }
-
+    public void BaldeBackPLC()
+    {
+        StartCoroutine(Back());
+    }
 }

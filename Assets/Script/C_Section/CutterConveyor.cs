@@ -1,55 +1,65 @@
 using System.Collections;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class CutterConveyor : MonoBehaviour
 {
     [SerializeField] Transform MainStart;
-    [SerializeField] Transform MainMiddle1;
-    [SerializeField] Transform MainMiddle2;
     [SerializeField] Transform MainEnd;
     [SerializeField] Transform SubStart;
     [SerializeField] Transform SubEnd;
 
     float MainConveyorSpeed = 1;
-    float SubConveyorSpeed = 2;
+    float SubConveyorSpeed = 1.5f;
     public bool IsMain;
     public bool IsSub;
 
     [SerializeField] GameObject MainBelt;
     [SerializeField] GameObject SubBelt;
+    Vector3 resumePos1;
+    Vector3 resumePos2;
+    int isMainCnt = 0;
 
     private void Start()
     {
         // 초기설정
         MainBelt.transform.localPosition = MainStart.localPosition;
         SubBelt.transform.localPosition = SubStart.localPosition;
+
+        resumePos1 = MainStart.localPosition;
+        resumePos2 = SubStart.localPosition;
+        MaingGoPLC();
+        SubGoPLC();
     }
 
     void Update()
     {
-
+        if (IsMain)
+            StartCoroutine(MainGo());
+        if (IsSub)
+            StartCoroutine(SubGo());
     }
 
     IEnumerator Go(float Speed, Vector3 from, Vector3 to, GameObject Belt, bool IsOn)
     {
-        Belt.transform.localPosition = from;
+
+
         float Length = Vector3.Distance(from, to);
         float journeyTime = Length / Speed;
         float CurrentTime = 0;
 
         while (CurrentTime < journeyTime)
         {
-            if (!IsOn) // IsOn이 false일 경우 즉시 코루틴 종료
+            if (!IsMain && Belt == MainBelt) // IsOn이 false일 경우 즉시 코루틴 종료
             {
-                if (Belt = MainBelt)
-                {
-                    Belt.transform.localPosition = MainStart.localPosition;
-                }
-                else if (Belt = SubBelt)
-                {
-                    Belt.transform.localPosition = SubStart.localPosition;
-                }
-                yield break; // 현재 코루틴 종료
+                resumePos1 = MainBelt.transform.localPosition;
+
+                yield break;
+            }
+            else if (!IsSub && Belt == SubBelt)
+            {
+                resumePos2 = SubBelt.transform.localPosition;
+                yield break;
             }
 
             CurrentTime += Time.deltaTime;
@@ -57,27 +67,23 @@ public class CutterConveyor : MonoBehaviour
             yield return null;
         }
 
-        Belt.transform.localPosition = to;
 
-        // 초기화 무한루프
-        if (Belt.transform.localPosition == MainEnd.localPosition)
-        {
-            Belt.transform.localPosition = MainStart.localPosition;
-        }
-        else if (Belt.transform.localPosition == SubEnd.localPosition)
-        {
-            Belt.transform.localPosition = SubStart.localPosition;
-        }
+        resumePos1 = MainStart.localPosition;
+
+
     }
 
     IEnumerator MainGo()
     {
         while (IsMain)
         {
-            yield return StartCoroutine(Go(MainConveyorSpeed, MainStart.localPosition, MainMiddle1.localPosition, MainBelt, IsMain));
-            yield return StartCoroutine(Go(MainConveyorSpeed, MainMiddle2.localPosition, MainEnd.localPosition, MainBelt, IsMain));
+
+            yield return StartCoroutine(Go(MainConveyorSpeed, resumePos1, MainEnd.localPosition, MainBelt, IsMain));
         }
+
+
     }
+
     IEnumerator SubGo()
     {
         while (IsSub)
@@ -86,15 +92,23 @@ public class CutterConveyor : MonoBehaviour
         }
     }
 
-    public void MaingGoPLC()
+    public bool MaingGoPLC()
     {
-        if (MainBelt.transform.localPosition == MainStart.localPosition)
-            StartCoroutine(MainGo());
+        return IsMain = true;
+    }
+    public bool MainStopPLC()
+    {
+        return IsMain = false;
     }
 
-    public void SubGoPLC()
+    public bool SubGoPLC()
     {
-        if(SubStart.transform.localPosition == SubStart.localPosition)
-        StartCoroutine(SubGo());
+        return IsSub = true;
+    }
+    public bool SubStopPLC()
+    {
+
+        return IsSub = false;
+
     }
 }
