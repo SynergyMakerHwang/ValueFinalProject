@@ -8404,7 +8404,7 @@ Transform:
   m_GameObject: {fileID: 408974084}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 9.39, y: -2.17, z: -2.22}
+  m_LocalPosition: {x: 9.39, y: -1.89, z: -2.22}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19630,7 +19630,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 543450651827540215}
   - {fileID: 1502340095}
   m_Father: {fileID: 112351050}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -22750,6 +22749,7 @@ Transform:
   m_Children:
   - {fileID: 9151937537235178724}
   - {fileID: 543450652395717530}
+  - {fileID: 543450651827540215}
   m_Father: {fileID: 1274054476}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!65 &1502340096
@@ -22771,8 +22771,8 @@ BoxCollider:
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.6982633, y: 2.4817953, z: 2.21385}
+  m_Center: {x: 0.008032501, y: -2.0644424, z: -1.4617031}
 --- !u!1 &1510311201
 GameObject:
   m_ObjectHideFlags: 0
@@ -32019,8 +32019,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132147838798413}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -1.46, z: 1.96}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -32032,7 +32032,7 @@ Transform:
   - {fileID: 7267568812819338197}
   - {fileID: 3597911352000223125}
   - {fileID: 9151937535645784661}
-  m_Father: {fileID: 1274054476}
+  m_Father: {fileID: 1502340095}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &543450651891670253
 Transform:
@@ -32650,10 +32650,9 @@ GameObject:
   - component: {fileID: 9151937537235178724}
   - component: {fileID: 7083537397637166367}
   - component: {fileID: 8078569852266145249}
-  - component: {fileID: 9151937537235178725}
   m_Layer: 0
   m_Name: agv
-  m_TagString: AGV
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34948,27 +34947,6 @@ Transform:
   - {fileID: 3597911350411385124}
   m_Father: {fileID: 1502340095}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &9151937537235178725
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2229279557126573176}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.013000001, y: 0.008906995, z: 0.02050001}
-  m_Center: {x: 0, y: 0.00918898, z: -0.014434339}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
