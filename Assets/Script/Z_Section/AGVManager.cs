@@ -70,7 +70,7 @@ public class AGVManager : MonoBehaviour
             {
                 next = 0;
             }
-            yield return MovingAct( posList[i], posList[next], 1);
+            yield return MovingAct( posList[i], posList[next], duration);
         
         }
 
@@ -115,7 +115,7 @@ public class AGVManager : MonoBehaviour
             //target.transform.Rotate(Vector3.up * 90 * currentTime / duration, Space.World);            
             //target.transform.position = Vector3.Lerp(fromPos.position, toPos.position, currentTime / duration);
 
-            /*
+           
             Vector3 speed = Vector3.zero; // (0,0,0) 은 .zero 로도 표현가능
             transform.position = Vector3.SmoothDamp(transform.position, toPos.position, ref speed, 0.1f);        
 
@@ -126,8 +126,8 @@ public class AGVManager : MonoBehaviour
 
 
             yield return new WaitForEndOfFrame();
-            */
-
+          
+/*
             transform.localPosition += transform.right * speed * Time.deltaTime;
 
             float distance = (toPos.localPosition - transform.localPosition).magnitude;
@@ -136,7 +136,7 @@ public class AGVManager : MonoBehaviour
             {
                 //transform.localPosition = toPos.localPosition;
                 yield return new WaitForEndOfFrame();
-            }
+            }*/
         }
 
 
