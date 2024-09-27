@@ -22727,6 +22727,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1502340095}
   - component: {fileID: 1502340096}
+  - component: {fileID: 1502340097}
   m_Layer: 0
   m_Name: AGV_RobotArm
   m_TagString: AGV
@@ -22773,6 +22774,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6982633, y: 2.4817953, z: 2.21385}
   m_Center: {x: 0.008032501, y: -2.0644424, z: -1.4617031}
+--- !u!114 &1502340097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502340094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8acc057d50a608847a3ab3a676d624e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AGV: {fileID: 1502340095}
+  positionList:
+  - {fileID: 957202649}
+  - {fileID: 1549603815}
+  - {fileID: 423628222}
+  waitSec: 1
+  duration: 5
 --- !u!1 &1510311201
 GameObject:
   m_ObjectHideFlags: 0
