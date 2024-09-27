@@ -28,8 +28,8 @@ public class CutterConveyor : MonoBehaviour
 
         resumePos1 = MainStart.localPosition;
         resumePos2 = SubStart.localPosition;
-        MaingGoPLC();
-        SubGoPLC();
+       // MaingGoPLC();
+      //  SubGoPLC();
     }
 
     void Update()

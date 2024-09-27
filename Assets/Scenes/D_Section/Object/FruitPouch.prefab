@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6635251630663394626}
   m_Layer: 0
   m_Name: FruitPouch
-  m_TagString: Untagged
+  m_TagString: FruitPouchs
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

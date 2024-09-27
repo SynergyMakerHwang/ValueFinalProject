@@ -1,63 +1,83 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class D : MonoBehaviour
 {
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;
     [SerializeField] Transform EndPos;
-    [SerializeField] float duration;
+    [SerializeField] float speed = 1;
     [SerializeField] bool Power;
-
-    private Coroutine moveCoroutine; // 코루틴을 저장할 변수 추가
-
+    private Vector3 ResumePos; // 현재 위치 저장
+    bool DIsRunPLC;
+    Coroutine Coroutine;
     private void Start()
     {
+        ResumePos = StartPos.localPosition; // 시작 위치 초기화
+        Belt.localPosition = ResumePos; // 벨트 초기 위치 설정
+
     }
 
     private void Update()
     {
-        // Power 상태가 변경될 때마다 MovingGo 호출
-        if (Power && moveCoroutine == null)
+
+
+    }
+
+    IEnumerator Moving()
+    {
+
+
+        while (true)
         {
-            MovingGo();
+            Vector3 from = ResumePos;
+            Vector3 to = EndPos.localPosition;
+            float Length = Vector3.Distance(from, to);
+            float Journey = Length / speed;
+            float currentTime = 0;
+
+            while (currentTime < Journey)
+            {
+                currentTime += Time.deltaTime;
+                Belt.localPosition = Vector3.Lerp(from, to, currentTime / Journey);
+
+                yield return null; // 다음 프레임까지 대기
+            }
+            float Distance = Vector3.Distance(Belt.localPosition, EndPos.localPosition);
+            if (Distance < 5)
+                ResumePos = StartPos.localPosition;
+
+
+            Belt.localPosition = StartPos.localPosition;
         }
-        else if (!Power && moveCoroutine != null)
+
+    }
+
+    public void DConveyorOnPLC()
+    {
+
+        if (Coroutine == null)
         {
-            StopCoroutine(moveCoroutine);
-           // Power가 꺼지면 시작 위치로 이동
-            moveCoroutine = null; // 코루틴 상태 초기화
+            Coroutine = StartCoroutine(Moving());
+            // if (Belt.localPosition == EndPos.localPosition)
+            // {
+            //    ResumePos = StartPos.localPosition;
+            // }
+
+
         }
+
     }
-
-    IEnumerator Moving(Vector3 from, Vector3 to)
+    public void DConeyorOffPLC()
     {
-        float CurrentTime = 0;
-        Belt.localPosition = from;
-
-        while (CurrentTime < duration)
+        if (Coroutine != null)
         {
-            CurrentTime += Time.deltaTime;
-            Belt.localPosition = Vector3.Lerp(from, to, CurrentTime / duration);
-            yield return null;
+            StopCoroutine(Coroutine);
+            ResumePos = Belt.localPosition;
+            Coroutine = null;
         }
-
-        Belt.localPosition = to; // 최종 위치로 이동
-        moveCoroutine = null; // 코루틴이 끝나면 상태 초기화
     }
 
-    public void MovingGo()
-    {
-        moveCoroutine = StartCoroutine(Moving(StartPos.localPosition, EndPos.localPosition));
-    }
-
-    public bool DConeyorOnPLC()
-    {
-        return Power = true;
-    }
-    public bool DConveyorOffPLC()
-    {
-        return Power = false;
-    }
 
 }
