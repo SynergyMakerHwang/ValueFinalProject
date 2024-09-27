@@ -30,7 +30,10 @@ public class Dryer : MonoBehaviour
         }
     }
     //2초안에 여닫기 가능
-
+    private void Start()
+    {
+        DryerOpenPLC();
+    }
     private void Update()
     {
 
