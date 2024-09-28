@@ -19,11 +19,6 @@ public class D : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-
-
-    }
 
     IEnumerator Moving()
     {

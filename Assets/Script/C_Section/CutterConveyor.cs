@@ -11,104 +11,114 @@ public class CutterConveyor : MonoBehaviour
 
     public float MainConveyorSpeed;
     public float SubConveyorSpeed;
-    public bool IsMain;
-    public bool IsSub;
 
-    [SerializeField] GameObject MainBelt;
-    [SerializeField] GameObject SubBelt;
+    [SerializeField] Transform MainBelt;
+    [SerializeField] Transform SubBelt;
     Vector3 resumePos1;
     Vector3 resumePos2;
-    int isMainCnt = 0;
 
+    Coroutine MainCoroutine;
+    Coroutine SubCoroutine;
     private void Start()
     {
         // 초기설정
-        MainBelt.transform.localPosition = MainStart.localPosition;
-        SubBelt.transform.localPosition = SubStart.localPosition;
 
         resumePos1 = MainStart.localPosition;
+        MainBelt.localPosition = resumePos1;
         resumePos2 = SubStart.localPosition;
-       // MaingGoPLC();
-      //  SubGoPLC();
-    }
-
-    void Update()
-    {
-        if (IsMain)
-            StartCoroutine(MainGo());
-        if (IsSub)
-            StartCoroutine(SubGo());
-    }
-
-    IEnumerator Go(float Speed, Vector3 from, Vector3 to, GameObject Belt, bool IsOn)
-    {
-
-
-        float Length = Vector3.Distance(from, to);
-        float journeyTime = Length / Speed;
-        float CurrentTime = 0;
-
-        while (CurrentTime < journeyTime)
-        {
-            if (!IsMain && Belt == MainBelt) // IsOn이 false일 경우 즉시 코루틴 종료
-            {
-                resumePos1 = MainBelt.transform.localPosition;
-
-                yield break;
-            }
-            else if (!IsSub && Belt == SubBelt)
-            {
-                resumePos2 = SubBelt.transform.localPosition;
-                yield break;
-            }
-
-            CurrentTime += Time.deltaTime;
-            Belt.transform.localPosition = Vector3.Lerp(from, to, CurrentTime / journeyTime);
-            yield return null;
-        }
-
-
-        resumePos1 = MainStart.localPosition;
-
+        SubBelt.localPosition = resumePos2;
 
     }
+
 
     IEnumerator MainGo()
     {
-        while (IsMain)
-        {
 
-            yield return StartCoroutine(Go(MainConveyorSpeed, resumePos1, MainEnd.localPosition, MainBelt, IsMain));
+
+        while (true)
+        {
+            Vector3 from = resumePos1;
+            Vector3 to = MainEnd.localPosition;
+            float Length = Vector3.Distance(from, to);
+            float Journey = Length / MainConveyorSpeed;
+            float currentTime = 0;
+
+            while (currentTime < Journey)
+            {
+                currentTime += Time.deltaTime;
+                MainBelt.localPosition = Vector3.Lerp(from, to, currentTime / Journey);
+
+                yield return null; // 다음 프레임까지 대기
+            }
+            float Distance = Vector3.Distance(MainBelt.localPosition, MainEnd.localPosition);
+            if (Distance < 5)
+                resumePos1 = MainStart.localPosition;
+
+
+            MainBelt.localPosition = MainStart.localPosition;
+
         }
 
-
     }
-
     IEnumerator SubGo()
     {
-        while (IsSub)
+
+
+        while (true)
         {
-            yield return StartCoroutine(Go(SubConveyorSpeed, SubStart.localPosition, SubEnd.localPosition, SubBelt, IsSub));
+            Vector3 from = resumePos2;
+            Vector3 to = SubEnd.localPosition;
+            float Length = Vector3.Distance(from, to);
+            float Journey = Length / SubConveyorSpeed;
+            float currentTime = 0;
+
+            while (currentTime < Journey)
+            {
+                currentTime += Time.deltaTime;
+                SubBelt.localPosition = Vector3.Lerp(from, to, currentTime / Journey);
+
+                yield return null; // 다음 프레임까지 대기
+            }
+            float Distance = Vector3.Distance(SubBelt.localPosition, SubEnd.localPosition);
+            if (Distance < 5)
+                resumePos2 = SubStart.localPosition;
+
+
+            SubBelt.localPosition = SubStart.localPosition;
+
+        }
+
+    }
+
+    public void MaingGoPLC()
+    {
+        if (MainCoroutine == null)
+            MainCoroutine = StartCoroutine(MainGo());
+    }
+    public void MainStopPLC()
+    {
+        if (MainCoroutine != null)
+        {
+            StopCoroutine(MainCoroutine);
+            resumePos1 = MainBelt.transform.localPosition;
+            MainCoroutine = null;
         }
     }
 
-    public bool MaingGoPLC()
+    public void SubGoPLC()
     {
-        return IsMain = true;
+        if (SubCoroutine == null)
+            SubCoroutine = StartCoroutine(SubGo());
     }
-    public bool MainStopPLC()
+    public void SubStopPLC()
     {
-        return IsMain = false;
-    }
+        if (SubCoroutine != null)
+        {
+            StopCoroutine(SubCoroutine);
+            resumePos2 = SubBelt.transform.localPosition;
+            SubCoroutine = null;
+        }
 
-    public bool SubGoPLC()
-    {
-        return IsSub = true;
-    }
-    public bool SubStopPLC()
-    {
-
-        return IsSub = false;
 
     }
 }

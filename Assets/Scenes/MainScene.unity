@@ -2377,6 +2377,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6809466629646326327, guid: 73ed9569b2617c944be5f575443b2c14,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b2bba24536a6dcc4ab1d24ca20093105, type: 2}
     - target: {fileID: -5625460686205329271, guid: 73ed9569b2617c944be5f575443b2c14,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -2442,6 +2447,16 @@ PrefabInstance:
       propertyPath: m_BackGroundColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1725995497326776149, guid: 73ed9569b2617c944be5f575443b2c14,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: edc4877a5fbb7ab45864d50d339d9dd7, type: 2}
+    - target: {fileID: -798910727627637299, guid: 73ed9569b2617c944be5f575443b2c14,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b2bba24536a6dcc4ab1d24ca20093105, type: 2}
     - target: {fileID: -71434499859878583, guid: 73ed9569b2617c944be5f575443b2c14,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -2462,6 +2477,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FruitWasher
       objectReference: {fileID: 0}
+    - target: {fileID: 3005932967333848840, guid: 73ed9569b2617c944be5f575443b2c14,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 401ad4983cc206c4f923a26dd2542db1, type: 2}
     - target: {fileID: 5056186859694122575, guid: 73ed9569b2617c944be5f575443b2c14,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -3414,11 +3434,9 @@ MonoBehaviour:
   SubStart: {fileID: 1594145901}
   SubEnd: {fileID: 2126890243}
   MainConveyorSpeed: 1
-  SubConveyorSpeed: 0.5
-  IsMain: 0
-  IsSub: 0
-  MainBelt: {fileID: 1200333862}
-  SubBelt: {fileID: 1014061773}
+  SubConveyorSpeed: 1
+  MainBelt: {fileID: 1200333863}
+  SubBelt: {fileID: 1014061774}
 --- !u!1001 &144989313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8380,6 +8398,7 @@ RectTransform:
   - {fileID: 62099394}
   - {fileID: 2106790755}
   - {fileID: 988116239}
+  - {fileID: 496571628}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10429,12 +10448,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496571625}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -960, y: -540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 383797087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &500081904
 PrefabInstance:
@@ -17597,9 +17616,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 642261504}
-        m_TargetAssemblyTypeName: SubConveyor, Assembly-CSharp
-        m_MethodName: SubConveyorOffPLC
+      - m_Target: {fileID: 143673523}
+        m_TargetAssemblyTypeName: CutterConveyor, Assembly-CSharp
+        m_MethodName: MainStopPLC
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32419,9 +32438,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 642261504}
-        m_TargetAssemblyTypeName: SubConveyor, Assembly-CSharp
-        m_MethodName: SubConveyorOnPLC
+      - m_Target: {fileID: 143673523}
+        m_TargetAssemblyTypeName: CutterConveyor, Assembly-CSharp
+        m_MethodName: MaingGoPLC
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35353,7 +35372,6 @@ SceneRoots:
   - {fileID: 225397234}
   - {fileID: 1385169855}
   - {fileID: 112351050}
-  - {fileID: 496571628}
   - {fileID: 383797087}
   - {fileID: 694760435}
   - {fileID: 62892025}
