@@ -6,13 +6,14 @@ public class SubConveyor : MonoBehaviour
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;
     [SerializeField] Transform EndPos;
-    [SerializeField] float duration;
+    [SerializeField] float speed;
     [SerializeField] bool Power;
     [SerializeField] GameObject TottBox;
     [SerializeField] Transform SpawnPoint;
 
     public static SubConveyor Instance;
-
+    Vector3 ResumePos;
+    Coroutine Coroutine;
 
     public void Awake()
     {
@@ -24,54 +25,76 @@ public class SubConveyor : MonoBehaviour
 
     private void Start()
     {
-        //초기설정
-        Belt.localPosition = StartPos.localPosition;
+        ResumePos = StartPos.localPosition; // 시작 위치 초기화
+        Belt.localPosition = ResumePos; // 벨트 초기 위치 설정
+
+
         SpawnTottPLC();
     }
+
     // Update is called once per frame
     void Update()
     {
 
-        if (Power && Belt.localPosition == StartPos.localPosition)
-        {
-            StartCoroutine(Moving(StartPos.localPosition, EndPos.localPosition));
-        }
+
 
 
     }
-    IEnumerator Moving(Vector3 from, Vector3 to)
+    IEnumerator Moving()
     {
-        float CurrentTIme = 0;
-        Belt.localPosition = from;
-        while (CurrentTIme < duration)
+
+
+        while (true)
         {
-            if (Power)
+            Vector3 from = ResumePos;
+            Vector3 to = EndPos.localPosition;
+            float Length = Vector3.Distance(from, to);
+            float Journey = Length / speed;
+            float currentTime = 0;
+
+            while (currentTime < Journey)
             {
-                CurrentTIme += Time.deltaTime;
-                Belt.localPosition = Vector3.Lerp(from, to, CurrentTIme / duration);
-                yield return null;
+                currentTime += Time.deltaTime;
+                Belt.localPosition = Vector3.Lerp(from, to, currentTime / Journey);
+
+                yield return null; // 다음 프레임까지 대기
             }
-            else if (!Power)
-            {
-                Belt.localPosition = StartPos.localPosition;
-                yield break;
-            }
+            float Distance = Vector3.Distance(Belt.localPosition, EndPos.localPosition);
+            if (Distance < 5)
+                ResumePos = StartPos.localPosition;
+
+
+            Belt.localPosition = StartPos.localPosition;
         }
-        Belt.localPosition = to;
-        Belt.localPosition = from;
 
     }
     public void SpawnTottPLC()
     {
         Instantiate(TottBox, SpawnPoint.position, Quaternion.identity);
     }
-    public bool SubConveyorOnPLC()
+    public void SubConveyorOnPLC()
     {
-        return Power = true;
+        if (Coroutine == null)
+        {
+            Coroutine = StartCoroutine(Moving());
+            // if (Belt.localPosition == EndPos.localPosition)
+            // {
+            //    ResumePos = StartPos.localPosition;
+            // }
+
+
+        }
+
     }
-    public bool SubConveyorOffPLC()
+    public void SubConveyorOffPLC()
     {
-        return Power = false;
+        if (Coroutine != null)
+        {
+            StopCoroutine(Coroutine);
+            ResumePos = Belt.localPosition;
+            Coroutine = null;
+        }
     }
 }
+
 

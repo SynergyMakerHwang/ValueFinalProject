@@ -100,7 +100,7 @@ public class MainConveyor : MonoBehaviour
             // ·£´ý ÁÂÇ¥ »ý¼º
             float Xrandom = Random.Range(waters.transform.position.x - 0.6f, waters.transform.position.x + 1.7f);
             float Yvalue = waters.transform.position.y + 2;
-            float Zrandom = Random.Range(waters.transform.position.z - 0.15f, waters.transform.position.z + 0.3f);
+            float Zrandom = Random.Range(waters.transform.position.z - 0.3f, waters.transform.position.z + 0.4f);
             Vector3 RandomSpot = new Vector3(Xrandom, Yvalue, Zrandom);
 
             Instantiate(WhichFruit, RandomSpot, Quaternion.identity);

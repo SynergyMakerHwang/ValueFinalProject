@@ -9,8 +9,8 @@ public class CutterConveyor : MonoBehaviour
     [SerializeField] Transform SubStart;
     [SerializeField] Transform SubEnd;
 
-    float MainConveyorSpeed = 1;
-    float SubConveyorSpeed = 1.5f;
+    public float MainConveyorSpeed;
+    public float SubConveyorSpeed;
     public bool IsMain;
     public bool IsSub;
 
