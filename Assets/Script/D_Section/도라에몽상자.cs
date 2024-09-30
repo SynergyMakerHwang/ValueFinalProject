@@ -3,26 +3,22 @@ using UnityEngine;
 public class 도라에몽상자 : MonoBehaviour
 {
     public GameObject pouchPrefab; // 파우치로 변경할 프리팹
-    int Cnt;
+  
     private void OnTriggerEnter(Collider other)
     {
 
         // 태그가 "Apples"인 경우
         if (other.CompareTag("Apples"))
         {
-            Cnt++;
-            // 사과 오브젝트를 파우치로 변경
-            if (Cnt == 2)
-            {
-                Cnt = 0;
+           
                 ChangeToPouch(other.gameObject);
-            }
+            
 
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.name.Contains("토트박스"))
+        if (other.CompareTag("토트박스"))
         {
             Destroy(other.gameObject);
         }
