@@ -1,313 +1,688 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
+using System;
+using TMPro;
 using UnityEngine;
+using System.Collections;
 
-// IK_toolkit: Inverse Kinematics Toolkit for UR16e robot arm
-[ExecuteInEditMode]
 public class AGV_RobotArmController : MonoBehaviour
 {
-    public Transform ik;
-    public int solutionID;
-    private List<string> IK_Solutions = new List<string>();
-    public List<double> goodSolution = new List<double>();
-    public List<Transform> robot = new List<Transform>();
+    public static AGV_RobotArmController instance;
+    public List<Step> steps = new List<Step>();
+    [SerializeField] int stepCnt;
+    [SerializeField] int currentStep;
 
-    // UR16e robot arm Denavit-Hartenberg parameters matrix
-    public static double[,] DH_matrix_UR16e = new double[6, 3] {
-        { 0, Mathf.PI / 2.0, 0.1807 },
-        { -0.4784, 0, 0 },
-        { -0.36, 0, 0 },
-        { 0, Mathf.PI / 2.0, 0.17415 },
-        { 0, -Mathf.PI / 2.0, 0.11985},
-        { 0, 0,0.11655}};
+    [SerializeField] TMP_InputField stepVal;
+    [SerializeField] TMP_Text totalStepTxt;
+    [SerializeField] TMP_InputField speedVal;
+    [SerializeField] TMP_InputField delayVal;
+    [SerializeField] UnityEngine.UI.Toggle isSuctionVal;
+    [SerializeField] TMP_InputField angleAVal;
+    [SerializeField] TMP_InputField angleBVal;
+    [SerializeField] TMP_InputField angleCVal;
+    [SerializeField] TMP_InputField angleDVal;
+    [SerializeField] TMP_InputField angleEVal;
+    [SerializeField] TMP_InputField angleFVal;
+    public GameObject canvas;
 
-    // Update is called once per frame
-    void Update()
+
+    [SerializeField] Transform DoF_1;
+    [SerializeField] Transform DoF_2;
+    [SerializeField] Transform DoF_3;
+    [SerializeField] Transform DoF_4;
+    [SerializeField] Transform DoF_5;
+    [SerializeField] Transform DoF_6;
+    float currentTime;
+    bool isCycleAction = false;
+
+    public bool IsCycleAction { get => isCycleAction; set => isCycleAction = value; }
+
+    string fileName = "program.csv";
+
+
+    [Serializable]
+    public class Step
     {
-        // Calculate the transformation matrix for the IK
-        Matrix4x4 transform_matrix = GetTransformMatrix(ik);
+        public int StepNum { get => step; set => step = value; }
+        [SerializeField] int step;
 
-        // Reflect the matrix along the Y-axis
-        Matrix4x4 mt = Matrix4x4.identity;
-        mt.m11 = -1;
-        Matrix4x4 mt_inverse = mt.inverse;
-        Matrix4x4 result = mt * transform_matrix * mt_inverse;
+        public float Delay { get => delay; set => delay = value; }
+        [SerializeField] float delay = 1;
 
-        // Compute the inverse kinematics solutions
-        double[,] solutions = Inverse_kinematic_solutions(result);
-        IK_Solutions.Clear();
-        IK_Solutions = DisplaySolutions(solutions);
+        public bool isSuction { get => isSuctionON; set => isSuctionON = value; }
+        [SerializeField] bool isSuctionON;
 
-        // Set the robot arm joints based on the selected solution
-        ApplyJointSolution(IK_Solutions, solutions, solutionID, robot);
-        goodSolution.Clear();
-        goodSolution.Add(solutions[0, 5]);
-        goodSolution.Add(solutions[1, 5]);
-        goodSolution.Add(solutions[2, 5]);
-        goodSolution.Add(solutions[3, 5]);
-        goodSolution.Add(solutions[4, 5]);
-        goodSolution.Add(solutions[5, 5]);
-    }
+        public float Speed { get => speed; set => speed = value; }
+        [SerializeField] float speed = 1;
 
-    // Get the transformation matrix for the given transform
-    public static Matrix4x4 GetTransformMatrix(Transform controller)
-    {
-        return Matrix4x4.TRS(new Vector3(controller.localPosition.x, controller.localPosition.y, controller.localPosition.z), Quaternion.Euler(controller.localEulerAngles.x, controller.localEulerAngles.y, controller.localEulerAngles.z), new Vector3(1, 1, 1));
-    }
 
-    // Compute the transformation matrix using the Denavit-Hartenberg parameters
-    public static Matrix4x4 ComputeTransformMatrix(int jointIndex, double[,] jointAngles)
-    {
-        jointIndex--;
+        public float angleAValue { get => angleA; set => angleA = value; }
+        [SerializeField] float angleA;
 
-        // Rotation around the Z-axis
-        var rotationZ = Matrix4x4.identity;
-        rotationZ.m00 = Mathf.Cos((float)jointAngles[0, jointIndex]);
-        rotationZ.m01 = -Mathf.Sin((float)jointAngles[0, jointIndex]);
-        rotationZ.m10 = Mathf.Sin((float)jointAngles[0, jointIndex]);
-        rotationZ.m11 = Mathf.Cos((float)jointAngles[0, jointIndex]);
+        public float angleBValue { get => angleB; set => angleB = value; }
+        [SerializeField] float angleB;
 
-        // Translation along the Z-axis
-        var translationZ = Matrix4x4.identity;
-        translationZ.m23 = (float)DH_matrix_UR16e[jointIndex, 2];
+        public float angleCValue { get => angleC; set => angleC = value; }
+        [SerializeField] float angleC;
 
-        // Translation along the X-axis
-        var translationX = Matrix4x4.identity;
-        translationX.m03 = (float)DH_matrix_UR16e[jointIndex, 0];
 
-        // Rotation around the X-axis
-        var rotationX = Matrix4x4.identity;
-        rotationX.m11 = Mathf.Cos((float)DH_matrix_UR16e[jointIndex, 1]);
-        rotationX.m12 = -Mathf.Sin((float)DH_matrix_UR16e[jointIndex, 1]);
-        rotationX.m21 = Mathf.Sin((float)DH_matrix_UR16e[jointIndex, 1]);
-        rotationX.m22 = Mathf.Cos((float)DH_matrix_UR16e[jointIndex, 1]);
+        public float angleDValue { get => angleD; set => angleD = value; }
+        [SerializeField] float angleD;
 
-        // Combine the transformations in the following order: rotationZ, translationZ, translationX, and rotationX
-        return rotationZ * translationZ * translationX * rotationX;
-    }
+        public float angleEValue { get => angleE; set => angleE = value; }
+        [SerializeField] float angleE;
 
-    // Apply the inverse kinematics solution to the robot arm joints
-    public static void ApplyJointSolution(List<string> solutionStatus, double[,] jointSolutions, int solutionIndex, List<Transform> robotJoints)
-    {
-        // Check if the solution is available
-        if (solutionStatus[solutionIndex] != "NON DISPONIBLE")
+        public float angleFValue { get => angleF; set => angleF = value; }
+        [SerializeField] float angleF;
+
+
+
+
+
+
+        public Step(int _step, float _speed, float _delay, bool _isSuctioinOn)
         {
-            // Iterate through each joint in the robot and apply the joint angles
-            for (int i = 0; i < robotJoints.Count; i++)
-            {
-                robotJoints[i].localEulerAngles = ConvertJointAngles(jointSolutions[i, solutionIndex], i);
-            }
+            step = _step;
+            speed = _speed;
+            delay = _delay;
+            isSuctionON = _isSuctioinOn;
+        }
+    }
+
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        clearSetting();
+    }
+
+
+    public void OnTeachBtnClkEvent()
+    {
+
+
+        Step step;
+        string TmpNum = "0";
+        if (stepVal.text != "" && stepVal != null)
+        {
+            TmpNum = Regex.Replace(stepVal.text, @"[^0-9]", "");
+        }
+
+        //수정
+        if (int.Parse(TmpNum) < steps.Count && steps.Count > 0)
+        {
+            step = steps[int.Parse(TmpNum)];
+            step.angleAValue = float.Parse(angleAVal.text);
+            step.angleBValue = float.Parse(angleBVal.text);
+            step.angleCValue = float.Parse(angleCVal.text);
+            step.angleDValue = float.Parse(angleDVal.text);
+            step.angleEValue = float.Parse(angleEVal.text);
+            step.angleFValue = float.Parse(angleFVal.text);
+
+            step.Delay = float.Parse(delayVal.text);
+            step.Speed = float.Parse(speedVal.text);
+            step.isSuction = isSuctionVal.isOn;
+
+            //추가
         }
         else
         {
-            // If no solution is available, log an error message
-            Debug.LogError("NO SOLUTION");
+
+            float delay = float.Parse(delayVal.text);
+            float speed = float.Parse(speedVal.text);
+
+            step = new Step(stepCnt++, speed, delay, isSuctionVal.isOn);
+            step.angleAValue = float.Parse(angleAVal.text);
+            step.angleBValue = float.Parse(angleBVal.text);
+            step.angleCValue = float.Parse(angleCVal.text);
+            step.angleDValue = float.Parse(angleDVal.text);
+            step.angleEValue = float.Parse(angleEVal.text);
+            step.angleFValue = float.Parse(angleFVal.text);
+            steps.Add(step);
+
         }
+
+        stepVal.text = $"{stepCnt}";
+        totalStepTxt.text = $"Total Step Count : {steps.Count}";
+        SaveCSV(step);
     }
 
-    // Convert joint angles from radians to degrees and apply the appropriate offset
-    private static Vector3 ConvertJointAngles(double angleRad, int jointIndex)
+    private void SaveCSV(Step step)
     {
-        float angleDeg = -(float)(Mathf.Rad2Deg * angleRad);
 
-        switch (jointIndex)
-        {
-            case 1:
-                return new Vector3(-90, 0, angleDeg);
-            case 4:
-                return new Vector3(-90, 0, angleDeg);
-            case 5:
-                return new Vector3(90, 0, angleDeg);
-            default:
-                return new Vector3(0, 0, angleDeg);
-        }
+        FileStream fs = new FileStream(fileName, FileMode.Append);
+        StreamWriter sw = new StreamWriter(fs);
+
+        string line = $"{step.StepNum},{step.Speed},{step.Delay}" +
+            $",{step.angleAValue},{step.angleBValue},{step.angleCValue},{step.angleDValue},{step.angleEValue},{step.angleFValue}" +
+            $",{step.isSuction}";
+        sw.WriteLine(line);
+
+        sw.Close();
+        fs.Close();
     }
 
-    // Calculate the inverse kinematics solutions
-    public static double[,] Inverse_kinematic_solutions(Matrix4x4 transform_matrix_unity)
+    public void OnLoadCSVBtnClkEvent()
     {
+        steps.Clear();
+        steps = new List<Step>();
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        StreamReader sr = new StreamReader(fs);
 
-        double[,] theta = new double[6, 8];
-
-        Vector4 P05 = transform_matrix_unity * new Vector4()
+        Step step;
+        string line;
+        string[] info;
+        while ((line = sr.ReadLine()) != null)
         {
-            x = 0,
-            y = 0,
-            z = -(float)DH_matrix_UR16e[5, 2],
-            w = 1
-        }; ;
-        float psi = Mathf.Atan2(P05[1], P05[0]);
-        float phi = Mathf.Acos((float)((DH_matrix_UR16e[1, 2] + DH_matrix_UR16e[3, 2] + DH_matrix_UR16e[2, 2]) / Mathf.Sqrt(Mathf.Pow(P05[0], 2) + Mathf.Pow(P05[1], 2))));
+            info = line.Split(",");
 
-        theta[0, 0] = psi + phi + Mathf.PI / 2;
-        theta[0, 1] = psi + phi + Mathf.PI / 2;
-        theta[0, 2] = psi + phi + Mathf.PI / 2;
-        theta[0, 3] = psi + phi + Mathf.PI / 2;
-        theta[0, 4] = psi - phi + Mathf.PI / 2;
-        theta[0, 5] = psi - phi + Mathf.PI / 2;
-        theta[0, 6] = psi - phi + Mathf.PI / 2;
-        theta[0, 7] = psi - phi + Mathf.PI / 2;
-
-        for (int i = 0; i < 8; i += 4)
-        {
-            double t5 = (transform_matrix_unity[0, 3] * Mathf.Sin((float)theta[0, i]) - transform_matrix_unity[1, 3] * Mathf.Cos((float)theta[0, i]) - (DH_matrix_UR16e[1, 2] + DH_matrix_UR16e[3, 2] + DH_matrix_UR16e[2, 2])) / DH_matrix_UR16e[5, 2];
-            float th5;
-            if (1 >= t5 && t5 >= -1)
+            step = new Step(int.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]), bool.Parse(info[9]));
+            step.angleAValue = float.Parse(info[3]);
+            step.angleBValue = float.Parse(info[4]);
+            step.angleCValue = float.Parse(info[5]);
+            step.angleDValue = float.Parse(info[6]);
+            step.angleEValue = float.Parse(info[7]);
+            step.angleEValue = float.Parse(info[8]);
+            //수정
+            if (steps.Count > int.Parse(info[0]))
             {
-                th5 = Mathf.Acos((float)t5);
+                steps[int.Parse(info[0])] = step;
+                //추가
             }
             else
             {
-                th5 = 0;
+                steps.Add(step);
             }
 
-            if (i == 0)
-            {
-                theta[4, 0] = th5;
-                theta[4, 1] = th5;
-                theta[4, 2] = -th5;
-                theta[4, 3] = -th5;
-            }
-            else
-            {
-                theta[4, 4] = th5;
-                theta[4, 5] = th5;
-                theta[4, 6] = -th5;
-                theta[4, 7] = -th5;
-            }
         }
+        totalStepTxt.text = $"Total Step Count : {steps.Count}";
+        sr.Close();
+        fs.Close();
 
-        Matrix4x4 tmu_inverse = transform_matrix_unity.inverse;
-        float th0 = Mathf.Atan2((-tmu_inverse[1, 0] * Mathf.Sin((float)theta[0, 0]) + tmu_inverse[1, 1] * Mathf.Cos((float)theta[0, 0])), (tmu_inverse[0, 0] * Mathf.Sin((float)theta[0, 0]) - tmu_inverse[0, 1] * Mathf.Cos((float)theta[0, 0])));
-        float th2 = Mathf.Atan2((-tmu_inverse[1, 0] * Mathf.Sin((float)theta[0, 2]) + tmu_inverse[1, 1] * Mathf.Cos((float)theta[0, 2])), (tmu_inverse[0, 0] * Mathf.Sin((float)theta[0, 2]) - tmu_inverse[0, 1] * Mathf.Cos((float)theta[0, 2])));
-        float th4 = Mathf.Atan2((-tmu_inverse[1, 0] * Mathf.Sin((float)theta[0, 4]) + tmu_inverse[1, 1] * Mathf.Cos((float)theta[0, 4])), (tmu_inverse[0, 0] * Mathf.Sin((float)theta[0, 4]) - tmu_inverse[0, 1] * Mathf.Cos((float)theta[0, 4])));
-        float th6 = Mathf.Atan2((-tmu_inverse[1, 0] * Mathf.Sin((float)theta[0, 6]) + tmu_inverse[1, 1] * Mathf.Cos((float)theta[0, 6])), (tmu_inverse[0, 0] * Mathf.Sin((float)theta[0, 6]) - tmu_inverse[0, 1] * Mathf.Cos((float)theta[0, 6])));
-
-        theta[5, 0] = th0;
-        theta[5, 1] = th0;
-        theta[5, 2] = th2;
-        theta[5, 3] = th2;
-        theta[5, 4] = th4;
-        theta[5, 5] = th4;
-        theta[5, 6] = th6;
-        theta[5, 7] = th6;
-
-        for (int i = 0; i <= 7; i += 2)
-        {
-            double[,] t1 = new double[1, 6];
-            t1[0, 0] = theta[0, i];
-            t1[0, 1] = theta[1, i];
-            t1[0, 2] = theta[2, i];
-            t1[0, 3] = theta[3, i];
-            t1[0, 4] = theta[4, i];
-            t1[0, 5] = theta[5, i];
-            Matrix4x4 T01 = ComputeTransformMatrix(1, t1);
-            Matrix4x4 T45 = ComputeTransformMatrix(5, t1);
-            Matrix4x4 T56 = ComputeTransformMatrix(6, t1);
-            Matrix4x4 T14 = T01.inverse * transform_matrix_unity * (T45 * T56).inverse;
-
-            Vector4 P13 = T14 * new Vector4()
-            {
-                x = 0,
-                y = (float)-DH_matrix_UR16e[3, 2],
-                z = 0,
-                w = 1
-            };
-            double t3 = (Mathf.Pow(P13[0], 2) + Mathf.Pow(P13[1], 2) - Mathf.Pow((float)DH_matrix_UR16e[1, 0], 2) - Mathf.Pow((float)DH_matrix_UR16e[2, 0], 2)) / (2 * DH_matrix_UR16e[1, 0] * DH_matrix_UR16e[2, 0]);
-            double th3;
-            if (1 >= t3 && t3 >= -1)
-            {
-                th3 = Mathf.Acos((float)t3);
-            }
-            else
-            {
-                th3 = 0;
-            }
-            theta[2, i] = th3;
-            theta[2, i + 1] = -th3;
-        }
-
-        for (int i = 0; i < 8; i++)
-        {
-            double[,] t1 = new double[1, 6];
-            t1[0, 0] = theta[0, i];
-            t1[0, 1] = theta[1, i];
-            t1[0, 2] = theta[2, i];
-            t1[0, 3] = theta[3, i];
-            t1[0, 4] = theta[4, i];
-            t1[0, 5] = theta[5, i];
-            Matrix4x4 T01 = ComputeTransformMatrix(1, t1);
-            Matrix4x4 T45 = ComputeTransformMatrix(5, t1);
-            Matrix4x4 T56 = ComputeTransformMatrix(6, t1);
-            Matrix4x4 T14 = T01.inverse * transform_matrix_unity * (T45 * T56).inverse;
-
-            Vector4 P13 = T14 * new Vector4()
-            {
-                x = 0,
-                y = (float)-DH_matrix_UR16e[3, 2],
-                z = 0,
-                w = 1
-            };
-
-            theta[1, i] = Mathf.Atan2(-P13[1], -P13[0]) - Mathf.Asin((float)(-DH_matrix_UR16e[2, 0] * Mathf.Sin((float)theta[2, i]) / Mathf.Sqrt(Mathf.Pow(P13[0], 2) + Mathf.Pow(P13[1], 2))));
-
-            double[,] t2 = new double[1, 6];
-            t2[0, 0] = theta[0, i];
-            t2[0, 1] = theta[1, i];
-            t2[0, 2] = theta[2, i];
-            t2[0, 3] = theta[3, i];
-            t2[0, 4] = theta[4, i];
-            t2[0, 5] = theta[5, i];
-            Matrix4x4 T32 = ComputeTransformMatrix(3, t2).inverse;
-            Matrix4x4 T21 = ComputeTransformMatrix(2, t2).inverse;
-            Matrix4x4 T34 = T32 * T21 * T14;
-            theta[3, i] = Mathf.Atan2(T34[1, 0], T34[0, 0]);
-        }
-        return theta;
     }
 
-    public static List<string> DisplaySolutions(double[,] solutions)
+    public void OnChangeSuctionBtnClkEvent(UnityEngine.UI.Toggle isSuctionON)
     {
-        List<string> info = new List<string>();
-
-        // Iterate through the 8 possible solutions
-        for (int column = 0; column < 8; column++)
+        AGV_RobotArmGripper.instance.isSuctionMode = isSuctionON.isOn;
+        //suction 해제시 자식 제거
+        if (!isSuctionON.isOn)
         {
-            // Check if all joint angles in the solution are valid (not NaN)
-            bool isValidSolution = true;
-            for (int row = 0; row < 6; row++)
+
+            AGV_RobotArmGripper.instance.removeChild(isSuctionON.isOn);
+        }
+    }
+
+    public void OnStepUpBtnClkEvent()
+    {
+
+        int enterStep = int.Parse(stepVal.text);
+        currentStep = enterStep;
+        currentStep++;
+
+        if (currentStep >= steps.Count)
+        {
+            currentStep = 0;
+        }
+
+        stepVal.text = $"{currentStep}";
+
+        getStepSetting(currentStep);
+        StartCoroutine(RotateAngle(steps[enterStep], steps[currentStep]));
+    }
+
+    public void OnStepDownBtnClkEvent()
+    {
+        int enterStep = int.Parse(stepVal.text);
+        currentStep = enterStep;
+        currentStep--;
+
+        if (currentStep < 0)
+        {
+            currentStep = steps.Count - 1;
+        }
+
+        stepVal.text = $"{currentStep}";
+
+        getStepSetting(currentStep);
+        if (enterStep != currentStep)
+        {
+            StartCoroutine(RotateAngle(steps[enterStep], steps[currentStep]));
+        }
+
+    }
+
+
+
+    public void getStepSetting(int stepNum)
+    {
+        if (steps != null && steps.Count > 0)
+        {
+            Step stepSetting = steps[stepNum];
+            stepVal.text = stepSetting.StepNum.ToString();
+            delayVal.text = stepSetting.Delay.ToString();
+            speedVal.text = stepSetting.Speed.ToString();
+            isSuctionVal.isOn = stepSetting.isSuction;
+
+            angleAVal.text = stepSetting.angleAValue.ToString();
+            angleBVal.text = stepSetting.angleBValue.ToString();
+            angleCVal.text = stepSetting.angleCValue.ToString();
+            angleDVal.text = stepSetting.angleDValue.ToString();
+            angleEVal.text = stepSetting.angleEValue.ToString();
+            angleFVal.text = stepSetting.angleFValue.ToString();
+        }
+
+    }
+
+
+    public void OnClearBtnClkEvent()
+    {
+        clearSetting();
+        //OriginRotation();
+        StartCoroutine(movingMotor("origin", 0));
+
+    }
+
+    private void clearSetting()
+    {
+        stepCnt = 0;
+        steps.Clear();
+        stepVal.text = "0";
+        delayVal.text = "0";
+        speedVal.text = "0";
+        totalStepTxt.text = "Total Step Count : 0";
+
+        angleAVal.text = "0";
+        angleBVal.text = "0";
+        angleCVal.text = "0";
+        angleDVal.text = "0";
+        angleEVal.text = "0";
+        angleFVal.text = "0";
+        isSuctionVal.isOn = false;
+
+
+    }
+    public void OnStopBtnClkEvent()
+    {
+        isCycleAction = false;
+    }
+    public void OnCycleBtnClkEvent()
+    {
+        isCycleAction = true;
+        StartCoroutine(RunStep(0));
+    }
+
+    public void excuteSingleCycleEvent()
+    {
+        StartCoroutine(RunStep(1));
+    }
+
+    public void OnSingleCycleBtnClkEvent()
+    {
+        isCycleAction = true;
+        StartCoroutine(RunStep(1));
+
+    }
+
+    bool isActAngle = true;
+
+    public void OnAngleValUp(TMP_InputField target)
+    {
+
+        if (isActAngle)
+        {
+            float angel = 0;
+            if (target.text != null && target.text != "")
             {
-                if (double.IsNaN(solutions[row, column]))
+                angel = float.Parse(target.text);
+            }
+            angel += 0.1f;
+            angel = angel % 360;
+            movingMotorRotation(target.name, angel);
+
+            target.text = angel.ToString();
+
+
+        }
+
+    }
+
+    public void OnAngleValExit()
+    {
+        isActAngle = false;
+    }
+
+
+    public void OnAngleValDown(TMP_InputField target)
+    {
+        if (isActAngle)
+        {
+            float angel = 0;
+            if (target.text != null && target.text != "")
+            {
+                angel = float.Parse(target.text);
+            }
+
+            angel -= 0.1f;
+
+            angel = angel % 360;
+            movingMotorRotation(target.name, angel);
+            target.text = angel.ToString();
+
+
+        }
+        isActAngle = true;
+    }
+
+    public void movingMotorRotation(string targetName, float angle)
+    {
+        if (targetName.Contains("A "))
+        {
+            //1DoF - z축
+            DoF_1.localRotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        }
+        else if (targetName.Contains("B "))
+        {
+            //2DoF - x축
+            DoF_2.localRotation = Quaternion.Euler(new Vector3(angle, 0, 0));
+        }
+        else if (targetName.Contains("C "))
+        {
+            //3DoF - x축
+            DoF_3.localRotation = Quaternion.Euler(new Vector3(angle, 0, 0));
+        }
+        else if (targetName.Contains("D "))
+        {
+            //4DoF - y축
+            DoF_4.localRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+        }
+        else if (targetName.Contains("E "))
+        {
+            //5DoF - x축
+            DoF_5.localRotation = Quaternion.Euler(new Vector3(angle, 0, 0));
+        }
+        else if (targetName.Contains("F "))
+        {
+            //6DoF - y축
+            DoF_5.localRotation = Quaternion.Euler(new Vector3(0, angle,  0));
+        }
+
+
+        }
+
+
+    public IEnumerator movingMotor(string targetName, float angle)
+    {
+
+        if (targetName.Contains("A "))
+        {
+            //1DoF - z축
+            yield return (RotateSettingAngle("A", angle));
+
+        }
+        else if (targetName.Contains("B "))
+        {
+            //2DoF - x축
+            yield return (RotateSettingAngle("B", angle));
+        }
+        else if (targetName.Contains("C "))
+        {
+            //3DoF - x축
+            yield return (RotateSettingAngle("C", angle));
+        }
+        else if (targetName.Contains("D "))
+        {
+            //4DoF - y축
+            yield return (RotateSettingAngle("D", angle));
+        }
+        else if (targetName.Contains("E "))
+        {
+            //5DoF - x축
+            yield return (RotateSettingAngle("E", angle));
+        }
+        else if (targetName.Contains("F "))
+        {
+            //6DoF - y축
+            yield return (RotateSettingAngle("F", angle));
+        }
+        else if (targetName.Contains("origin"))
+        {
+
+            yield return (RotateSettingAngle("origin", angle));
+
+        }
+
+
+    }
+
+
+
+
+    //delay에 따라 step을 작동
+    public IEnumerator RunStep(int requestRoutine)
+    {
+        int loopCnt = 0;
+
+        while (isCycleAction)
+        {
+
+            if (steps.Count > 0)
+            {
+
+                if (requestRoutine != 0 && loopCnt >= requestRoutine)
                 {
-                    isValidSolution = false;
                     break;
                 }
-            }
 
-            // If the solution is valid, format and add the joint angles to the info list
-            if (isValidSolution)
-            {
-                string solutionInfo = "";
-                for (int row = 0; row < 6; row++)
+                loopCnt++;
+
+                /****** Orgin Class ********/
+                Step orginStep = new Step(0, 1, 1, false);
+                orginStep.angleAValue = 0;
+                orginStep.angleBValue = 0;
+                orginStep.angleCValue = 0;
+                orginStep.angleDValue = 0;
+                orginStep.angleEValue = 0;
+                orginStep.angleFValue = 0;
+                /**************************/
+
+
+                for (int i = 0; i < steps.Count; i++)
                 {
-                    double angleInDegrees = Math.Round(Mathf.Rad2Deg * solutions[row, column], 2);
-                    solutionInfo += $"{angleInDegrees}";
-
-                    if (row < 5)
+                    getStepSetting(i);
+                    // origin에서 사이클 시작
+                    if (i == 0)
                     {
-                        solutionInfo += " | ";
+                        yield return (RotateAngle(orginStep, steps[i]));
                     }
+                    else
+                    {
+                        yield return (RotateAngle(steps[i - 1], steps[i]));
+
+                        //cycle && 마지막 step일 경우, origin으로 
+                        if (requestRoutine == 0 && i == steps.Count - 1)
+                        {
+                            yield return (RotateAngle(steps[i], orginStep));
+                        }
+
+                    }
+
                 }
-                info.Add(solutionInfo);
+
+
+
             }
-            // If the solution is not valid, add "NON DISPONIBLE" to the info list
             else
             {
-                info.Add("NON DISPONIBLE");
+                break;
             }
+
+
+        }
+    }
+
+    public void OriginRotation()
+    {
+        //1DoF - z축
+        DoF_1.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+        //2DoF - x축
+        DoF_2.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+        //3DoF - x축
+        DoF_3.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+        //4DoF - y축
+        DoF_4.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+        //5DoF - x축
+        DoF_5.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+        //6DoF - y축
+        DoF_6.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
+    }
+
+    //delay안에서 모터를 회전(slerp)
+    IEnumerator RotateAngle(Step preStep, Step step)
+    {
+
+        if (step.Speed == 0)
+        {
+            step.Speed = 1;
         }
 
-        return info;
+        if (step.Delay == 0)
+        {
+            step.Delay = 1;
+        }
+
+        currentTime = 0;
+        while (true)
+        {
+            currentTime += Time.deltaTime * step.Speed;
+
+            if (currentTime > step.Delay)
+            {
+                currentTime = 0;
+
+                break;
+            }
+            //1DoF - z축        
+            DoF_1.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(0, 0, preStep.angleAValue)), Quaternion.Euler(new Vector3(0,  0, step.angleAValue)), currentTime / step.Delay);
+
+            //2DoF - x축
+            DoF_2.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(preStep.angleBValue, 0, 0)), Quaternion.Euler(new Vector3(step.angleBValue, 0, 0)), currentTime / step.Delay);
+
+            //3DoF - x축
+            DoF_3.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(preStep.angleCValue, 0, 0)), Quaternion.Euler(new Vector3(step.angleCValue, 0, 0)), currentTime / step.Delay);
+
+            //4DoF - y축
+            DoF_4.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(0, preStep.angleDValue, 0 )), Quaternion.Euler(new Vector3(0, step.angleDValue, 0)), currentTime / step.Delay);
+
+            //5DoF - x축
+            DoF_5.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(preStep.angleEValue, 0, 0)), Quaternion.Euler(new Vector3(step.angleEValue, 0, 0)), currentTime / step.Delay);
+
+            //6DoF - y축
+            DoF_6.localRotation = Quaternion.Slerp(Quaternion.Euler(new Vector3(0, preStep.angleFValue, 0)), Quaternion.Euler(new Vector3(0, step.angleFValue, 0)), currentTime / step.Delay);
+
+
+            yield return new WaitForEndOfFrame();
+
+        }
+
+
     }
+
+
+    IEnumerator RotateSettingAngle(string moterType, float angle)
+    {
+
+        float delay = 2f;
+        float speed = 1f;
+        float currentTime = 0;
+
+        Vector3 baseAVector = DoF_1.transform.localPosition;
+        Vector3 baseBVector = DoF_2.transform.localPosition;
+        Vector3 baseCVector = DoF_3.transform.localPosition;
+        Vector3 baseDVector = DoF_4.transform.localPosition;
+        Vector3 baseEVector = DoF_5.transform.localPosition;
+        Vector3 baseFVector = DoF_6.transform.localPosition;
+
+
+        while (true)
+        {
+            currentTime += Time.deltaTime * speed;
+
+            if (currentTime > delay)
+            {
+                currentTime = 0;
+                break;
+            }
+
+            switch (moterType)
+            {
+                case "A":
+                    //1DoF - z축
+                    DoF_1.localRotation = Quaternion.Slerp(Quaternion.Euler(baseAVector), Quaternion.Euler(new Vector3(0,  0, angle)), currentTime / delay);
+                    break;
+                case "B":
+
+                    //2DoF - x축
+                    DoF_2.localRotation = Quaternion.Slerp(Quaternion.Euler(baseBVector), Quaternion.Euler(new Vector3(angle, 0, 0 )), currentTime / delay);
+                    break;
+                case "C":
+                    //3DoF - x축
+                    DoF_3.localRotation = Quaternion.Slerp(Quaternion.Euler(baseCVector), Quaternion.Euler(new Vector3(angle, 0, 0)), currentTime / delay);
+
+                    break;
+                case "D":
+                    //4DoF - y축
+                    DoF_4.localRotation = Quaternion.Slerp(Quaternion.Euler(baseDVector), Quaternion.Euler(new Vector3(0, angle , 0)), currentTime / delay);
+
+                    break;
+
+                case "E":
+                    //5DoF - x축
+                    DoF_5.localRotation = Quaternion.Slerp(Quaternion.Euler(baseEVector), Quaternion.Euler(new Vector3(angle, 0, 0)), currentTime / delay);
+                    break;
+
+                case "F":
+                    //6DoF - y축
+                    DoF_6.localRotation = Quaternion.Slerp(Quaternion.Euler(baseEVector), Quaternion.Euler(new Vector3(0, angle, 0)), currentTime / delay);
+                    break;
+
+                default:
+                    //1DoF - y축
+                    DoF_1.localRotation = Quaternion.Slerp(Quaternion.Euler(baseAVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    //2DoF - z축
+                    DoF_2.localRotation = Quaternion.Slerp(Quaternion.Euler(baseBVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    //3DoF - x축
+                    DoF_3.localRotation = Quaternion.Slerp(Quaternion.Euler(baseCVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    //4DoF - z축
+                    DoF_4.localRotation = Quaternion.Slerp(Quaternion.Euler(baseDVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    //5DoF - x축
+                    DoF_5.localRotation = Quaternion.Slerp(Quaternion.Euler(baseEVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    //6DoF - y축
+                    DoF_6.localRotation = Quaternion.Slerp(Quaternion.Euler(baseEVector), Quaternion.Euler(new Vector3(0, 0, 0)), currentTime / delay);
+                    break;
+            }
+
+
+
+            yield return new WaitForEndOfFrame();
+
+        }
+
+
+    }
+
 
 }
