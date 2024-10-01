@@ -90,42 +90,68 @@ public class DMachine : MonoBehaviour
     }
     IEnumerator STEP3()
     {
-        Vector3 StartPos1 = Box.localPosition;
-        Vector3 EndPos1 = new Vector3(Box.localPosition.x, 2, Box.localPosition.z);
-        Quaternion UnderWingStart = Quaternion.Euler(0, 0, 0);
-        Quaternion UnderWingEnd1Of1 = Quaternion.Euler(0, 0, -15);
-        Quaternion UnderWingEnd2of1 = Quaternion.Euler(0, 0, 15);
+        Vector3 startPos1 = Box.localPosition;
+        Vector3 endPos1 = new Vector3(Box.localPosition.x, 1.96f, Box.localPosition.z);
+        Quaternion underWingStart1Of1 = Quaternion.Euler(0, 0, 0);
+        Quaternion underWingEnd1Of1 = Quaternion.Euler(0, 0, -15);
+        Quaternion underWingEnd2of1 = Quaternion.Euler(0, 0, 15);
 
+        float duration = 1f;
+        float currentTime = 0f;
 
-        float duration = 1;
-        float CurrentTime = 0;
-        //STEP3-1
-        while (CurrentTime < duration)
+        // STEP3-1: Box 이동 및 날개 회전
+        while (currentTime < duration)
         {
-            CurrentTime += Time.deltaTime;
-            Box.transform.localPosition = Vector3.Lerp(StartPos1, EndPos1, CurrentTime / duration);
-            UnderWing1.localRotation = Quaternion.Lerp(UnderWingStart, UnderWingEnd1Of1, CurrentTime / duration);
-            UnderWing2.localRotation = Quaternion.Lerp(UnderWingStart, UnderWingEnd2of1, CurrentTime / duration);
+            currentTime += Time.deltaTime;
+
+            // Box의 위치 업데이트
+            Box.transform.localPosition = Vector3.Lerp(startPos1, endPos1, currentTime / duration);
+
+            // 날개 회전
+            UnderWing1.localRotation = Quaternion.Lerp(underWingStart1Of1, underWingEnd1Of1, currentTime / duration);
+            UnderWing2.localRotation = Quaternion.Lerp(underWingStart1Of1, underWingEnd2of1, currentTime / duration);
+
             yield return null;
         }
-        //초기화
-        CurrentTime = 0;
-        Vector3 StartPos2 = Box.localPosition;
-        Vector3 EndPos2 = new Vector3(Box.localPosition.x, Box.localPosition.y, 0.92f);
-        Quaternion UnderWingStart1Of2 = Quaternion.Euler(0, 0, -15);
-        Quaternion UnderWingStart2Of2 = Quaternion.Euler(0, 0, 15);
-        Quaternion UnderWingEnd1Of2 = Quaternion.Euler(0, 0, -90);
-        Quaternion UnderWingEnd2Of2 = Quaternion.Euler(0, 0, 90);
-        while (CurrentTime < duration)
-        {
-            CurrentTime += Time.deltaTime;
-            Box.transform.localPosition = Vector3.Lerp(StartPos2, EndPos2, CurrentTime / duration);
-            UnderWing1.localRotation = Quaternion.Lerp(UnderWingStart1Of2, UnderWingEnd1Of2, CurrentTime / duration);
-            UnderWing2.localRotation = Quaternion.Lerp(UnderWingStart2Of2, UnderWingEnd2Of2, CurrentTime / duration);
-            yield return null; ;
 
+        // STEP3-2: Box의 새로운 위치로 이동 및 날개 회전
+        Vector3 startPos2 = Box.localPosition;
+        Vector3 endPos2 = new Vector3(Box.localPosition.x, Box.localPosition.y, 0.92f);
+
+        Quaternion underWingStart1Of2 = Quaternion.Euler(0, 0, -15);
+        Quaternion underWingStart2Of2 = Quaternion.Euler(0, 0, 15);
+        Quaternion underWingEnd1Of2 = Quaternion.Euler(0, 0, -90);
+        Quaternion underWingEnd2Of2 = Quaternion.Euler(0, 0, 90);
+
+        float boxDuration = 2f; // Box는 2초 동안 이동
+        float wingDuration = 0.5f; // 날개는 0.5초 동안 회전
+
+        currentTime = 0f; // 초기화
+
+        // Box 이동과 날개 회전을 동시에 수행
+        while (currentTime < boxDuration)
+        {
+            currentTime += Time.deltaTime;
+
+            // Box 이동 업데이트
+            Box.transform.localPosition = Vector3.Lerp(startPos2, endPos2, currentTime / boxDuration);
+
+            // 날개 회전 (0.5초 동안 회전) - 시작 시간을 1.5초로 조정
+            if (currentTime >= 0.5f && currentTime <= 0.5f + wingDuration)
+            {
+                float ratio = (currentTime - 0.5f) / wingDuration; // 1.5초부터 시작
+                UnderWing1.localRotation = Quaternion.Lerp(underWingStart1Of2, underWingEnd1Of2, ratio);
+                UnderWing2.localRotation = Quaternion.Lerp(underWingStart2Of2, underWingEnd2Of2, ratio);
+            }
+
+            yield return null; // 다음 프레임까지 대기
         }
+
+        // 최종 회전 설정
+        UnderWing1.localRotation = underWingEnd1Of2; // 최종 회전 설정
+        UnderWing2.localRotation = underWingEnd2Of2; // 최종 회전 설정
     }
+
 
     IEnumerator AllStep()
     {
