@@ -233,11 +233,9 @@ public class AGV_RobotArmController : MonoBehaviour
 
     public void OnChangeGripperBtnClkEvent(UnityEngine.UI.Toggle isGripperON)
     {
-        AGV_RobotArmGripper.instance.isGripperMode = isGripperON.isOn;
         //grip 해제시 자식 제거
         if (!isGripperON.isOn)
         {
-
             AGV_RobotArmGripper.instance.removeChild(isGripperON.isOn);
         }
     }

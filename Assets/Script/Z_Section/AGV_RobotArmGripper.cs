@@ -17,9 +17,9 @@ public class AGV_RobotArmGripper : MonoBehaviour
     [Header("Gripper 움직임 관련")]
     [SerializeField] Transform gripperL;
     [SerializeField] Transform gripperR;
-    [SerializeField] float maxRange;
-    [SerializeField] float minRange;
-    [SerializeField] float duration;
+    [SerializeField] float maxRange = 0.6f;
+    [SerializeField] float minRange = 0f;
+    [SerializeField] float duration = 2;
     [SerializeField] MeshRenderer lsFront;
     [SerializeField] MeshRenderer lsBack;
     [SerializeField] bool isMoving;
@@ -97,8 +97,8 @@ public class AGV_RobotArmGripper : MonoBehaviour
                 Rigidbody childRb = gripper.GetChild(0).GetComponent<Rigidbody>();
                 if (childRb.tag.Contains("토트") || childRb.tag.Contains("tott"))
                 {
-                    //childRb.isKinematic = false;
-                    //childRb.useGravity = true;
+                    childRb.isKinematic = false;
+                    childRb.useGravity = true;
                     gripper.DetachChildren();
                     //isAttached = false;
                 }
@@ -119,7 +119,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
         if (!isMoving && !isForward)
         {
             StartCoroutine(MoviCylinder(gripperR, startRPos, endRPos, duration));
-            StartCoroutine(MoviCylinder(gripperL, startLPos, endLPos, duration));
+            //StartCoroutine(MoviCylinder(gripperL, startLPos, endLPos, duration));
         }
     }
 
@@ -133,7 +133,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
         if (!isMoving && isForward)
         {
             StartCoroutine(MoviCylinder(gripperR, endRPos, startRPos, duration));
-            StartCoroutine(MoviCylinder(gripperL, endLPos, startLPos, duration));
+            //StartCoroutine(MoviCylinder(gripperL, endLPos, startLPos, duration));
         }
     }
 
