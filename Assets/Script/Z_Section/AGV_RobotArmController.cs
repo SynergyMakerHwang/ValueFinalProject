@@ -9,15 +9,18 @@ using System.Collections;
 public class AGV_RobotArmController : MonoBehaviour
 {
     public static AGV_RobotArmController instance;
+
+    [Header("설정 관련")]
     public List<Step> steps = new List<Step>();
+    [SerializeField] TMP_InputField fileNameVal;
     [SerializeField] int stepCnt;
     [SerializeField] int currentStep;
-
     [SerializeField] TMP_InputField stepVal;
     [SerializeField] TMP_Text totalStepTxt;
     [SerializeField] TMP_InputField speedVal;
     [SerializeField] TMP_InputField delayVal;
-    [SerializeField] UnityEngine.UI.Toggle isSuctionVal;
+    [SerializeField] UnityEngine.UI.Toggle isGripperVal;
+    [SerializeField] UnityEngine.UI.Toggle isGripperOpenVal;
     [SerializeField] TMP_InputField angleAVal;
     [SerializeField] TMP_InputField angleBVal;
     [SerializeField] TMP_InputField angleCVal;
@@ -26,20 +29,23 @@ public class AGV_RobotArmController : MonoBehaviour
     [SerializeField] TMP_InputField angleFVal;
     public GameObject canvas;
 
-
+    [Header("로봇팔 관절")]
     [SerializeField] Transform DoF_1;
     [SerializeField] Transform DoF_2;
     [SerializeField] Transform DoF_3;
     [SerializeField] Transform DoF_4;
     [SerializeField] Transform DoF_5;
     [SerializeField] Transform DoF_6;
+
+
+
     float currentTime;
     bool isCycleAction = false;
 
     public bool IsCycleAction { get => isCycleAction; set => isCycleAction = value; }
 
     string fileName = "program.csv";
-
+   
 
     [Serializable]
     public class Step
@@ -50,8 +56,11 @@ public class AGV_RobotArmController : MonoBehaviour
         public float Delay { get => delay; set => delay = value; }
         [SerializeField] float delay = 1;
 
-        public bool isSuction { get => isSuctionON; set => isSuctionON = value; }
-        [SerializeField] bool isSuctionON;
+        public bool isGripper { get => isGripperON; set => isGripperON = value; }
+       [SerializeField] bool isGripperON;
+
+        public bool isGripperOpen { get => isGripperOpenON; set => isGripperOpenON = value; }
+        [SerializeField] bool isGripperOpenON;
 
         public float Speed { get => speed; set => speed = value; }
         [SerializeField] float speed = 1;
@@ -81,12 +90,13 @@ public class AGV_RobotArmController : MonoBehaviour
 
 
 
-        public Step(int _step, float _speed, float _delay, bool _isSuctioinOn)
+        public Step(int _step, float _speed, float _delay, bool _isGripperOn, bool _isGripperOpenOn)
         {
             step = _step;
             speed = _speed;
             delay = _delay;
-            isSuctionON = _isSuctioinOn;
+            isGripperON = _isGripperOn;
+            isGripperOpenON = _isGripperOpenOn;
         }
     }
 
@@ -128,7 +138,8 @@ public class AGV_RobotArmController : MonoBehaviour
 
             step.Delay = float.Parse(delayVal.text);
             step.Speed = float.Parse(speedVal.text);
-            step.isSuction = isSuctionVal.isOn;
+            step.isGripper = isGripperVal.isOn;
+            step.isGripperOpen = isGripperOpenVal.isOn;
 
             //추가
         }
@@ -138,7 +149,7 @@ public class AGV_RobotArmController : MonoBehaviour
             float delay = float.Parse(delayVal.text);
             float speed = float.Parse(speedVal.text);
 
-            step = new Step(stepCnt++, speed, delay, isSuctionVal.isOn);
+            step = new Step(stepCnt++, speed, delay, isGripperVal.isOn, isGripperOpenVal.isOn);
             step.angleAValue = float.Parse(angleAVal.text);
             step.angleBValue = float.Parse(angleBVal.text);
             step.angleCValue = float.Parse(angleCVal.text);
@@ -156,13 +167,16 @@ public class AGV_RobotArmController : MonoBehaviour
 
     private void SaveCSV(Step step)
     {
+        if ("" != fileNameVal.text) {
+            fileName=  fileNameVal.text;
+        }
 
         FileStream fs = new FileStream(fileName, FileMode.Append);
         StreamWriter sw = new StreamWriter(fs);
 
         string line = $"{step.StepNum},{step.Speed},{step.Delay}" +
             $",{step.angleAValue},{step.angleBValue},{step.angleCValue},{step.angleDValue},{step.angleEValue},{step.angleFValue}" +
-            $",{step.isSuction}";
+            $",{step.isGripper},{step.isGripperOpen}";
         sw.WriteLine(line);
 
         sw.Close();
@@ -171,6 +185,15 @@ public class AGV_RobotArmController : MonoBehaviour
 
     public void OnLoadCSVBtnClkEvent()
     {
+        if ("" != fileNameVal.text)
+        {
+            fileName = fileNameVal.text;
+        }
+        else {
+            fileNameVal.text = fileName;
+        }
+
+        
         steps.Clear();
         steps = new List<Step>();
         FileStream fs = new FileStream(fileName, FileMode.Open);
@@ -183,7 +206,7 @@ public class AGV_RobotArmController : MonoBehaviour
         {
             info = line.Split(",");
 
-            step = new Step(int.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]), bool.Parse(info[9]));
+            step = new Step(int.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]), bool.Parse(info[9]), bool.Parse(info[10]));
             step.angleAValue = float.Parse(info[3]);
             step.angleBValue = float.Parse(info[4]);
             step.angleCValue = float.Parse(info[5]);
@@ -208,16 +231,31 @@ public class AGV_RobotArmController : MonoBehaviour
 
     }
 
-    public void OnChangeSuctionBtnClkEvent(UnityEngine.UI.Toggle isSuctionON)
+    public void OnChangeGripperBtnClkEvent(UnityEngine.UI.Toggle isGripperON)
     {
-        AGV_RobotArmGripper.instance.isSuctionMode = isSuctionON.isOn;
-        //suction 해제시 자식 제거
-        if (!isSuctionON.isOn)
+        AGV_RobotArmGripper.instance.isGripperMode = isGripperON.isOn;
+        //grip 해제시 자식 제거
+        if (!isGripperON.isOn)
         {
 
-            AGV_RobotArmGripper.instance.removeChild(isSuctionON.isOn);
+            AGV_RobotArmGripper.instance.removeChild(isGripperON.isOn);
         }
     }
+
+    public void OnChangeGripperOpenBtnClkEvent(UnityEngine.UI.Toggle isGripperOpenON)
+    {
+        
+        //그리퍼 open
+        if (isGripperOpenON.isOn)
+        {
+            AGV_RobotArmGripper.instance.OnForwardBtnClkEvent();
+        //그리퍼 close
+        }
+        else {
+            AGV_RobotArmGripper.instance.OnBackwardBtnClkEvent();
+        }
+    }
+
 
     public void OnStepUpBtnClkEvent()
     {
@@ -268,7 +306,8 @@ public class AGV_RobotArmController : MonoBehaviour
             stepVal.text = stepSetting.StepNum.ToString();
             delayVal.text = stepSetting.Delay.ToString();
             speedVal.text = stepSetting.Speed.ToString();
-            isSuctionVal.isOn = stepSetting.isSuction;
+            isGripperVal.isOn = stepSetting.isGripper;
+            isGripperOpenVal.isOn = stepSetting.isGripperOpen;
 
             angleAVal.text = stepSetting.angleAValue.ToString();
             angleBVal.text = stepSetting.angleBValue.ToString();
@@ -304,7 +343,8 @@ public class AGV_RobotArmController : MonoBehaviour
         angleDVal.text = "0";
         angleEVal.text = "0";
         angleFVal.text = "0";
-        isSuctionVal.isOn = false;
+        isGripperVal.isOn = false;
+        isGripperOpenVal.isOn = false;
 
 
     }
@@ -484,7 +524,7 @@ public class AGV_RobotArmController : MonoBehaviour
                 loopCnt++;
 
                 /****** Orgin Class ********/
-                Step orginStep = new Step(0, 1, 1, false);
+                Step orginStep = new Step(0, 1, 1, false, false);
                 orginStep.angleAValue = 0;
                 orginStep.angleBValue = 0;
                 orginStep.angleCValue = 0;

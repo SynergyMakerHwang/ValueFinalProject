@@ -200,14 +200,14 @@ public class RobotTest : MonoBehaviour
 
     }
 
-    public void OnChangeSuctionBtnClkEvent(UnityEngine.UI.Toggle isSuctionON)
+    public void OnChangeSuctionBtnClkEvent(UnityEngine.UI.Toggle isGripperON)
     {
-        AGV_RobotArmGripper.instance.isSuctionMode = isSuctionON.isOn;
+        AGV_RobotArmGripper.instance.isGripperMode = isGripperON.isOn;
         //suction 해제시 자식 제거
-        if (!isSuctionON.isOn)
+        if (!isGripperON.isOn)
         {
 
-            AGV_RobotArmGripper.instance.removeChild(isSuctionON.isOn);
+            AGV_RobotArmGripper.instance.removeChild(isGripperON.isOn);
         }
     }
 
