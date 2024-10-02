@@ -18,6 +18,11 @@ public class DMachine : MonoBehaviour
     [SerializeField] Transform UnderWing3;
     [SerializeField] Transform UnderWing4;
 
+    [Header("커터")]
+    [SerializeField] Transform tapecutterPivot;
+    [SerializeField] GameObject Tape;
+
+
 
     private float angle = 30f * Mathf.Deg2Rad; // 시작 각도 (30도, 라디안으로 변환)
     private float initialXRotation = 30f; // 초기 X 회전 각도
@@ -33,7 +38,7 @@ public class DMachine : MonoBehaviour
     }
 
 
-
+    //및날개 접는단계
     IEnumerator STEP1()
     {
         float Lengh = Vector3.Distance(Box.transform.localPosition, STEP1Point.localPosition);
@@ -55,6 +60,7 @@ public class DMachine : MonoBehaviour
         Box.transform.localPosition = STEP1Point.localPosition;
 
     }
+    //박스 원운동
     IEnumerator STEP2()
     {
         // 목표 각도 (90도, 라디안으로 변환)
@@ -88,10 +94,11 @@ public class DMachine : MonoBehaviour
         }
 
     }
+    //원운동 후 직선운동 및밑날개 접는단계
     IEnumerator STEP3()
     {
         Vector3 startPos1 = Box.localPosition;
-        Vector3 endPos1 = new Vector3(Box.localPosition.x, 1.96f, Box.localPosition.z);
+        Vector3 endPos1 = new Vector3(Box.localPosition.x, 2f, Box.localPosition.z);
         Quaternion underWingStart1Of1 = Quaternion.Euler(0, 0, 0);
         Quaternion underWingEnd1Of1 = Quaternion.Euler(0, 0, -15);
         Quaternion underWingEnd2of1 = Quaternion.Euler(0, 0, 15);
@@ -114,29 +121,29 @@ public class DMachine : MonoBehaviour
             yield return null;
         }
 
-        // STEP3-2: Box의 새로운 위치로 이동 및 날개 회전
+
+
         Vector3 startPos2 = Box.localPosition;
-        Vector3 endPos2 = new Vector3(Box.localPosition.x, Box.localPosition.y, 0.92f);
+        Vector3 endPos2 = new Vector3(Box.localPosition.x, Box.localPosition.y, 1f);
 
         Quaternion underWingStart1Of2 = Quaternion.Euler(0, 0, -15);
         Quaternion underWingStart2Of2 = Quaternion.Euler(0, 0, 15);
         Quaternion underWingEnd1Of2 = Quaternion.Euler(0, 0, -90);
         Quaternion underWingEnd2Of2 = Quaternion.Euler(0, 0, 90);
 
-        float boxDuration = 2f; // Box는 2초 동안 이동
-        float wingDuration = 0.5f; // 날개는 0.5초 동안 회전
+        float boxDuration = 2f;
+        float wingDuration = 0.5f;
 
         currentTime = 0f; // 초기화
 
-        // Box 이동과 날개 회전을 동시에 수행
+
         while (currentTime < boxDuration)
         {
             currentTime += Time.deltaTime;
 
-            // Box 이동 업데이트
+
             Box.transform.localPosition = Vector3.Lerp(startPos2, endPos2, currentTime / boxDuration);
 
-            // 날개 회전 (0.5초 동안 회전) - 시작 시간을 1.5초로 조정
             if (currentTime >= 0.5f && currentTime <= 0.5f + wingDuration)
             {
                 float ratio = (currentTime - 0.5f) / wingDuration; // 1.5초부터 시작
@@ -144,12 +151,39 @@ public class DMachine : MonoBehaviour
                 UnderWing2.localRotation = Quaternion.Lerp(underWingStart2Of2, underWingEnd2Of2, ratio);
             }
 
-            yield return null; // 다음 프레임까지 대기
+            yield return null;
+        }
+        currentTime = 0;
+        Vector3 startPos3 = Box.localPosition;
+        Vector3 endPos3 = new Vector3(Box.localPosition.x, 1.87f, Box.localPosition.z);
+        while (currentTime < boxDuration)
+        {
+            currentTime += Time.deltaTime;
+            Box.transform.localPosition = Vector3.Lerp(startPos3, endPos3, currentTime / boxDuration);
+            yield return null;
         }
 
-        // 최종 회전 설정
-        UnderWing1.localRotation = underWingEnd1Of2; // 최종 회전 설정
-        UnderWing2.localRotation = underWingEnd2Of2; // 최종 회전 설정
+    }
+
+    //박스 테이프 단계
+    IEnumerator STEP4()
+    {
+        //시간으로 제어하는게 편하다
+        float currentTime = 0f;
+        float duration = 2.89f;
+        Vector3 startPos = Box.localPosition;
+        Vector3 endPos = new Vector3(Box.localPosition.x, Box.localPosition.y, 2.6f);
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            Box.localPosition = Vector3.Lerp(startPos, endPos, currentTime / duration);
+            yield return null;
+        }
+
+        Vector3 SpotOfTape = new Vector3(Box.position.x+0.18f, Box.position.y, Box.position.z );
+        Instantiate(Tape, SpotOfTape, Quaternion.Euler(-90, 90, 0));
+        Tape.transform.SetParent(Box.transform);
+
     }
 
 
@@ -158,5 +192,6 @@ public class DMachine : MonoBehaviour
         yield return StartCoroutine(STEP1());
         yield return StartCoroutine(STEP2());
         yield return StartCoroutine(STEP3());
+        yield return StartCoroutine(STEP4());
     }
 }
