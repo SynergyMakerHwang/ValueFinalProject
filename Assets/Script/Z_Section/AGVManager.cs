@@ -14,16 +14,14 @@ public class AGVManager : MonoBehaviour
     private int currentPointIndex = 0;
     private int duration = 10;
 
-
     private void Start()
     {
         
     }
 
-
     public void OnclickNextPoint()
     {
-       
+      
         if (pathPoints.Length > 0 && currentPointIndex < pathPoints.Length)
         {
             StartCoroutine(moveToNextPoint(currentPointIndex));

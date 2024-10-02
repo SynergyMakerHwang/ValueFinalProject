@@ -1,13 +1,37 @@
 using UnityEngine;
-using Unity.VisualScripting;
+using System.Collections.Generic;
+using System;
+using System.Collections;
+
 
 public class AGV_RobotArmGripper : MonoBehaviour
 {
-
-    public bool isSuctionMode = false;
-    Rigidbody rb;
-    [SerializeField] Transform suction;
     public static AGV_RobotArmGripper instance;
+
+    [Header("Grip 모드 관련")]
+    public bool isGripperMode = false;
+    Rigidbody rb;
+    [SerializeField] Transform gripper;    
+
+
+    [Header("Gripper 움직임 관련")]
+    [SerializeField] Transform gripperL;
+    [SerializeField] Transform gripperR;
+    [SerializeField] float maxRange;
+    [SerializeField] float minRange;
+    [SerializeField] float duration;
+    [SerializeField] MeshRenderer lsFront;
+    [SerializeField] MeshRenderer lsBack;
+    [SerializeField] bool isMoving;
+    [SerializeField] bool isForward;
+    [SerializeField] bool isForwardOn;
+
+
+    public bool LsForwardOn { get { return isForwardOn; } }
+    [SerializeField] bool isBackWardOn;
+    public bool LsBackWardOn { get { return isBackWardOn; } }
+    float currentTime;       
+
 
     private void Awake()
     {
@@ -15,16 +39,27 @@ public class AGV_RobotArmGripper : MonoBehaviour
             instance = this;
     }
 
+
+    private void Start()
+    {
+        isBackWardOn = true;
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
+        print(other);
+        print("other");
 
         rb = other.GetComponent<Rigidbody>();
-
-        if (isSuctionMode)
+        print("isGripperMode" + isGripperMode);
+        if (isGripperMode)
         {
-            if (other.tag.Contains("토트"))
+          
+            print("other.tag" + other.tag);
+            if (other.tag.Contains("토트") || other.tag.Contains("tott"))
             {
-
+              
                 rb.isKinematic = true;
                 rb.useGravity = false;
 
@@ -38,7 +73,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
         }
         else
         {
-            if (other.tag.Contains("토트"))
+            if (other.tag.Contains("토트") || other.tag.Contains("tott"))
                 other.transform.SetParent(null);
             //isAttached = false;
 
@@ -52,24 +87,93 @@ public class AGV_RobotArmGripper : MonoBehaviour
     }
 
 
-    public void removeChild(bool isSuctionOn)
+    public void removeChild(bool isGripperOn)
     {
 
-        if (!isSuctionOn)
+        if (!isGripperOn)
         {
-            if (suction.childCount > 0)
+            if (gripper.childCount > 0)
             {
-                Rigidbody childRb = suction.GetChild(0).GetComponent<Rigidbody>();
-                if (childRb.tag.Contains("토트"))
+                Rigidbody childRb = gripper.GetChild(0).GetComponent<Rigidbody>();
+                if (childRb.tag.Contains("토트") || childRb.tag.Contains("tott"))
                 {
-                    childRb.isKinematic = false;
-                    childRb.useGravity = true;
-                    suction.DetachChildren();
+                    //childRb.isKinematic = false;
+                    //childRb.useGravity = true;
+                    gripper.DetachChildren();
                     //isAttached = false;
                 }
             }
         }
     }
 
+  
+
+
+    public void OnForwardBtnClkEvent()
+    {
+        Vector3 startRPos = new Vector3(0, 0, minRange);
+        Vector3 endRPos = new Vector3(0, 0, maxRange);
+        Vector3 startLPos = new Vector3(0, 0, -minRange);
+        Vector3 endLPos = new Vector3(0, 0, -maxRange);
+
+        if (!isMoving && !isForward)
+        {
+            StartCoroutine(MoviCylinder(gripperR, startRPos, endRPos, duration));
+            StartCoroutine(MoviCylinder(gripperL, startLPos, endLPos, duration));
+        }
+    }
+
+    public void OnBackwardBtnClkEvent()
+    {
+        Vector3 startRPos = new Vector3(0, 0, minRange);
+        Vector3 endRPos = new Vector3(0, 0, maxRange);
+        Vector3 startLPos = new Vector3(0, 0, -minRange);
+        Vector3 endLPos = new Vector3(0, 0, -maxRange);
+
+        if (!isMoving && isForward)
+        {
+            StartCoroutine(MoviCylinder(gripperR, endRPos, startRPos, duration));
+            StartCoroutine(MoviCylinder(gripperL, endLPos, startLPos, duration));
+        }
+    }
+
+    IEnumerator MoviCylinder(Transform cylinderRod, Vector3 from, Vector3 to, float duration)
+    {
+        isMoving = true;
+
+        if (isForward)
+        {
+            isForwardOn = false;
+        }
+        else
+        {
+            isBackWardOn = false;
+        }
+
+
+        while (isMoving)
+        {
+            currentTime += Time.deltaTime;
+            if (currentTime > duration)
+            {
+                currentTime = 0;
+                isMoving = false;
+                if (isForward)
+                {
+                    isBackWardOn = true;
+                }
+                else
+                {
+                    isForwardOn = true;
+                                    }
+                isForward = !isForward;
+                break;
+            }
+
+            cylinderRod.localPosition = Vector3.Lerp(from, to, currentTime / duration);
+            yield return new WaitForEndOfFrame();
+        }
+
+    }
 
 }
