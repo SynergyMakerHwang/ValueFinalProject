@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProductClass : MonoBehaviour
@@ -17,6 +19,7 @@ public class ProductClass : MonoBehaviour
     public class Product
     {
         public string productid;
+        public List<string> Ingredients;
         public string productname;
         public string processlist;
     }
