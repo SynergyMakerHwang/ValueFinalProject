@@ -48,18 +48,18 @@ public class AGV_RobotArmGripper : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print(other);
-        print("other");
+        
+        print("other"+ other+"//"+ other.tag);
+        print("isGripperMode" + isGripperMode);
 
         rb = other.GetComponent<Rigidbody>();
-        print("isGripperMode" + isGripperMode);
         if (isGripperMode)
         {
           
-            print("other.tag" + other.tag);
+            
             if (other.tag.Contains("토트") || other.tag.Contains("tott"))
             {
-              
+                
                 rb.isKinematic = true;
                 rb.useGravity = false;
 
@@ -69,6 +69,8 @@ public class AGV_RobotArmGripper : MonoBehaviour
 
                 other.transform.SetParent(transform);
                 //isAttached = true;
+
+                print("gripper");
             }
         }
         else
@@ -89,14 +91,19 @@ public class AGV_RobotArmGripper : MonoBehaviour
 
     public void removeChild(bool isGripperOn)
     {
-
+        isGripperMode = false;
+        print("removeChild====="+ isGripperOn);
         if (!isGripperOn)
         {
+            print("removeChild===1==" + isGripperOn);
             if (gripper.childCount > 0)
             {
-                Rigidbody childRb = gripper.GetChild(0).GetComponent<Rigidbody>();
+                print("removeChild===2==" + isGripperOn);
+                Rigidbody childRb = gripper.GetChild(2).GetComponent<Rigidbody>();
+                print("removeChild===3==" + childRb);
                 if (childRb.tag.Contains("토트") || childRb.tag.Contains("tott"))
                 {
+                    print("removeChild===4==" + isGripperOn);
                     childRb.isKinematic = false;
                     childRb.useGravity = true;
                     gripper.DetachChildren();

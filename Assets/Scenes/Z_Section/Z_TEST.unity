@@ -33332,7 +33332,7 @@ Transform:
   m_GameObject: {fileID: 8621624975522797366}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.21077207, y: -0.08776708, z: 0.041294962}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34217,7 +34217,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2105493456651488362}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.26996744, y: 0.6535052, z: 0.2699304, w: 0.65359473}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35977,7 +35977,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332660637159963556}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.11851637, y: 0.6971039, z: 0.6971039, w: -0.11851637}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -39460,6 +39460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6836648119061586268}
   - component: {fileID: 8290848568811865096}
+  - component: {fileID: 8290848568811865097}
   m_Layer: 0
   m_Name: BXP110L_A001
   m_TagString: Untagged
@@ -39493,7 +39494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4065522853832278802}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.045530677, y: -0.007740788, z: -0.16742861, w: 0.9848019}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41049,14 +41050,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3270885795615233491}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0019999743, y: 0.22800007, z: 0.0014999211}
+  m_LocalRotation: {x: 0.28954092, y: -0.6023943, z: -0.24881904, w: 0.7009824}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1373920852597654702}
   m_Father: {fileID: 674907707782353848}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &4846565897748026107
 RectTransform:
   m_ObjectHideFlags: 0
@@ -46189,7 +46190,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6294697487471841919}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.9989426, y: -0.0000000047925823, z: -0.0000000060535963,
+    w: -0.04597589}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46463,7 +46465,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5480798949073294067}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071553, y: -0.00014734267, z: -0.70705837, w: 0.00014732032}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -47797,7 +47799,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3997194414603889823}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7745c8d6eae2ac54eafdeb1b06ce04c5, type: 3}
   m_Name: 
@@ -47825,6 +47827,26 @@ MonoBehaviour:
   DoF_4: {fileID: 7703662473965157992}
   DoF_5: {fileID: 674907707782353848}
   DoF_6: {fileID: 4834061636876519088}
+--- !u!114 &8290848568811865097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3997194414603889823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efdb59ff7e87de6448b707805d216303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseJoint: {fileID: 1889694607683844917}
+  joint1: {fileID: 4026943433420591991}
+  joint2: {fileID: 7464412079336044923}
+  joint3: {fileID: 7703662473965157992}
+  joint4: {fileID: 674907707782353848}
+  joint5: {fileID: 4834061636876519088}
+  endEffector: {fileID: 186473159948890923}
+  target: {fileID: 186473159948890923}
 --- !u!1 &8308914395429768484
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,14 +6,26 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class AGV_RobotArmInverse : MonoBehaviour
 {
-    public Transform ik;
+ /*   public Transform ik;
     public int solutionID;
     private List<string> IK_Solutions = new List<string>();
     public List<double> goodSolution = new List<double>();
     public List<Transform> robot = new List<Transform>();
+*/
+
+    public Transform baseJoint;
+    public Transform joint1;
+    public Transform joint2;
+    public Transform joint3;
+    public Transform joint4;
+    public Transform joint5;
+    public Transform endEffector;
+    public Transform target;
+
+    private float linkLength = 10f; // 각 링크의 길이
 
     // UR16e robot arm Denavit-Hartenberg parameters matrix
-   public static double[,] DH_matrix_UR16e = new double[6, 3] {
+    public static double[,] DH_matrix_UR16e = new double[6, 3] {
         { 0, Mathf.PI / 2.0, 0.1807 },
         { -0.4784, 0, 0 },
         { -0.36, 0, 0 },
@@ -25,7 +37,8 @@ public class AGV_RobotArmInverse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Calculate the transformation matrix for the IK
+        SolveIK();
+      /*  // Calculate the transformation matrix for the IK
         Matrix4x4 transform_matrix = GetTransformMatrix(ik);
 
         // Reflect the matrix along the Y-axis
@@ -47,7 +60,7 @@ public class AGV_RobotArmInverse : MonoBehaviour
         goodSolution.Add(solutions[2, 5]);
         goodSolution.Add(solutions[3, 5]);
         goodSolution.Add(solutions[4, 5]);
-        goodSolution.Add(solutions[5, 5]);
+        goodSolution.Add(solutions[5, 5]);*/
     }
 
     // Get the transformation matrix for the given transform
@@ -310,5 +323,58 @@ public class AGV_RobotArmInverse : MonoBehaviour
 
         return info;
     }
+
+
+
+
+
+
+
+    void SolveIK()
+    {
+        Vector3 targetPosition = target.position;
+
+        // Step 1: Calculate the base joint rotation (Z-axis)
+        Vector3 directionToTarget = targetPosition - baseJoint.position;
+        float angleBase = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+        baseJoint.rotation = Quaternion.Euler(0, 0, angleBase);
+
+        // Step 2: Calculate positions of joints
+        Vector3 joint1Position = baseJoint.position + baseJoint.up * linkLength;
+        Vector3 joint2Position = joint1Position + joint1.up * linkLength;
+        Vector3 joint3Position = joint2Position + joint2.up * linkLength;
+        Vector3 joint4Position = joint3Position + joint3.up * linkLength;
+        Vector3 joint5Position = joint4Position + joint4.up * linkLength;
+
+        // Step 3: Calculate joint1 rotation (X-axis)
+        Vector3 joint1Direction = targetPosition - joint1Position;
+        float angleJoint1 = Mathf.Atan2(joint1Direction.z, joint1Direction.magnitude) * Mathf.Rad2Deg;
+        joint1.rotation = Quaternion.Euler(angleJoint1, 0, 0);
+
+        // Step 4: Calculate joint2 rotation (X-axis)
+        Vector3 joint2Direction = targetPosition - joint2Position;
+        float angleJoint2 = Mathf.Atan2(joint2Direction.z, joint2Direction.magnitude) * Mathf.Rad2Deg;
+        joint2.rotation = Quaternion.Euler(angleJoint2, 0, 0);
+
+        // Step 5: Calculate joint3 rotation (Y-axis)
+        Vector3 joint3Direction = targetPosition - joint3Position;
+        float angleJoint3 = Mathf.Atan2(joint3Direction.y, joint3Direction.z) * Mathf.Rad2Deg;
+        joint3.rotation = Quaternion.Euler(0, angleJoint3, 0);
+
+        // Step 6: Calculate joint4 rotation (X-axis)
+        Vector3 joint4Direction = targetPosition - joint4Position;
+        float angleJoint4 = Mathf.Atan2(joint4Direction.y, joint4Direction.magnitude) * Mathf.Rad2Deg;
+        joint4.rotation = Quaternion.Euler(angleJoint4, 0, 0);
+
+        // Step 7: Calculate joint5 rotation (Y-axis)
+        Vector3 joint5Direction = targetPosition - joint5Position;
+        float angleJoint5 = Mathf.Atan2(joint5Direction.y, joint5Direction.z) * Mathf.Rad2Deg;
+        joint5.rotation = Quaternion.Euler(0, angleJoint5, 0);
+
+        // Step 8: Update EndEffector position
+        endEffector.position = targetPosition; // 각 Joint의 최종 위치에 따라 계산해야 함
+    }
+
+
 
 }

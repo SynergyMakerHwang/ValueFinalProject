@@ -212,7 +212,7 @@ public class AGV_RobotArmController : MonoBehaviour
             step.angleCValue = float.Parse(info[5]);
             step.angleDValue = float.Parse(info[6]);
             step.angleEValue = float.Parse(info[7]);
-            step.angleEValue = float.Parse(info[8]);
+            step.angleFValue = float.Parse(info[8]);
             //수정
             if (steps.Count > int.Parse(info[0]))
             {
@@ -233,11 +233,14 @@ public class AGV_RobotArmController : MonoBehaviour
 
     public void OnChangeGripperBtnClkEvent(UnityEngine.UI.Toggle isGripperON)
     {
+
+        AGV_RobotArmGripper.instance.isGripperMode = isGripperON.isOn;
         //grip 해제시 자식 제거
         if (!isGripperON.isOn)
         {
             AGV_RobotArmGripper.instance.removeChild(isGripperON.isOn);
         }
+        
     }
 
     public void OnChangeGripperOpenBtnClkEvent(UnityEngine.UI.Toggle isGripperOpenON)
@@ -245,7 +248,7 @@ public class AGV_RobotArmController : MonoBehaviour
         
         //그리퍼 open
         if (isGripperOpenON.isOn)
-        {
+        {            
             AGV_RobotArmGripper.instance.OnForwardBtnClkEvent();
         //그리퍼 close
         }
@@ -372,7 +375,34 @@ public class AGV_RobotArmController : MonoBehaviour
 
     public void OnAngleValUp(TMP_InputField target)
     {
+        int limitAngle = 360;
+        if (target.name.Contains("A "))
+        {
+            limitAngle = 160;
+        }
+        else if (target.name.Contains("B "))
+        {
+            limitAngle = 60;
+        }
+        else if (target.name.Contains("C "))
+        {
+            limitAngle = 90;
+        }
+        else if (target.name.Contains("D "))
+        {
+            limitAngle = 210;
+        }
+        else if (target.name.Contains("E "))
+        {
+            limitAngle = 125;
+        }
+        else if (target.name.Contains("F "))
+        {
+            limitAngle = 210;
+        }
 
+
+       
         if (isActAngle)
         {
             float angel = 0;
@@ -380,8 +410,14 @@ public class AGV_RobotArmController : MonoBehaviour
             {
                 angel = float.Parse(target.text);
             }
-            angel += 0.1f;
-            angel = angel % 360;
+
+            if (angel<=limitAngle) {
+                angel += 0.1f;
+                angel = angel % 360;
+            }
+            else {
+                angel = limitAngle;
+            }
             movingMotorRotation(target.name, angel);
 
             target.text = angel.ToString();
@@ -399,6 +435,34 @@ public class AGV_RobotArmController : MonoBehaviour
 
     public void OnAngleValDown(TMP_InputField target)
     {
+
+        int limitAngle = 360;
+        if (target.name.Contains("A "))
+        {
+            limitAngle = 160;
+        }
+        else if (target.name.Contains("B "))
+        {
+            limitAngle = 76;
+        }
+        else if (target.name.Contains("C "))
+        {
+            limitAngle = 75;
+        }
+        else if (target.name.Contains("D "))
+        {
+            limitAngle = 210;
+        }
+        else if (target.name.Contains("E "))
+        {
+            limitAngle = 125;
+        }
+        else if (target.name.Contains("F "))
+        {
+            limitAngle = 210;
+        }
+
+
         if (isActAngle)
         {
             float angel = 0;
@@ -407,9 +471,17 @@ public class AGV_RobotArmController : MonoBehaviour
                 angel = float.Parse(target.text);
             }
 
-            angel -= 0.1f;
+         
+            if (angel >= -limitAngle)
+            {
+                angel -= 0.1f;
+                angel = angel % 360;
+            }
+            else
+            {
+                angel = -limitAngle;
+            }
 
-            angel = angel % 360;
             movingMotorRotation(target.name, angel);
             target.text = angel.ToString();
 
