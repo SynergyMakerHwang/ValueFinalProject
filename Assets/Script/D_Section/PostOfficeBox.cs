@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class PostOfficeBox : MonoBehaviour
@@ -37,7 +38,6 @@ public class PostOfficeBox : MonoBehaviour
             transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(-90, 0, 0), CurrentTime / duration);
             yield return null;
         }
-
 
     }
 }

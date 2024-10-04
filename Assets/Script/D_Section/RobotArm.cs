@@ -10,6 +10,7 @@ public class RobotArm : MonoBehaviour
     [SerializeField] Transform Pivot4;
     [SerializeField] Transform Pivot5;
     [SerializeField] Transform Pivot6;
+    [SerializeField] Transform Pivot7;
 
     [Header("지점 따라가기")]
     [SerializeField] Transform StartPoint;
@@ -45,7 +46,7 @@ public class RobotArm : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         // 5. 정렬된 로봇팔 폴딩기계쪽으로  옮기기 스타트포인트쪽의 각도 알기
-        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), null, Quaternion.identity, null, Quaternion.identity, 3f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 90), Pivot3, Quaternion.Euler(-60,0,0), null, Quaternion.identity, 3f));
     }
 
     IEnumerator HowToMove(Transform WhichPivot1, Quaternion TarRot1, Transform WhichPivot2, Quaternion TarRot2, Transform WhichPivot3, Quaternion TarRot3, float duration)
@@ -94,5 +95,9 @@ public class RobotArm : MonoBehaviour
     public void aline(Transform Pivot)
     {
         Pivot.localRotation = Quaternion.Euler(0, 0, 0);
+    }
+    public void Adjust()
+    {
+
     }
 }
