@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "com.unity.2d.animation": "10.1.2",
+    "com.unity.2d.sprite": "1.0.0",
+    "com.unity.2d.spriteshape": "10.0.6",
     "com.unity.ai.navigation": "2.0.3",
     "com.unity.cinemachine": "2.10.1",
     "com.unity.collab-proxy": "2.5.1",
