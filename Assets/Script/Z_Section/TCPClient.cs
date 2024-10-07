@@ -36,7 +36,8 @@ public class TCPClient : MonoBehaviour
     [SerializeField] AGVParkingSensor agvWasherParkingSensor;
     [SerializeField] AGVParkingSensor agvDryerParkingSensor;
     [SerializeField] AGVParkingSensor agvCuttingParkingSensor;
-        
+    [SerializeField] AGVParkingSensor agvCuttingLoadingParkingSensor;
+
 
 
 
@@ -95,7 +96,12 @@ public class TCPClient : MonoBehaviour
         //도트 적재 수량 - PLC 설정
         StartCoroutine(setDevice("@SETDevice,D0,"+ loadCnt));
 
+        //PLC 전원ON
+        StartCoroutine(setDevice("@SETDevice,X0,1"));
 
+        //공정 시작
+        StartCoroutine(AGVManager.Instance.moveProcessStartPostion());
+            
         //전체 공정 PLC <-> Unity 연동
         StartCoroutine(ScanPlc());
     }
@@ -148,6 +154,14 @@ public class TCPClient : MonoBehaviour
         }
 
         //(추가)세척 공정 - 로봇팔 동작 - get
+
+
+        //세척 공정 완료 ( Y34)
+        if (point[3][4] == 1)
+        {
+            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("30"));
+        }
+
     }
 
     //세척 공정
@@ -205,6 +219,24 @@ public class TCPClient : MonoBehaviour
             Dryer.Instance.RunDryerPLC();
         }
 
+        // 열풍건조 공정 - 건조기
+        if (point[5][3] == 1)
+        {
+            
+        }
+
+        // 열풍건조 공정 - 하역 AGV+로봇팔
+        if (point[5][4] == 1)
+        {
+            
+        }
+
+        // 열풍건조 공정  - 완료
+        if (point[5][5] == 1)
+        {
+            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
+        }
+
 
 
     }
@@ -224,6 +256,11 @@ public class TCPClient : MonoBehaviour
         //열풍건조 공정  - 도어 클로즈 센서 (X53)
         openSensor = (dryerOpenSensor.IsOpened == false) ? 1 : 0;
         requestMsg += "@SETDevice,X53," + openSensor;
+
+
+
+        //열풍건조 공정  - 로봇팔 하역 완료 센서 (X52)
+
 
 
         return requestMsg;
@@ -252,11 +289,14 @@ public class TCPClient : MonoBehaviour
         //세척공정 - AGV 도착센서  (X30)
         int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X30," + agvParkingSensor;
-        print("dl;fjal;ksdjflskjd("+ agvParkingSensor + ")");
+       
 
         //절단공정 - AGV 도착센서  (X40)
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
-        requestMsg += "@SETDevice,X40," + agvParkingSensor;
+        requestMsg += "@SETDevice,X40," + agvParkingSensor;    //절단공정 - AGV 도착센서  (X40)
+        //절단공정 - AGV 하역 도착센서  (X45) 
+        agvParkingSensor = (agvCuttingLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X45," + agvParkingSensor; //절단공정 - AGV 로딩 도착센서  (X45)
 
 
         //건조공정 - AGV 도착센서  (X50)
@@ -392,7 +432,6 @@ public class TCPClient : MonoBehaviour
 
                         //(Z)AGV - 공정별 도착센서
                         reWrite += requestAgvParkingSensor();
-
 
                         //(B)세척공정 
                         reWrite += requestWasherProcess();
