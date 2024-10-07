@@ -75,6 +75,15 @@ public class PostOfficeBox : MonoBehaviour
         {
             StartCoroutine(Rotate(BoxUnderWing3, Quaternion.Euler(90, 0, 0), 2f));
         }
+        else if (other.name.StartsWith("Box Aligner"))
+        {
+            Rigidbody rb = transform.GetComponent<Rigidbody>();
+
+            // XYZ 제약 조건 해제
+           
+            rb.constraints = RigidbodyConstraints.None; // 모든 제약 해제
+
+        }
     }
 }
 

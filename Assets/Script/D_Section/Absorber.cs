@@ -12,4 +12,11 @@ public class Absorber : MonoBehaviour
 
         }
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.name.StartsWith("Box2"))
+        {
+            other.transform.SetParent(null);
+        }
+    }
 }
