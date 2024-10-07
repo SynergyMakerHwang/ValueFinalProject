@@ -8,6 +8,11 @@ public class PostOfficeBox : MonoBehaviour
     [SerializeField] Transform Side2;
     [SerializeField] Transform Side4;
 
+    [Header("접히는부분")]
+    [SerializeField] Transform BoxUnderWing1;
+    [SerializeField] Transform BoxUnderWing2;
+    [SerializeField] Transform BoxUnderWing3;
+    [SerializeField] Transform BoxUnderWing4;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,8 +24,18 @@ public class PostOfficeBox : MonoBehaviour
         {
             StartCoroutine(BoxAlign());
         }
+        else if (other.name.StartsWith("BOXFOLDER"))
+        {
+            StartCoroutine(Rotate(BoxUnderWing4, Quaternion.Euler(-90, 0, 0), 0.5f));
+        }
+        else if (other.name.StartsWith("Bong"))
+        {
+            StartCoroutine(Rotate(BoxUnderWing1, Quaternion.Euler(0, 0, -90), 2f));
+            StartCoroutine(Rotate(BoxUnderWing2, Quaternion.Euler(0, 0, 90), 2f));
+        }
 
     }
+
     IEnumerator BoxAlign()
     {
         float CurrentTime = 0;
@@ -40,4 +55,26 @@ public class PostOfficeBox : MonoBehaviour
         }
 
     }
+    IEnumerator Rotate(Transform Which, Quaternion EndRot, float duration)
+    {
+        float CurrentTime = 0;
+
+        Quaternion StartPos = Which.transform.localRotation;
+
+        while (CurrentTime < duration)
+        {
+            CurrentTime += Time.deltaTime;
+            Which.localRotation = Quaternion.Lerp(StartPos, EndRot, CurrentTime / duration);
+            yield return null;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.name.StartsWith("BOXFOLDER"))
+        {
+            StartCoroutine(Rotate(BoxUnderWing3, Quaternion.Euler(90, 0, 0), 2f));
+        }
+    }
 }
+
