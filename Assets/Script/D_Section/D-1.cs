@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class DConveyor : MonoBehaviour
+public class D1 : MonoBehaviour
 {
     [SerializeField] Transform Belt;
     [SerializeField] Transform StartPos;

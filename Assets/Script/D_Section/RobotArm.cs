@@ -1,34 +1,49 @@
 using System.Collections;
 using UnityEngine;
 
-public class RobotArm : MonoBehaviour
+public class D2 : MonoBehaviour
 {
     // 로보팔 축
+    [Header("로봇팔 관련 축")]
     [SerializeField] Transform Pivot1;
     [SerializeField] Transform Pivot2;
     [SerializeField] Transform Pivot3;
     [SerializeField] Transform Pivot4;
     [SerializeField] Transform Pivot5;
     [SerializeField] Transform Pivot6;
+    Coroutine Coroutine;
 
-    [Header("지점 따라가기")]
-    [SerializeField] Transform StartPoint;
+    [Header("생성 우체국상자")]
+    [SerializeField] GameObject Box2;
+    [SerializeField] GameObject pallet;
+
+
 
     private void Start()
     {
-        aline(Pivot1);
-        aline(Pivot2);
-        aline(Pivot3);
-        aline(Pivot4);
-        aline(Pivot5);
-        STEPSTART();
+        RobotGoPLC();
+        SpawnBox();
+
     }
 
-    public void STEPSTART()
+
+    public void RobotGoPLC()
     {
-        StartCoroutine(STEPS());
+        if (Coroutine == null)
+            Coroutine = StartCoroutine(STEPS());
     }
 
+    //수정 필요
+    public void RobotBackPLC()
+    {
+        if (Coroutine != null)
+            Coroutine = StartCoroutine(STEPS());
+    }
+
+    public void SpawnBox()
+    {
+        Instantiate(Box2, pallet.transform);
+    }
     IEnumerator STEPS()
     {
         // 1. 박스 집기 
@@ -57,17 +72,37 @@ public class RobotArm : MonoBehaviour
 
         // 8-1 슬러프 타기
         yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 127), Pivot2, Quaternion.Euler(-10, 0, 0), Pivot3, Quaternion.Euler(-100, 0, 0), Pivot5, Quaternion.Euler(45, 45, 15), 30f));
+
         // 8-2
-       // yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 138), Pivot2, Quaternion.Euler(7, 0, 0), Pivot3, Quaternion.Euler(-117, 0, 0), Pivot5, Quaternion.Euler(22, 55, 15.5f), 30f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 138), Pivot2, Quaternion.Euler(7, 0, 0), Pivot3, Quaternion.Euler(-117, 0, 0), Pivot5, Quaternion.Euler(22, 55, 15.5f), 30f));
+
         // 8-3
-       // yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-131, 0, 0), Pivot5, Quaternion.Euler(10, 60, 15), 30f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-131, 0, 0), Pivot5, Quaternion.Euler(10, 60, 15), 30f));
 
-        //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-128, 0, 0), Pivot5, Quaternion.Euler(8, 60, 12), 10f));
+        // 9-1 왼쪽날개 접기
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-128, 0, 0), Pivot5, Quaternion.Euler(8, 60, 12), 10f));
 
-        // yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 170), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-137, 0, 0), Pivot5, Quaternion.Euler(2, 82, 13f), 20f));
+        // 9-2
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 170), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-137, 0, 0), Pivot5, Quaternion.Euler(2, 82, 13f), 20f));
 
-        //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 195), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-135, 0, 0), Pivot5, Quaternion.Euler(0, 105, 11.5f), 20f));
+        // 9-3
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 195), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-135, 0, 0), Pivot5, Quaternion.Euler(0, 105, 11.5f), 20f));
 
+        // 9-4
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 220), Pivot2, Quaternion.Euler(13, 0, 0), Pivot3, Quaternion.Euler(-120, 0, 0), Pivot5, Quaternion.Euler(-10, 130, 14f), 20f));
+
+        // 10. 테이프 붙히기
+        yield return StartCoroutine(HowToMove(Pivot3, Quaternion.Euler(-90, 0, 0), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 20f));
+        yield return new WaitForSeconds(0.3f);
+
+        // 11 마무리 및 정렬기 해제
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-112, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
+
+        // 11-1
+        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 100f));
+
+        // 돌아오기
+        //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 0, 0), 50f));
 
     }
 
