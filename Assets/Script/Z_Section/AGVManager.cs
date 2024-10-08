@@ -25,7 +25,7 @@ public class AGVManager : MonoBehaviour
     public Transform[] cuttingEpathPoints; // 절단공정 종료 이동 경로
 
     private int currentPointIndex = 0;
-    private int duration = 10;
+    private int duration = 20;
 
     Dictionary<string, Transform[]> pathRoot = new Dictionary<string, Transform[]>();
 

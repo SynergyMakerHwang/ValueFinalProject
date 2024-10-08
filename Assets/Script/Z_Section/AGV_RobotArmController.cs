@@ -41,11 +41,15 @@ public class AGV_RobotArmController : MonoBehaviour
 
     float currentTime;
     bool isCycleAction = false;
+    int tottCnt = 0;
 
     public bool IsCycleAction { get => isCycleAction; set => isCycleAction = value; }
+    public int TottCnt { get => tottCnt; set => tottCnt = value; }
 
     string fileName = "program.csv";
-   
+    string tmpFileName = "";
+    int tmpFileNameIndex = 0;
+
 
     [Serializable]
     public class Step
@@ -232,6 +236,7 @@ public class AGV_RobotArmController : MonoBehaviour
     }
     public void excuteCycleEvent(string processFileName)
     {
+        
         if (loadCSVFileEvent(processFileName)) {
             isCycleAction = true;
             StartCoroutine(RunStep(0));
@@ -242,6 +247,18 @@ public class AGV_RobotArmController : MonoBehaviour
     public bool loadCSVFileEvent(string processFileName)
     {
         bool result = false;
+        if (tmpFileName != processFileName) {
+            tmpFileNameIndex = 0;
+            tmpFileName = processFileName;
+        }
+
+        tmpFileNameIndex++;
+        if (tmpFileNameIndex > TottCnt)
+        {
+            return false;
+        }
+
+        processFileName = tmpFileName + "_" + tmpFileNameIndex+".csv";
         fileNameVal.text = processFileName;
 
         steps.Clear();
@@ -279,10 +296,12 @@ public class AGV_RobotArmController : MonoBehaviour
         if (steps.Count > 0) {
             result = true;
         }
+
         totalStepTxt.text = $"Total Step Count : {steps.Count}";
         sr.Close();
         fs.Close();
 
+        
         return result;
     }
 
