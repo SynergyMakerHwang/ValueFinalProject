@@ -25,6 +25,7 @@ class TCPServer
     //MX Componet 객체 생성
     static int blockNum = 10;
     static int blockSize = 16;
+    static string requestGetBlock = "GET,Y0,10";
     static MxComponent mxComponent = new MxComponent();
     public static void Main()
     {
@@ -42,7 +43,7 @@ class TCPServer
             listener.Start();
 
 
-            Console.WriteLine("TCP SEVER START 3");
+            Console.WriteLine("TCP SEVER START");
 
             TcpClient client;
             NetworkStream stream;
@@ -113,6 +114,12 @@ class TCPServer
                                 returnMsg = mxComponent.ReadDeviceBlockTCPServer(str);
                             }
                         }
+
+                        if (responseArr.Length>0) {
+                            returnMsg = mxComponent.ReadDeviceBlockTCPServer(requestGetBlock);
+                        }
+                        
+
 
                     }
 

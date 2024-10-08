@@ -230,6 +230,63 @@ public class AGV_RobotArmController : MonoBehaviour
         fs.Close();
 
     }
+    public void excuteCycleEvent(string processFileName)
+    {
+        if (loadCSVFileEvent(processFileName)) {
+            isCycleAction = true;
+            StartCoroutine(RunStep(0));
+        }
+        
+    }
+
+    public bool loadCSVFileEvent(string processFileName)
+    {
+        bool result = false;
+        fileNameVal.text = processFileName;
+
+        steps.Clear();
+        steps = new List<Step>();
+        FileStream fs = new FileStream(processFileName, FileMode.Open);
+        StreamReader sr = new StreamReader(fs);
+
+        Step step;
+        string line;
+        string[] info;
+        while ((line = sr.ReadLine()) != null)
+        {
+            info = line.Split(",");
+
+            step = new Step(int.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]), bool.Parse(info[9]), bool.Parse(info[10]));
+            step.angleAValue = float.Parse(info[3]);
+            step.angleBValue = float.Parse(info[4]);
+            step.angleCValue = float.Parse(info[5]);
+            step.angleDValue = float.Parse(info[6]);
+            step.angleEValue = float.Parse(info[7]);
+            step.angleFValue = float.Parse(info[8]);
+            //수정
+            if (steps.Count > int.Parse(info[0]))
+            {
+                steps[int.Parse(info[0])] = step;
+                //추가
+            }
+            else
+            {
+                steps.Add(step);
+            }
+
+        }
+
+        if (steps.Count > 0) {
+            result = true;
+        }
+        totalStepTxt.text = $"Total Step Count : {steps.Count}";
+        sr.Close();
+        fs.Close();
+
+        return result;
+    }
+
+
 
     public void OnChangeGripperBtnClkEvent(UnityEngine.UI.Toggle isGripperON)
     {
