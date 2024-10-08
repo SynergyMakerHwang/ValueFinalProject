@@ -1,197 +1,247 @@
 using System.Collections;
-using System.Net.Http.Headers;
-using Unity.Mathematics;
 using UnityEngine;
 
-public class DMachine : MonoBehaviour
+public class D2 : MonoBehaviour
 {
-    [SerializeField] private Transform startPoint;
-    [SerializeField] private Transform centerPoint; // 중심점
-    [SerializeField] private Transform STEP1Point;
-    [SerializeField] private float speed = 0.5f;
-    [SerializeField] private float radius = 1.8f; // 원의 반지름
+    // 로보팔 축
+    [Header("로봇팔 관련 축")]
+    [SerializeField] Transform Pivot1;
+    [SerializeField] Transform Pivot2;
+    [SerializeField] Transform Pivot3;
+    [SerializeField] Transform Pivot4;
+    [SerializeField] Transform Pivot5;
+    [SerializeField] Transform Pivot6;
+    Coroutine Coroutine1;
 
-    [SerializeField] Transform Box;
-    [Header("박스날개들 ")]
-    [SerializeField] Transform UnderWing1;
-    [SerializeField] Transform UnderWing2;
-    [SerializeField] Transform UnderWing3;
-    [SerializeField] Transform UnderWing4;
+    [Header("생성 우체국상자")]
+    [SerializeField] GameObject Box2;
+    [SerializeField] GameObject pallet;
 
-    [Header("커터")]
-    [SerializeField] Transform tapecutterPivot;
-    [SerializeField] GameObject Tape;
+    [Header("포장컨베이어벨트")]
+    [SerializeField] Transform Belt;
+    [SerializeField] Transform StartPos;
+    [SerializeField] Transform EndPos;
+    [SerializeField] Transform Hand;
+    [SerializeField] float speed = 5f;
+    [SerializeField] bool Power;
+    private Vector3 ResumePos; // 현재 위치 저장
+    bool DIsRunPLC;
+    Coroutine Coroutine2;
 
-
-
-    private float angle = 30f * Mathf.Deg2Rad; // 시작 각도 (30도, 라디안으로 변환)
-    private float initialXRotation = 30f; // 초기 X 회전 각도
-
+    public static D2 instance;
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     private void Start()
     {
-        //초기설정값
-        Box.transform.localPosition = startPoint.localPosition;
-        Box.transform.localRotation = Quaternion.Euler(30, 0, 0);
-        StartCoroutine(AllStep());
+        RobotGoPLC();
+        SpawnBox();
+
+        //벨트 위치 초기화
+        ResumePos = StartPos.localPosition;
+        Belt.localPosition = ResumePos;
+    }
+
+  
+    public void RobotGoPLC()
+    {
+        if (Coroutine1 == null)
+            Coroutine1 = StartCoroutine(STEPS());
+    }
+
+    //수정 필요
+    public void RobotBackPLC()
+    {
+        if (Coroutine1 != null)
+            Coroutine1 = StartCoroutine(STEPS());
+    }
+
+    public void SpawnBox()
+    {
+        Instantiate(Box2, pallet.transform);
+    }
+    IEnumerator STEPS()
+    {
+        // 1. 박스 집기 
+        yield return StartCoroutine(HowToMove(Pivot2, Quaternion.Euler(-50, 0, 0), Pivot3, Quaternion.Euler(-70, 0, 0), Pivot5, Quaternion.Euler(-60, 0, 0), null, Quaternion.identity, 50f));
+
+        // 2. 흡착기 가동
+        yield return new WaitForSeconds(0.5f);
+
+        // 3. 박스 들어올려서 정렬시키기
+        yield return StartCoroutine(HowToMove(Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(-90, 0, 0), null, Quaternion.identity, 50f));
+
+        // 4. 박스 정렬기 사용하여 박스 정렬
+        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, 0), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 200f));
+
+        // (흡착기 가동)
+        yield return new WaitForSeconds(1f);
+
+        // 5. 정렬된 로봇팔 폴딩기계쪽으로 옮기기
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 130), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 40, 0), null, Quaternion.identity, 50f));
+
+        // 6. 박스 각도주기
+        yield return StartCoroutine(HowToMove(Pivot5, Quaternion.Euler(40, 40, 0), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 50f));
+
+        // 7. 폴딩 머신에 밀어서 밑에 날개 접기
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 120), Pivot2, Quaternion.Euler(-30, 0, 0), Pivot3, Quaternion.Euler(-63, 0, 0), Pivot5, Quaternion.Euler(40, 30, 0), 50f));
+
+        // 8-1 슬러프 타기
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 127), Pivot2, Quaternion.Euler(-10, 0, 0), Pivot3, Quaternion.Euler(-100, 0, 0), Pivot5, Quaternion.Euler(45, 45, 15), 30f));
+
+        // 8-2
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 138), Pivot2, Quaternion.Euler(7, 0, 0), Pivot3, Quaternion.Euler(-117, 0, 0), Pivot5, Quaternion.Euler(22, 55, 15.5f), 30f));
+
+        // 8-3
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-131, 0, 0), Pivot5, Quaternion.Euler(10, 60, 15), 30f));
+
+        // 9-1 왼쪽날개 접기
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(25, 0, 0), Pivot3, Quaternion.Euler(-128, 0, 0), Pivot5, Quaternion.Euler(8, 60, 12), 10f));
+
+        // 9-2
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 170), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-137, 0, 0), Pivot5, Quaternion.Euler(2, 82, 13f), 20f));
+
+        // 9-3
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 195), Pivot2, Quaternion.Euler(35, 0, 0), Pivot3, Quaternion.Euler(-135, 0, 0), Pivot5, Quaternion.Euler(0, 105, 11.5f), 20f));
+
+        // 9-4
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 220), Pivot2, Quaternion.Euler(13, 0, 0), Pivot3, Quaternion.Euler(-120, 0, 0), Pivot5, Quaternion.Euler(-10, 130, 14f), 20f));
+
+        // 10. 테이프 붙히기
+        yield return StartCoroutine(HowToMove(Pivot3, Quaternion.Euler(-90, 0, 0), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 20f));
+        yield return new WaitForSeconds(0.3f);
+
+        // 11 마무리 및 정렬기 해제
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-112, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
+
+        // 11-1
+        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 100f));
+
+        // 돌아오기
+        //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 0, 0), 50f));
 
     }
 
-
-    //및날개 접는단계
-    IEnumerator STEP1()
+    IEnumerator HowToMove(Transform WhichPivot1, Quaternion TarRot1, Transform WhichPivot2, Quaternion TarRot2, Transform WhichPivot3, Quaternion TarRot3, Transform WhichPivot4, Quaternion TarRot4, float speed)
     {
-        float Lengh = Vector3.Distance(Box.transform.localPosition, STEP1Point.localPosition);
-        float journey = Lengh / speed;
-        float CurrentTime = 0;
-        Quaternion TargetAngle = Quaternion.Euler(-90, 0, 0);
-        quaternion StartAngle = Quaternion.Euler(0, 0, 0);
+        // 현재 회전 상태를 시작 각도로 설정
+        Quaternion StartPivot1 = WhichPivot1 != null ? WhichPivot1.localRotation : Quaternion.identity;
+        Quaternion StartPivot2 = WhichPivot2 != null ? WhichPivot2.localRotation : Quaternion.identity;
+        Quaternion StartPivot3 = WhichPivot3 != null ? WhichPivot3.localRotation : Quaternion.identity;
+        Quaternion StartPivot4 = WhichPivot4 != null ? WhichPivot4.localRotation : Quaternion.identity;
 
-        while (CurrentTime < journey)
+        // 각 회전의 차이 계산
+        float angleDiff1 = Quaternion.Angle(StartPivot1, TarRot1);
+        float angleDiff2 = WhichPivot2 != null ? Quaternion.Angle(StartPivot2, TarRot2) : 0f;
+        float angleDiff3 = WhichPivot3 != null ? Quaternion.Angle(StartPivot3, TarRot3) : 0f;
+        float angleDiff4 = WhichPivot4 != null ? Quaternion.Angle(StartPivot4, TarRot4) : 0f;
+
+        // 최대 회전 시간 계산
+        float maxAngleDiff = Mathf.Max(angleDiff1, angleDiff2, angleDiff3, angleDiff4);
+        float duration = maxAngleDiff / speed;
+
+        float CurrentTime = 0;
+
+        while (CurrentTime < duration)
         {
             CurrentTime += Time.deltaTime;
 
-            print(CurrentTime / journey);
-            Box.transform.localPosition = Vector3.Lerp(startPoint.localPosition, STEP1Point.localPosition, CurrentTime / journey);
-            UnderWing4.localRotation = Quaternion.Lerp(StartAngle, TargetAngle, CurrentTime / journey);
+            // 회전 비율 계산
+            float t = CurrentTime / duration;
 
-            yield return new WaitForEndOfFrame();
-        }
-        Box.transform.localPosition = STEP1Point.localPosition;
-
-    }
-    //박스 원운동
-    IEnumerator STEP2()
-    {
-        // 목표 각도 (90도, 라디안으로 변환)
-        float targetAngle = 90f * Mathf.Deg2Rad; // 90도를 라디안으로 변환
-        Quaternion startAngle1 = quaternion.Euler(0.785398f, 0, 0);//라디안 45도 이유가 뭐지
-        Quaternion EndAngle1 = Quaternion.Euler(0, 0, 0);
-        Quaternion StartAngle2 = quaternion.Euler(-0.785398f, 0, 0);// 라디안 45도 뭔가 유지시켜주는 느낌같다
-        Quaternion EndAngle2 = Quaternion.Euler(90, 0, 0);
-
-
-
-        while (angle < targetAngle)
-        {
-            angle += speed * Time.deltaTime;
-
-            // 원운동의 위치 계산
-            float y = centerPoint.localPosition.y - Mathf.Sin(angle) * radius;
-            float z = centerPoint.localPosition.z - Mathf.Cos(angle) * radius;
-
-            // 질점 위치 업데이트
-            Box.transform.localPosition = new Vector3(Box.transform.localPosition.x, y, z);
-
-            //비율 조정을 위한 Mathf.Clamp
-            float Ratio = Mathf.Clamp01(angle / targetAngle);
-            // 회전 업데이트
-
-            Box.transform.localRotation = Quaternion.Lerp(startAngle1, EndAngle1, Ratio);
-            UnderWing3.transform.localRotation = Quaternion.Lerp(StartAngle2, EndAngle2, Ratio);
-
-            yield return null; // 다음 프레임까지 대기
-        }
-
-    }
-    //원운동 후 직선운동 및밑날개 접는단계
-    IEnumerator STEP3()
-    {
-        Vector3 startPos1 = Box.localPosition;
-        Vector3 endPos1 = new Vector3(Box.localPosition.x, 2f, Box.localPosition.z);
-        Quaternion underWingStart1Of1 = Quaternion.Euler(0, 0, 0);
-        Quaternion underWingEnd1Of1 = Quaternion.Euler(0, 0, -15);
-        Quaternion underWingEnd2of1 = Quaternion.Euler(0, 0, 15);
-
-        float duration = 1f;
-        float currentTime = 0f;
-
-        // STEP3-1: Box 이동 및 날개 회전
-        while (currentTime < duration)
-        {
-            currentTime += Time.deltaTime;
-
-            // Box의 위치 업데이트
-            Box.transform.localPosition = Vector3.Lerp(startPos1, endPos1, currentTime / duration);
-
-            // 날개 회전
-            UnderWing1.localRotation = Quaternion.Lerp(underWingStart1Of1, underWingEnd1Of1, currentTime / duration);
-            UnderWing2.localRotation = Quaternion.Lerp(underWingStart1Of1, underWingEnd2of1, currentTime / duration);
-
-            yield return null;
-        }
-
-
-
-        Vector3 startPos2 = Box.localPosition;
-        Vector3 endPos2 = new Vector3(Box.localPosition.x, Box.localPosition.y, 1f);
-
-        Quaternion underWingStart1Of2 = Quaternion.Euler(0, 0, -15);
-        Quaternion underWingStart2Of2 = Quaternion.Euler(0, 0, 15);
-        Quaternion underWingEnd1Of2 = Quaternion.Euler(0, 0, -90);
-        Quaternion underWingEnd2Of2 = Quaternion.Euler(0, 0, 90);
-
-        float boxDuration = 2f;
-        float wingDuration = 0.5f;
-
-        currentTime = 0f; // 초기화
-
-
-        while (currentTime < boxDuration)
-        {
-            currentTime += Time.deltaTime;
-
-
-            Box.transform.localPosition = Vector3.Lerp(startPos2, endPos2, currentTime / boxDuration);
-
-            if (currentTime >= 0.5f && currentTime <= 0.5f + wingDuration)
+            // 각 피벗 회전 업데이트
+            if (WhichPivot1 != null)
             {
-                float ratio = (currentTime - 0.5f) / wingDuration; // 1.5초부터 시작
-                UnderWing1.localRotation = Quaternion.Lerp(underWingStart1Of2, underWingEnd1Of2, ratio);
-                UnderWing2.localRotation = Quaternion.Lerp(underWingStart2Of2, underWingEnd2Of2, ratio);
+                WhichPivot1.localRotation = Quaternion.Lerp(StartPivot1, TarRot1, t);
+            }
+            if (WhichPivot2 != null)
+            {
+                WhichPivot2.localRotation = Quaternion.Lerp(StartPivot2, TarRot2, t);
+            }
+            if (WhichPivot3 != null)
+            {
+                WhichPivot3.localRotation = Quaternion.Lerp(StartPivot3, TarRot3, t);
+            }
+            if (WhichPivot4 != null)
+            {
+                WhichPivot4.localRotation = Quaternion.Lerp(StartPivot4, TarRot4, t);
             }
 
             yield return null;
         }
-        currentTime = 0;
-        Vector3 startPos3 = Box.localPosition;
-        Vector3 endPos3 = new Vector3(Box.localPosition.x, 1.87f, Box.localPosition.z);
-        while (currentTime < boxDuration)
+
+        // 최종 회전값 설정
+        if (WhichPivot1 != null)
         {
-            currentTime += Time.deltaTime;
-            Box.transform.localPosition = Vector3.Lerp(startPos3, endPos3, currentTime / boxDuration);
-            yield return null;
+            WhichPivot1.localRotation = TarRot1;
+        }
+        if (WhichPivot2 != null)
+        {
+            WhichPivot2.localRotation = TarRot2;
+        }
+        if (WhichPivot3 != null)
+        {
+            WhichPivot3.localRotation = TarRot3;
+        }
+        if (WhichPivot4 != null)
+        {
+            WhichPivot4.localRotation = TarRot4;
+        }
+    }
+
+
+    IEnumerator Moving()
+    {
+
+
+
+        while (true)
+        {
+            Vector3 from = ResumePos;
+            Vector3 to = EndPos.localPosition;
+            float Length = Vector3.Distance(from, to);
+            float Journey = Length / speed;
+            float currentTime = 0;
+
+            while (currentTime < Journey)
+            {
+                currentTime += Time.deltaTime;
+                Belt.localPosition = Vector3.Lerp(from, to, currentTime / Journey);
+
+                yield return null; // 다음 프레임까지 대기
+            }
+            float Distance = Vector3.Distance(Belt.localPosition, EndPos.localPosition);
+            if (Distance < 5)
+                ResumePos = StartPos.localPosition;
+
+
+            Belt.localPosition = StartPos.localPosition;
         }
 
     }
 
-    //박스 테이프 단계
-    IEnumerator STEP4()
+    public void WrapConveyorOnPLC()
     {
-        //시간으로 제어하는게 편하다
-        float currentTime = 0f;
-        float duration = 2.89f;
-        Vector3 startPos = Box.localPosition;
-        Vector3 endPos = new Vector3(Box.localPosition.x, Box.localPosition.y, 2.6f);
-        while (currentTime < duration)
+
+        if (Coroutine2 == null)
         {
-            currentTime += Time.deltaTime;
-            Box.localPosition = Vector3.Lerp(startPos, endPos, currentTime / duration);
-            yield return null;
+            Coroutine2 = StartCoroutine(Moving());
+
         }
 
-        Vector3 SpotOfTape = new Vector3(Box.position.x+0.18f, Box.position.y, Box.position.z );
-        Instantiate(Tape, SpotOfTape, Quaternion.Euler(-90, 90, 0));
-        Tape.transform.SetParent(Box.transform);
-
     }
-
-
-    IEnumerator AllStep()
+    public void WrapConeyorOffPLC()
     {
-        yield return StartCoroutine(STEP1());
-        yield return StartCoroutine(STEP2());
-        yield return StartCoroutine(STEP3());
-        yield return StartCoroutine(STEP4());
+        if (Coroutine2 != null)
+        {
+            StopCoroutine(Coroutine2);
+            ResumePos = Belt.localPosition;
+            Coroutine2 = null;
+        }
     }
+
 }
+
