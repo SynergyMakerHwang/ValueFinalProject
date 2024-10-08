@@ -5,6 +5,13 @@ public class SubLocationSensor : MonoBehaviour
 {
     public bool RightLocationSensorPLC;
     //평소에는 false
+    public static SubLocationSensor Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+ 
 
     //접촉되면 true
     private void OnTriggerEnter(Collider other)

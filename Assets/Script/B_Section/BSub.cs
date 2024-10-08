@@ -7,8 +7,9 @@ public class BSub : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("토트박스"))
+        if (other.CompareTag("토트박스") && SubLocationSensor.Instance.RightLocationSensorPLC == false)
         {
+
             other.transform.SetParent(transform);
         }
     }
@@ -16,6 +17,7 @@ public class BSub : MonoBehaviour
     {
         if (other.CompareTag("토트박스"))
         {
+
             other.transform.SetParent(null);
         }
     }
