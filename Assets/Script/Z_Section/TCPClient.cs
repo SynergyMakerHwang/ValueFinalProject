@@ -154,6 +154,10 @@ public class TCPClient : MonoBehaviour
         //¼¼Ã´ °øÁ¤ - ·Îº¿ÆÈ µ¿ÀÛ - get
         if (point[3][3] == 1)
         {
+            print("33==========");
+
+
+
             //ÇÏ¿ª µ¿ÀÛ            
             AGV_RobotArmController.instance.excuteCycleEvent("washer_loading.csv");
         }

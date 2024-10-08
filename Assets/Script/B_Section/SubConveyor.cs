@@ -29,7 +29,6 @@ public class SubConveyor : MonoBehaviour
         Belt.localPosition = ResumePos; // 벨트 초기 위치 설정
 
 
-        SpawnTottPLC();
     }
 
     // Update is called once per frame

@@ -12,6 +12,15 @@ public class D1 : MonoBehaviour
     private Vector3 ResumePos; // 현재 위치 저장
     bool DIsRunPLC;
     Coroutine Coroutine;
+
+    public static D1 instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
+
     private void Start()
     {
         ResumePos = StartPos.localPosition; // 시작 위치 초기화
@@ -55,11 +64,6 @@ public class D1 : MonoBehaviour
         if (Coroutine == null)
         {
             Coroutine = StartCoroutine(Moving());
-            // if (Belt.localPosition == EndPos.localPosition)
-            // {
-            //    ResumePos = StartPos.localPosition;
-            // }
-
 
         }
 

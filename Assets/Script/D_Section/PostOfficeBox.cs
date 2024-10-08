@@ -13,6 +13,10 @@ public class PostOfficeBox : MonoBehaviour
     [SerializeField] Transform BoxUnderWing2;
     [SerializeField] Transform BoxUnderWing3;
     [SerializeField] Transform BoxUnderWing4;
+    [SerializeField] Transform BoxUpperWing1;
+    [SerializeField] Transform BoxUpperWing2;
+    [SerializeField] Transform BoxUpperWing3;
+    [SerializeField] Transform BoxUpperWing4;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -32,6 +36,17 @@ public class PostOfficeBox : MonoBehaviour
         {
             StartCoroutine(Rotate(BoxUnderWing1, Quaternion.Euler(0, 0, -90), 2f));
             StartCoroutine(Rotate(BoxUnderWing2, Quaternion.Euler(0, 0, 90), 2f));
+        }
+        else if (other.name.StartsWith("Another"))
+        {
+            print("ㅇㅇ");
+            StartCoroutine(Rotate(BoxUpperWing1, Quaternion.Euler(0, 0, 90), 0.7f));
+            StartCoroutine(Rotate(BoxUpperWing2, Quaternion.Euler(0, 0, -90), 0.7f));
+        }
+        else if(other.name.StartsWith("Wing"))
+        {
+            StartCoroutine(Rotate(BoxUpperWing3, Quaternion.Euler(-90, 0, 0), 0.7f));
+            StartCoroutine(Rotate(BoxUpperWing4, Quaternion.Euler(90, 0, 0), 0.7f));
         }
 
     }
@@ -79,8 +94,8 @@ public class PostOfficeBox : MonoBehaviour
         {
             Rigidbody rb = transform.GetComponent<Rigidbody>();
 
-            // XYZ 제약 조건 해제
-           
+            
+
             rb.constraints = RigidbodyConstraints.None; // 모든 제약 해제
 
         }
