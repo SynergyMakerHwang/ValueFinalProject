@@ -5,6 +5,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using System.Net.WebSockets;
 
 public class AGV_RobotArmController : MonoBehaviour
 {
@@ -41,14 +42,16 @@ public class AGV_RobotArmController : MonoBehaviour
 
     float currentTime;
     bool isCycleAction = false;
-    int tottCnt = 0;
+    [SerializeField] bool isProcessCycleEndAction = false;
+    [SerializeField] int tottCnt = 0;
 
     public bool IsCycleAction { get => isCycleAction; set => isCycleAction = value; }
+    public bool IsProcessCycleEndAction { get => isProcessCycleEndAction; set => isProcessCycleEndAction = value; }
     public int TottCnt { get => tottCnt; set => tottCnt = value; }
 
     string fileName = "program.csv";
     string tmpFileName = "";
-    int tmpFileNameIndex = 0;
+    [SerializeField] int tmpFileNameIndex = 0;
 
 
     [Serializable]
@@ -237,9 +240,13 @@ public class AGV_RobotArmController : MonoBehaviour
     public void excuteCycleEvent(string processFileName)
     {
         
-        if (loadCSVFileEvent(processFileName)) {
+        if (loadCSVFileEvent(processFileName)) {          
             isCycleAction = true;
+            print("##########");
+
             StartCoroutine(RunStep(0));
+                 
+            
         }
         
     }
@@ -654,8 +661,11 @@ public class AGV_RobotArmController : MonoBehaviour
     //delay에 따라 step을 작동
     public IEnumerator RunStep(int requestRoutine)
     {
-        int loopCnt = 0;
+        print("tmpFileNameIndex" + tmpFileNameIndex);
+        print("TottCnt" + TottCnt);
 
+        int loopCnt = 0;
+        isProcessCycleEndAction = false;
         while (isCycleAction)
         {
 
@@ -690,6 +700,12 @@ public class AGV_RobotArmController : MonoBehaviour
                     }
                     else
                     {
+                        if (steps.Count - 1 == i && tmpFileNameIndex >= TottCnt)
+                        {
+                            print("*************************************************************************");
+                            isProcessCycleEndAction = true;
+                        }
+
                         yield return (RotateAngle(steps[i - 1], steps[i]));
 
                         //cycle && 마지막 step일 경우, origin으로 
@@ -702,11 +718,13 @@ public class AGV_RobotArmController : MonoBehaviour
 
                 }
 
+               
 
 
             }
             else
             {
+               
                 break;
             }
 

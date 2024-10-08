@@ -40,7 +40,7 @@ public class TCPClient : MonoBehaviour
     [SerializeField] AGVParkingSensor agvCuttingLoadingParkingSensor;
 
     int currentTottIndex = 0;
-
+   
 
 
 
@@ -99,6 +99,7 @@ public class TCPClient : MonoBehaviour
 
         //PLC 설정 ( 도트 수량 & PLC 전원 ON)
         StartCoroutine(setDevice("@SETDevice,D0," + loadCnt + "@SETDevice,X0,1"));
+
         //로봇팔 동작 수량
         AGV_RobotArmController.instance.TottCnt = loadCnt;
 
@@ -125,9 +126,9 @@ public class TCPClient : MonoBehaviour
     private void excuteWasherProcess(int[][] point)
     {
         //세척공정 - 도트 발생 (Y0)
-        if (point[0][0] == 1)
+        if (point[0][0] == 1 )
         {
-            SubConveyor.Instance.SpawnTottPLC();
+            SubConveyor.Instance.SpawnTottPLC();           
         }
 
         //세척 공정 - 펌핑모터 (Y30)
@@ -188,8 +189,10 @@ public class TCPClient : MonoBehaviour
         requestMsg += "@SETDevice,X32," + weightSensor;
 
         //(추가)세척공정 - 하역 로봇팔 동작 완료 sensor (X33)
+        int robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
+        print(AGV_RobotArmController.instance.IsProcessCycleEndAction+ "<<<<<<<<<<<<<<<robotACTEndSensor");
+        requestMsg += "@SETDevice,X33," + robotACTEndSensor;
 
-      
         return requestMsg;
     }
 
@@ -391,7 +394,7 @@ public class TCPClient : MonoBehaviour
     private async Task RequestScanAsync(string requestMsg)
     {
         string returnMsg = "";
-        print("RequestScanAsync start ");
+        
         if (requestMsg == "")
         {
             returnMsg = "서버 요청값을 입력해주세요.";
@@ -417,22 +420,37 @@ public class TCPClient : MonoBehaviour
                     string msg = Encoding.UTF8.GetString(buffer2, 0, nBytes);
 
 
-                    int[][] point = null;                    
+
+                    string[] responseArr = null;
                     if (msg != null && msg != "")
                     {
-                        point = TransTCPtoDeviceBlock(msg);
-                        // ******************** GET *************************
-                        //(B)세척공정
-                        excuteWasherProcess(point);
-                        
-                        //(C)열풍건조공정
-                       excuteDryerProcess(point);
+                        msg = msg.Trim();
+                        if (msg.IndexOf("@") == 0)
+                        {
+                            msg = msg.Substring(1);
+                        }
+
+                        responseArr = msg.Split("@");
+                        //string[] response
+                        foreach (string str in responseArr)
+                        {
+                            int[][] point = null;
+                            point = TransTCPtoDeviceBlock(str);
+
+                            // ******************** GET *************************
+                            //(B)세척공정
+                            excuteWasherProcess(point);
+
+                            //(C)열풍건조공정
+                            excuteDryerProcess(point);
+                        }
+                       
                     }
 
 
                     //열풍건조 공정
                     
-                    if (point != null)
+                    if (responseArr.Length>0)
                     {
 
                         // ******************** SET *************************
@@ -450,7 +468,7 @@ public class TCPClient : MonoBehaviour
 
 
 
-                        print(reWrite);
+                        //print(reWrite);
                         
                         if (reWrite != "")
                         {
@@ -521,7 +539,7 @@ public class TCPClient : MonoBehaviour
     private int[][] TransTCPtoDeviceBlock(string returnData)
     {
         
-        returnData = returnData.Substring(returnData.IndexOf(",") + 1);
+        returnData = returnData.Substring(returnData.IndexOf(",") + 1);        
         string[] returnArr = returnData.Split(",");
 
         if (returnArr.Length > 0)

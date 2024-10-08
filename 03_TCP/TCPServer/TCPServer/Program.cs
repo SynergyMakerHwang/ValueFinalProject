@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using static TCPServer;
 using static TCPServer.MxComponent;
@@ -91,6 +92,8 @@ class TCPServer
                     }
                     else if (responseMsg.Contains("SET") || responseMsg.Contains("GET"))
                     {
+                        returnMsg = "";
+                        
                         string[] responseArr = responseMsg.Split("@");
                         //string[] response
                         foreach (string str in responseArr)
@@ -98,6 +101,7 @@ class TCPServer
                             if (str.Contains("SETDevice"))
                             {
                                 mxComponent.setDevice(str);
+                                returnMsg += "@" + mxComponent.ReadDeviceBlockTCPServer(requestGetBlock);
                             }
                             else if (str.Contains("SET"))
                             {
@@ -107,18 +111,13 @@ class TCPServer
                                 /**SET한 값의 블럭값 가져오기**/
                                 str.Replace("SET", "GET");
                                 string[] tmp_str = str.Split(",");
-                                returnMsg = mxComponent.ReadDeviceBlockTCPServer(tmp_str[0] + "," + tmp_str[1] + "," + blockNum);
+                                returnMsg += "@"+mxComponent.ReadDeviceBlockTCPServer(tmp_str[0] + "," + tmp_str[1] + "," + blockNum);
                             }
                             else if (str.Contains("GET"))
                             {
-                                returnMsg = mxComponent.ReadDeviceBlockTCPServer(str);
+                                returnMsg += "@"+mxComponent.ReadDeviceBlockTCPServer(str);
                             }
                         }
-
-                        if (responseArr.Length>0) {
-                            returnMsg = mxComponent.ReadDeviceBlockTCPServer(requestGetBlock);
-                        }
-                        
 
 
                     }

@@ -31,7 +31,6 @@ public class AGVManager : MonoBehaviour
 
     private void Awake()
     {
-        print("agv manager awake ½ÇÇà==");
         if (Instance == null) { 
             Instance = this;
         }
