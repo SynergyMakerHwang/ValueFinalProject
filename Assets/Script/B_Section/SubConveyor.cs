@@ -28,7 +28,7 @@ public class SubConveyor : MonoBehaviour
         ResumePos = StartPos.localPosition; // 시작 위치 초기화
         Belt.localPosition = ResumePos; // 벨트 초기 위치 설정
 
-
+ 
     }
 
     // Update is called once per frame
@@ -69,7 +69,7 @@ public class SubConveyor : MonoBehaviour
     }
     public void SpawnTottPLC()
     {
-        Instantiate(TottBox, SpawnPoint.position, Quaternion.identity);
+        Instantiate(TottBox, SpawnPoint.position, Quaternion.Euler(0, 270, 0));
     }
     public void SubConveyorOnPLC()
     {
