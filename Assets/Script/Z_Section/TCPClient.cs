@@ -98,6 +98,7 @@ public class TCPClient : MonoBehaviour
 
 
         //PLC 설정 ( 도트 수량 & PLC 전원 ON)
+        StartCoroutine(setDevice("@SETDevice,D0," + loadCnt + "@SETDevice,X0,1"));
         //로봇팔 동작 수량
         AGV_RobotArmController.instance.TottCnt = loadCnt;
 
