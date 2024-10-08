@@ -92,18 +92,15 @@ public class AGV_RobotArmGripper : MonoBehaviour
     public void removeChild(bool isGripperOn)
     {
         isGripperMode = false;
-        print("removeChild====="+ isGripperOn);
+        
         if (!isGripperOn)
-        {
-            print("removeChild===1==" + isGripperOn);
+        {        
             if (gripper.childCount > 0)
-            {
-                print("removeChild===2==" + isGripperOn);
+            {        
                 Rigidbody childRb = gripper.GetChild(2).GetComponent<Rigidbody>();
-                print("removeChild===3==" + childRb);
+        
                 if (childRb.tag.Contains("≈‰∆Æ") || childRb.tag.Contains("tott"))
                 {
-                    print("removeChild===4==" + isGripperOn);
                     childRb.isKinematic = false;
                     childRb.useGravity = true;
                     gripper.DetachChildren();

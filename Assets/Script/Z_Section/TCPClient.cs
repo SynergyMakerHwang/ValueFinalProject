@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System.Linq;
 using static UnityEngine.InputSystem.Controls.AxisControl;
+using UnityEditor.Hardware;
 
 public class TCPClient : MonoBehaviour
 {
@@ -93,15 +94,12 @@ public class TCPClient : MonoBehaviour
     // 제어판 - 실행 이벤트
     public void OnProcessStartBtnClk() {
 
-        //도트 적재 수량 - PLC 설정
-        StartCoroutine(setDevice("@SETDevice,D0,"+ loadCnt));
-
-        //PLC 전원ON
-        StartCoroutine(setDevice("@SETDevice,X0,1"));
+        //PLC 설정 ( 도트 수량 & PLC 전원 ON)
+        StartCoroutine(setDevice("@SETDevice,D0,"+ loadCnt +"@SETDevice,X0,1"));
 
         //공정 시작
         StartCoroutine(AGVManager.Instance.moveProcessStartPostion());
-            
+        
         //전체 공정 PLC <-> Unity 연동
         StartCoroutine(ScanPlc());
     }
@@ -153,8 +151,12 @@ public class TCPClient : MonoBehaviour
             MainConveyor.instance.MainConveyorOffPLC();
         }
 
-        //(추가)세척 공정 - 로봇팔 동작 - get
-
+        //세척 공정 - 로봇팔 동작 - get
+        if (point[3][3] == 1)
+        {
+            //하역 동작            
+            AGV_RobotArmController.instance.excuteCycleEvent("washer_loading.csv");
+        }
 
         //세척 공정 완료 ( Y34)
         if (point[3][4] == 1)
@@ -345,7 +347,7 @@ public class TCPClient : MonoBehaviour
 
     IEnumerator ScanPlc()
     {
-
+        print("ScanPlc start ");
         yield return new WaitUntil(() => isConnected);
         if (isConnected)
         {
@@ -382,7 +384,7 @@ public class TCPClient : MonoBehaviour
     private async Task RequestScanAsync(string requestMsg)
     {
         string returnMsg = "";
-
+        print("RequestScanAsync start ");
         if (requestMsg == "")
         {
             returnMsg = "서버 요청값을 입력해주세요.";
@@ -417,7 +419,7 @@ public class TCPClient : MonoBehaviour
                         excuteWasherProcess(point);
                         
                         //(C)열풍건조공정
-                        excuteDryerProcess(point);
+                        //excuteDryerProcess(point);
                     }
 
 
@@ -437,7 +439,7 @@ public class TCPClient : MonoBehaviour
                         reWrite += requestWasherProcess();
 
                         //(C)열풍공정 
-                        reWrite += requestDryerProcess();
+                        //reWrite += requestDryerProcess();
 
 
 

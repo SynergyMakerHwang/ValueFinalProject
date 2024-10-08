@@ -19404,109 +19404,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.1306951, y: 1.3518436, z: 1.0290946}
   m_Center: {x: 0, y: 0.6759218, z: 5.7561903e-16}
---- !u!1001 &971955619
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1274611765143814622, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1274611765143814622, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1605977293063770189, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2095596910583287555, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3966116119942712554, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6156114101554468195, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Name
-      value: ToteBox (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.907
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 22.727
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 6783891653630169049, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7134520874305020284, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8160974404408559227, guid: a68df29ac8247af4caa943cd5778c1e2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a68df29ac8247af4caa943cd5778c1e2, type: 3}
 --- !u!1 &975600648
 GameObject:
   m_ObjectHideFlags: 0
@@ -43967,6 +43864,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8acc057d50a608847a3ab3a676d624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entireProcessList:
+  - 30
+  - 50
+  - 40
   pathPoints:
   - {fileID: 675247298}
   - {fileID: 1280420435}
@@ -43978,17 +43879,25 @@ MonoBehaviour:
   - {fileID: 1505082447}
   - {fileID: 423628222}
   - {fileID: 1035617101}
-  washerPathPoints:
+  washerSpathPoints:
   - {fileID: 1280420435}
   - {fileID: 957202649}
+  washerEpathPoints:
+  - {fileID: 957202649}
   - {fileID: 955394139}
-  dryerPathPoints:
+  dryerSpathPoints:
   - {fileID: 1487478404}
   - {fileID: 1549603815}
+  dryerEpathPoints:
+  - {fileID: 1549603815}
   - {fileID: 597572943}
-  cuttingPathPoints:
+  cuttingSpathPoints:
   - {fileID: 1505082447}
   - {fileID: 423628222}
+  cuttingMpathPoints:
+  - {fileID: 423628222}
+  - {fileID: 986699908}
+  cuttingEpathPoints:
   - {fileID: 986699908}
   - {fileID: 1035617101}
 --- !u!224 &3242055389207385018
@@ -54653,7 +54562,6 @@ SceneRoots:
   - {fileID: 383797087}
   - {fileID: 694760435}
   - {fileID: 62892025}
-  - {fileID: 971955619}
   - {fileID: 1486091705}
   - {fileID: 216903077}
   - {fileID: 2754380928709748073}

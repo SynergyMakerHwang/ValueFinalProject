@@ -9,7 +9,7 @@ using UnityEngine;
 public class AGVManager : MonoBehaviour
 {
     public static AGVManager Instance;
-    public string[] entireProcessList = null;    
+    public string[] entireProcessList = new string[]{ "30", "50", "40" };  
     int entireProcessCurrentNum = 0;
 
 
@@ -31,6 +31,7 @@ public class AGVManager : MonoBehaviour
 
     private void Awake()
     {
+        print("agv manager awake 실행==");
         if (Instance == null) { 
             Instance = this;
         }
@@ -52,8 +53,7 @@ public class AGVManager : MonoBehaviour
 
     //DB - 공정 시작 시 설정
     public void processRootSetting(string[] processList) {
-        entireProcessList = processList;
-        entireProcessList = new string[]{ "30", "50", "40" };
+        entireProcessList = processList;      
     }
 
 
@@ -91,12 +91,20 @@ public class AGVManager : MonoBehaviour
     //공정의 시작 시점
     public IEnumerator moveProcessStartPostion()
     {
+        print("moveProcessStartPostion start");
 
+        entireProcessList = new string[] { "30", "50", "40" };
         if (entireProcessList != null)
         {
-            Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
-            yield return (moveLoopPoint(tmpRoot));
-            entireProcessCurrentNum++;
+            print(entireProcessCurrentNum);
+            print(entireProcessList.Length+ "entireProcessList");
+            print(entireProcessList[0] + "<<<<entireProcessList");
+            if (entireProcessList.Length>0) {
+                Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
+                yield return (moveLoopPoint(tmpRoot));
+                entireProcessCurrentNum++;
+            }
+            
         }
     }
 
