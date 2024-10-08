@@ -23,13 +23,11 @@ public class AGV_RobotArmBase : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        print("other" + other + "//" + other.tag);
-        rb = other.GetComponent<Rigidbody>();
+         rb = other.GetComponent<Rigidbody>();
 
         if (other.tag.Contains("토트") || other.tag.Contains("tott"))
         {
-            print("???여기 base wㄷenter");
-
+         
             rb.isKinematic = true;
             rb.useGravity = true;
 
@@ -52,7 +50,6 @@ public class AGV_RobotArmBase : MonoBehaviour
         {
             other.transform.SetParent(null);
 
-            print("???여기 base exit");
             if (rb != null)
             {
                 rb.isKinematic = false;

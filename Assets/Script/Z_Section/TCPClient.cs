@@ -19,7 +19,7 @@ public class TCPClient : MonoBehaviour
     NetworkStream stream;
     [SerializeField] bool isConnected = false;
     [SerializeField] float waitTime = 0.1f;
-    [SerializeField] int loadCnt = 10; // 도트 적재 수량
+    [SerializeField] int loadCnt = 1; // 도트 적재 수량
     Process ps;
     int blockNum = 10; //블럭들의 수량
     int blockSize = 16; // 블럭의 수량
@@ -38,6 +38,8 @@ public class TCPClient : MonoBehaviour
     [SerializeField] AGVParkingSensor agvDryerParkingSensor;
     [SerializeField] AGVParkingSensor agvCuttingParkingSensor;
     [SerializeField] AGVParkingSensor agvCuttingLoadingParkingSensor;
+
+    int currentTottIndex = 0;
 
 
 
@@ -94,8 +96,11 @@ public class TCPClient : MonoBehaviour
     // 제어판 - 실행 이벤트
     public void OnProcessStartBtnClk() {
 
+
         //PLC 설정 ( 도트 수량 & PLC 전원 ON)
-        StartCoroutine(setDevice("@SETDevice,D0,"+ loadCnt +"@SETDevice,X0,1"));
+        StartCoroutine(setDevice("@SETDevice,D0," + loadCnt + "@SETDevice,X0,1"));
+        //로봇팔 동작 수량
+        AGV_RobotArmController.instance.TottCnt = loadCnt;
 
         //공정 시작
         StartCoroutine(AGVManager.Instance.moveProcessStartPostion());
@@ -154,12 +159,8 @@ public class TCPClient : MonoBehaviour
         //세척 공정 - 로봇팔 동작 - get
         if (point[3][3] == 1)
         {
-            print("33==========");
-
-
-
             //하역 동작            
-            AGV_RobotArmController.instance.excuteCycleEvent("washer_loading.csv");
+            AGV_RobotArmController.instance.excuteCycleEvent("washer_loading");
         }
 
         //세척 공정 완료 ( Y34)
@@ -295,7 +296,9 @@ public class TCPClient : MonoBehaviour
         //세척공정 - AGV 도착센서  (X30)
         int agvParkingSensor = (agvWasherParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X30," + agvParkingSensor;
-       
+        if (agvParkingSensor == 1) {
+            currentTottIndex = 0;
+        }
 
         //절단공정 - AGV 도착센서  (X40)
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
@@ -423,7 +426,7 @@ public class TCPClient : MonoBehaviour
                         excuteWasherProcess(point);
                         
                         //(C)열풍건조공정
-                        //excuteDryerProcess(point);
+                       excuteDryerProcess(point);
                     }
 
 
@@ -443,7 +446,7 @@ public class TCPClient : MonoBehaviour
                         reWrite += requestWasherProcess();
 
                         //(C)열풍공정 
-                        //reWrite += requestDryerProcess();
+                        reWrite += requestDryerProcess();
 
 
 
