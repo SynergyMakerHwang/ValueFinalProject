@@ -1,3 +1,5 @@
+using Google.MiniJSON;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System;
@@ -24,8 +26,8 @@ public class AGVManager : MonoBehaviour
     public Transform[] cuttingMpathPoints; // 절단공정 중간 하역 이동 경로
     public Transform[] cuttingEpathPoints; // 절단공정 종료 이동 경로
 
+    public int duration = 20;
     private int currentPointIndex = 0;
-    private int duration = 20;
 
     Dictionary<string, Transform[]> pathRoot = new Dictionary<string, Transform[]>();
 
@@ -59,46 +61,81 @@ public class AGVManager : MonoBehaviour
 
     //공정의 종료 시점
     public IEnumerator moveProcessEndPostion(string processNum) {
- 
+       
         switch (processNum)
         {
-            case "30":
-                StartCoroutine(moveLoopPoint(washerEpathPoints));
+            case "30":          
+                StartCoroutine(moveLoopPoint(washerEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());                        
+                    }
+                    print(returnValue);
+
+                }));
                 break;
 
-            case "40":
-                StartCoroutine(moveLoopPoint(cuttingEpathPoints));
+            case "40":                
+                StartCoroutine(moveLoopPoint(cuttingEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());
+                    }
+                    print(returnValue);
+
+                }));
                 break;
 
-            case "50":
-                StartCoroutine(moveLoopPoint(dryerEpathPoints));
+            case "50":                
+                StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());
+                    }
+                    print(returnValue);
+
+                }));
                 break;
-            case "60":
-                StartCoroutine(moveLoopPoint(dryerEpathPoints));
-                break;          
+            case "60":                
+                StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());
+                    }
+                    print(returnValue);
+
+                }));
+                break;
 
             default:                
                 break;
         }
 
-       //다음 공정으로 이동
-       yield return moveProcessStartPostion();
+        yield return false;
+
+
     }
 
+
+   
 
 
     //공정의 시작 시점
     public IEnumerator moveProcessStartPostion()
     {
-        print("moveProcessStartPostion start");
-
+       
         entireProcessList = new string[] { "30", "50", "40" };
         if (entireProcessList != null)
         {
-            print(entireProcessCurrentNum);
-            print(entireProcessList.Length+ "entireProcessList");
-            print(entireProcessList[0] + "<<<<entireProcessList");
-            if (entireProcessList.Length>0) {
+           if (entireProcessList.Length>0 && entireProcessCurrentNum < entireProcessList.Length) {
                 Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
                 yield return (moveLoopPoint(tmpRoot));
                 entireProcessCurrentNum++;
@@ -154,12 +191,10 @@ public class AGVManager : MonoBehaviour
 
 
     }
-
-
     private IEnumerator moveLoopPoint(Transform[] path)
     {
 
-
+      
         float currentTime = 0;
         int index = 0;
         if (path.Length > 0)
@@ -167,6 +202,69 @@ public class AGVManager : MonoBehaviour
 
             while (true)
             {
+
+
+                currentTime += Time.deltaTime;
+                if (currentTime > duration)
+                {
+                    currentTime = 0;
+                    break;
+
+                }
+
+                // 현재 Waypoint까지의 방향 계산
+                Vector3 direction = path[index].position - transform.position;
+                direction.y = 0; // 수평 회전만 적용하고 싶을 때 Y축은 고정
+
+                // 물체가 Waypoint에 도착했는지 확인
+                if (direction.magnitude < 0.1f)
+                {
+
+                    if (index < path.Length - 1)
+                    {
+                        index++;
+                    }
+                    else
+                    {
+                       
+                        break;
+                    }
+
+                }
+
+
+                // 회전 처리: 물체가 Waypoint를 향하도록 회전
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, currentTime / duration);
+
+                // 이동 처리: Waypoint 방향으로 이동
+                transform.position = Vector3.MoveTowards(transform.position, path[index].position, currentTime / duration);
+                yield return new WaitForEndOfFrame();
+
+                if (index > path.Length)
+                {
+                    
+                    break;
+                }
+            }
+
+        }
+        
+    }
+
+    private IEnumerator moveLoopPoint(Transform[] path , System.Action<bool> callback)
+    {
+
+        bool result = false;
+        float currentTime = 0;
+        int index = 0;
+        if (path.Length > 0)
+        {
+
+            while (true)
+            {
+               
+
                 currentTime += Time.deltaTime;
                 if (currentTime > duration)
                 {
@@ -188,7 +286,8 @@ public class AGVManager : MonoBehaviour
                         index++;
                     }
                     else {
-                        break;
+                      result = true;
+                      break;
                     }
                     
                 }
@@ -201,9 +300,17 @@ public class AGVManager : MonoBehaviour
                 // 이동 처리: Waypoint 방향으로 이동
                 transform.position = Vector3.MoveTowards(transform.position, path[index].position, currentTime / duration);
                 yield return new WaitForEndOfFrame();
+
+                if (index > path.Length)
+                {
+                    result = true;                    
+                    break;
+                }
             }
 
         }
+
+        callback(result);
     }
 
 

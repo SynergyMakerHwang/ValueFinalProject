@@ -96,8 +96,9 @@ public class AGV_RobotArmGripper : MonoBehaviour
         if (!isGripperOn)
         {        
             if (gripper.childCount > 0)
-            {        
-                Rigidbody childRb = gripper.GetChild(2).GetComponent<Rigidbody>();
+            {
+               
+                Rigidbody childRb = gripper.GetChild(gripper.childCount-1).GetComponent<Rigidbody>();
         
                 if (childRb.tag.Contains("≈‰∆Æ") || childRb.tag.Contains("tott"))
                 {

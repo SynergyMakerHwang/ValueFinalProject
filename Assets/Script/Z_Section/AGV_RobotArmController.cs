@@ -51,7 +51,7 @@ public class AGV_RobotArmController : MonoBehaviour
 
     string fileName = "program.csv";
     string tmpFileName = "";
-    [SerializeField] int tmpFileNameIndex = 0;
+    [SerializeField] int publicTottIndex = 0;
 
 
     [Serializable]
@@ -237,35 +237,34 @@ public class AGV_RobotArmController : MonoBehaviour
         fs.Close();
 
     }
-    public void excuteCycleEvent(string processFileName)
+    public void excuteCycleEvent(string processFileName, int tottIndex)
     {
-        
-        if (loadCSVFileEvent(processFileName)) {          
-            isCycleAction = true;
-            print("##########");
+        publicTottIndex = tottIndex;
+        if (loadCSVFileEvent(processFileName, tottIndex)) {          
+            isCycleAction = true;        
 
-            StartCoroutine(RunStep(0));
+            StartCoroutine(RunStep(1));
                  
             
         }
         
     }
 
-    public bool loadCSVFileEvent(string processFileName)
+    public bool loadCSVFileEvent(string processFileName, int tottIndex)
     {
         bool result = false;
         if (tmpFileName != processFileName) {
-            tmpFileNameIndex = 0;
+            tottIndex = 0;
             tmpFileName = processFileName;
         }
 
-        tmpFileNameIndex++;
-        if (tmpFileNameIndex > TottCnt)
+  
+        if (tottIndex > TottCnt)
         {
             return false;
         }
 
-        processFileName = tmpFileName + "_" + tmpFileNameIndex+".csv";
+        processFileName = tmpFileName + "_" + tottIndex + ".csv";
         fileNameVal.text = processFileName;
 
         steps.Clear();
@@ -661,16 +660,15 @@ public class AGV_RobotArmController : MonoBehaviour
     //delay에 따라 step을 작동
     public IEnumerator RunStep(int requestRoutine)
     {
-        print("tmpFileNameIndex" + tmpFileNameIndex);
-        print("TottCnt" + TottCnt);
-
+        
         int loopCnt = 0;
         isProcessCycleEndAction = false;
         while (isCycleAction)
         {
-
+           
             if (steps.Count > 0)
             {
+      
 
                 if (requestRoutine != 0 && loopCnt >= requestRoutine)
                 {
@@ -700,26 +698,30 @@ public class AGV_RobotArmController : MonoBehaviour
                     }
                     else
                     {
-                        if (steps.Count - 1 == i && tmpFileNameIndex >= TottCnt)
-                        {
-                            print("*************************************************************************");
-                            isProcessCycleEndAction = true;
-                        }
-
-                        yield return (RotateAngle(steps[i - 1], steps[i]));
+                       
 
                         //cycle && 마지막 step일 경우, origin으로 
                         if (requestRoutine == 0 && i == steps.Count - 1)
                         {
                             yield return (RotateAngle(steps[i], orginStep));
                         }
+                        else {
+                            yield return (RotateAngle(steps[i - 1], steps[i]));
+                        }
+                      
+
+                        if (steps.Count - 1 == i && publicTottIndex >= TottCnt)
+                        {
+                            isProcessCycleEndAction = true;
+                        }
+
 
                     }
 
                 }
 
+              
                
-
 
             }
             else

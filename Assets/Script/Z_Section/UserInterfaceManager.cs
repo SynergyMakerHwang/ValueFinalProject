@@ -4,11 +4,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UserInterfaceManager : MonoBehaviour
 {
     static public UserInterfaceManager instance;
 
+    [SerializeField] GameObject[] panelList;
 
     [SerializeField] GameObject signInPanel;
     [SerializeField] GameObject userSettingPanel;
@@ -16,6 +18,10 @@ public class UserInterfaceManager : MonoBehaviour
     [SerializeField] GameObject stepFirstPanel;
     [SerializeField] GameObject stepSecondPanel;
     [SerializeField] GameObject stepEtcPanel;
+
+    [SerializeField] GameObject monitoringPanel;
+
+
 
 
     Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
@@ -33,17 +39,29 @@ public class UserInterfaceManager : MonoBehaviour
         }
 
         /** 공정 설정 페이지 첫페이지 이외에 비활성화 **/
-        stepFirstPanel.SetActive(true);
-        stepSecondPanel.SetActive(false);
-        stepEtcPanel.SetActive(false);
+        closePanel();
+        userSettingPanel.SetActive(true);
 
+
+
+
+    }
+
+    public void closePanel()
+    {
+        GameObject target = null;
+        for (int i = 0; i < panelList.Length; i++)
+        {
+            target = panelList[i].gameObject;
+            target.SetActive(false);
+        }
     }
 
     //사용자 설정 페이지로 전환
     public void transUserMode()
     {
-        print("transUserMode");
-        signInPanel.SetActive(false);
+
+        closePanel();
         userSettingPanel.SetActive(true);
     }
 
@@ -52,12 +70,71 @@ public class UserInterfaceManager : MonoBehaviour
         fromPanel.SetActive(false);
         toPanel.SetActive(true);
     }
-    
+
+
+    public void transUserMonitoringMode()
+    {
+        closePanel();
+        userSettingPanel.SetActive(false);
+        monitoringPanel.SetActive(true);
+    }
+
+    public void onClkNextStepSetting() {
+
+        closePanel();
+        stepSecondPanel.SetActive(true);
+    }
+
+    public void onClkEtcStepSetting()
+    {
+
+        closePanel();
+        stepEtcPanel.SetActive(true);
+    }
+
+
+
+    public void btnChangeOnColor(Button target)
+    {
+
+        ColorBlock colorBlock = target.colors;
+        Color newColr = Color.green;
+        colorBlock.normalColor = newColr;
+        target.GetComponent<Text>().text = "On";
+
+        target.colors = colorBlock;
+    }
+
+    public void btnChangeOffColor(Button target)
+    {
+
+        ColorBlock colorBlock = target.colors;
+        Color newColr = Color.gray;
+        colorBlock.normalColor = newColr;
+        target.GetComponent<Text>().text = "Off";
+
+        target.colors = colorBlock;
+    }
+
+    public void btnOnChangeErrorColor(Button target)
+    {
+
+        ColorBlock colorBlock = target.colors;
+        Color newColr = Color.red;
+        colorBlock.normalColor = newColr;
+        target.GetComponent<Text>().text = "Error";
+
+        target.colors = colorBlock;
+    }
+
     /*** 데이터 가져오기 ***/
     public void getUserProcessData()
     {
-                
-      StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
+
+        closePanel();
+        stepFirstPanel.SetActive(true);
+
+        StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
         {
             productClass = JsonConvert.DeserializeObject<ProductClass>(returnValue);
             print(returnValue);          
