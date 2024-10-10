@@ -45,14 +45,7 @@ public class TCPClient : MonoBehaviour
 
     int currentTottIndex = 0;
 
-    [Header("[A] 모니터링 관련")]
-    public Button washer_BTN;
-    public Button dryer_BTN;
-    public Button cooling_BTN;
-    public Button cutting_BTN;
-    public Button packing_BTN;
-    public Button loading_BTN;
-
+   
 
     //GET Param
     string requestGetBlock = "@GET,Y0,10";
@@ -185,10 +178,12 @@ public class TCPClient : MonoBehaviour
         //세척 공정 완료 ( Y34)
         if (point[3][4] == 1)
         {
+            //모니터링 - 세척 공정 완료
+            UserInterfaceManager.instance.btnOnChangeColorText("30", "Done");
+
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("30"));
             washer_TottIndex = 0;
-            //모니터링 - 세척 공정 완료
-            UserInterfaceManager.instance.btnChangeOffColor(washer_BTN);
+         
         }
 
     }
@@ -277,10 +272,12 @@ public class TCPClient : MonoBehaviour
         // 열풍건조 공정  - 완료 (Y55)
         if (point[5][5] == 1)
         {
+            //모니터링 - 건조 공정 완료            
+            UserInterfaceManager.instance.btnOnChangeColorText("50", "Done");
+
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
             dryer_TottIndex = 0;
-            //모니터링 - 건조 공정 완료
-            UserInterfaceManager.instance.btnChangeOffColor(dryer_BTN);
+           
         }
 
 
@@ -305,7 +302,7 @@ public class TCPClient : MonoBehaviour
 
 
 
-        //열풍건조 공정  - 로봇팔 하역 완료 센서 (X52)        
+        //열풍건조 공정  - 로봇팔 상/하역 완료 센서 (X52)        
         int robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
         requestMsg += "@SETDevice,X52," + robotACTEndSensor;
 
@@ -340,8 +337,8 @@ public class TCPClient : MonoBehaviour
         }
 
         //모티터링 - 세척 공정 시작
-        if (agvParkingSensor == 1) { 
-            UserInterfaceManager.instance.btnChangeOnColor(washer_BTN);
+        if (agvParkingSensor == 1) {            
+           UserInterfaceManager.instance.btnOnChangeColorText("30", "ON");
         }
 
         //절단공정 - AGV 도착센서  (X40)
@@ -351,20 +348,21 @@ public class TCPClient : MonoBehaviour
         agvParkingSensor = (agvCuttingLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X45," + agvParkingSensor; //절단공정 - AGV 로딩 도착센서  (X45)
 
-        //모티터링 - 세척 공정 시작
+        //모티터링 - 절단 공정 시작
         if (agvParkingSensor == 1)
-        {
-            UserInterfaceManager.instance.btnChangeOnColor(cutting_BTN);
+        {           
+           UserInterfaceManager.instance.btnOnChangeColorText("40", "ON");
+
         }
 
 
         //건조공정 - AGV 도착센서  (X50)
         agvParkingSensor = (agvDryerParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X50," + agvParkingSensor;
-        //모티터링 - 세척 공정 시작
+        //모티터링 - 건조 공정 시작
         if (agvParkingSensor == 1)
         {
-            UserInterfaceManager.instance.btnChangeOnColor(dryer_BTN);
+            UserInterfaceManager.instance.btnOnChangeColorText("50", "ON");
         }
         return requestMsg;
 

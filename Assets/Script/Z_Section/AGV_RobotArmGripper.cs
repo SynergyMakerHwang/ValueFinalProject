@@ -104,7 +104,9 @@ public class AGV_RobotArmGripper : MonoBehaviour
                 {
                     childRb.isKinematic = false;
                     childRb.useGravity = true;
-                    gripper.DetachChildren();
+                    childRb.transform.SetParent(null);
+
+                    //gripper.DetachChildren();                    
                     //isAttached = false;
                 }
             }
