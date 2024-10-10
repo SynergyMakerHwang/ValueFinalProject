@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class Absorber : MonoBehaviour
 {
-    private int Count;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.StartsWith("Box2") && transform.childCount == 0 && DLocationSensor.Instance.RightSensorPLC == false)
+        if (other.name.StartsWith("Box2") && transform.childCount == 0)
         {
 
 
