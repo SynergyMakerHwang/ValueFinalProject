@@ -3,6 +3,7 @@ using Google.MiniJSON;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,21 @@ public class UserInterfaceManager : MonoBehaviour
     [SerializeField] GameObject stepEtcPanel;
 
     [SerializeField] GameObject monitoringPanel;
+
+
+    [Header("[A] 모니터링 관련")]
+    public Transform washer_BTN;
+    public TextMeshProUGUI washerBTNtext;// 텍스트를 받아올 부분    
+    public Transform dryer_BTN;
+    public TextMeshProUGUI dryerBTNtext;// 텍스트를 받아올 부분    
+    public Transform freeze_BTN;
+    public TextMeshProUGUI freezeBTNtext;// 텍스트를 받아올 부분    
+    public Transform cutting_BTN;
+    public TextMeshProUGUI cuttingBTNtext;// 텍스트를 받아올 부분    
+    public Transform packing_BTN;
+    public TextMeshProUGUI packingBTNtext;// 텍스트를 받아올 부분    
+    public Transform loading_BTN;
+    public TextMeshProUGUI loadingBTNtext;// 텍스트를 받아올 부분    
 
 
 
@@ -94,38 +110,70 @@ public class UserInterfaceManager : MonoBehaviour
 
 
 
-    public void btnChangeOnColor(Button target)
+
+    public void btnOnChangeColorText(string targetIndex, string msg)
     {
 
-        ColorBlock colorBlock = target.colors;
-        Color newColr = Color.green;
-        colorBlock.normalColor = newColr;
-        target.GetComponent<Text>().text = "On";
+        Transform target;
+        Button btn;
+        ColorBlock colorBlock;
+        Color newColr;
+        if (msg == "ON" || msg == "on" || msg == "On")
+        {
+            newColr = Color.green;
+        }
+        else if (msg == "ERROR" || msg == "error" || msg == "Error")
+        {
+            newColr = Color.red;
+        }
+        else
+        {
+            newColr = Color.gray;
+        }
 
-        target.colors = colorBlock;
+        switch (targetIndex)
+        {
+            case "30":
+                washerBTNtext.text = msg;
+                target = washer_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
+
+            case "40":
+                dryerBTNtext.text = msg;
+                target = dryer_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
+
+            case "50":
+                dryerBTNtext.text = msg;
+                target = dryer_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
+            case "60":
+                freezeBTNtext.text = msg;
+                target = freeze_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
+
+            default:
+                break;
+        }
+
     }
 
-    public void btnChangeOffColor(Button target)
-    {
-
-        ColorBlock colorBlock = target.colors;
-        Color newColr = Color.gray;
-        colorBlock.normalColor = newColr;
-        target.GetComponent<Text>().text = "Off";
-
-        target.colors = colorBlock;
-    }
-
-    public void btnOnChangeErrorColor(Button target)
-    {
-
-        ColorBlock colorBlock = target.colors;
-        Color newColr = Color.red;
-        colorBlock.normalColor = newColr;
-        target.GetComponent<Text>().text = "Error";
-
-        target.colors = colorBlock;
-    }
 
     /*** 데이터 가져오기 ***/
     public void getUserProcessData()
