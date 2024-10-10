@@ -12,13 +12,14 @@ public class DLocationSensor : MonoBehaviour
     IEnumerator RotateHand()
     {
         float CurrentTime = 0;
-        float duration = 4;
+        float duration = 1;
         float halfduration = duration / 2;
         Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
-        Quaternion TarPos = Quaternion.Euler(-10, 0, 180);
+        Quaternion TarPos = Quaternion.Euler(20, 0, 180);
 
 
-     
+        yield return new WaitForSeconds(1.5f);
+
         while (CurrentTime < duration)
         {
             CurrentTime += Time.deltaTime;
@@ -26,31 +27,31 @@ public class DLocationSensor : MonoBehaviour
                 Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / halfduration);
             else
                 Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, (CurrentTime - halfduration) / halfduration);
-
+            yield return null;
         }
 
-        yield return null;
+
     }
 
-private void OnTriggerEnter(Collider other)
-{
-    if (other.name.StartsWith("Box2"))
-    {
-
-        RightSensorPLC = true;
-        print(RightSensorPLC);
-        if (coroutine == null)
-            coroutine = StartCoroutine(RotateHand());
-    }
-}
-private void OnTriggerExit(Collider other)
-{
+    private void OnTriggerEnter(Collider other)
     {
         if (other.name.StartsWith("Box2"))
         {
-            RightSensorPLC = false;
-            print(RightSensorPLC);
+
+            RightSensorPLC = true;
+            D2.instance.WrapConveyorOnPLC();
+            
+            coroutine = StartCoroutine(RotateHand());
         }
     }
-}
+    private void OnTriggerExit(Collider other)
+    {
+        {
+            if (other.name.StartsWith("Box2"))
+            {
+                RightSensorPLC = false;
+                print(RightSensorPLC);
+            }
+        }
+    }
 }

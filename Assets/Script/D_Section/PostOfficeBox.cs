@@ -39,16 +39,16 @@ public class PostOfficeBox : MonoBehaviour
         }
         else if (other.name.StartsWith("Another"))
         {
-            print("ㅇㅇ");
             StartCoroutine(Rotate(BoxUpperWing1, Quaternion.Euler(0, 0, 90), 0.7f));
             StartCoroutine(Rotate(BoxUpperWing2, Quaternion.Euler(0, 0, -90), 0.7f));
         }
-        else if(other.name.StartsWith("Wing"))
+        else if (other.name.StartsWith("Wing"))
         {
-            StartCoroutine(Rotate(BoxUpperWing3, Quaternion.Euler(-90, 0, 0), 0.7f));
+
             StartCoroutine(Rotate(BoxUpperWing4, Quaternion.Euler(90, 0, 0), 0.7f));
         }
-
+        else if (other.name.StartsWith("Hand"))
+            StartCoroutine(Rotate(BoxUpperWing3, Quaternion.Euler(-90, 0, 0), 0.7f));
     }
 
     IEnumerator BoxAlign()
@@ -94,7 +94,7 @@ public class PostOfficeBox : MonoBehaviour
         {
             Rigidbody rb = transform.GetComponent<Rigidbody>();
 
-            
+
 
             rb.constraints = RigidbodyConstraints.None; // 모든 제약 해제
 
