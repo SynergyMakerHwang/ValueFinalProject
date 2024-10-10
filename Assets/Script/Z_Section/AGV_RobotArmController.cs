@@ -253,8 +253,7 @@ public class AGV_RobotArmController : MonoBehaviour
     public bool loadCSVFileEvent(string processFileName, int tottIndex)
     {
         bool result = false;
-        if (tmpFileName != processFileName) {
-            tottIndex = 0;
+        if (tmpFileName != processFileName) {        
             tmpFileName = processFileName;
         }
 
