@@ -4,53 +4,89 @@ using UnityEngine;
 public class DLocationSensor : MonoBehaviour
 {
     [SerializeField] Transform Hand;
-    bool RightSensorPLC;
+    public bool RightSensorPLC;
 
     Coroutine coroutine;
     public static DLocationSensor Instance;
 
-    IEnumerator RotateHand()
+    public void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+    IEnumerator RotateGO()
     {
         float CurrentTime = 0;
-        float duration = 4;
-        float halfduration = duration / 2;
+        float duration = 1;
         Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
-        Quaternion TarPos = Quaternion.Euler(-10, 0, 180);
+        Quaternion TarPos = Quaternion.Euler(20, 0, 180);
 
 
-     
         while (CurrentTime < duration)
         {
             CurrentTime += Time.deltaTime;
-            if (CurrentTime <= halfduration)
-                Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / halfduration);
-            else
-                Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, (CurrentTime - halfduration) / halfduration);
-
+            Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / duration);
+            yield return null;
         }
-
-        yield return null;
+        // 초기화
+        coroutine = null;
     }
-
-private void OnTriggerEnter(Collider other)
-{
-    if (other.name.StartsWith("Box2"))
+    IEnumerator RotateBack()
     {
+        {
+            float CurrentTime = 0;
+            float duration = 1;
+            Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
+            Quaternion TarPos = Quaternion.Euler(20, 0, 180);
 
-        RightSensorPLC = true;
-        print(RightSensorPLC);
-        if (coroutine == null)
-            coroutine = StartCoroutine(RotateHand());
+
+            while (CurrentTime < duration)
+            {
+                CurrentTime += Time.deltaTime;
+                if (CurrentTime < duration)
+                    Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, CurrentTime / duration);
+
+                yield return null;
+            }
+            // 초기화
+            coroutine = null;
+        }
     }
-}
-private void OnTriggerExit(Collider other)
-{
+
+    public void UpperTapingBackPLC()
+    {
+        if (coroutine == null)
+            coroutine = StartCoroutine(RotateBack());
+
+    }
+    public void UpperTapingGoPLC()
+
+    {
+        if (coroutine == null)
+            coroutine = StartCoroutine(RotateGO());
+
+    }
+    private void OnTriggerEnter(Collider other)
     {
         if (other.name.StartsWith("Box2"))
         {
-            RightSensorPLC = false;
+
+            RightSensorPLC = true;
+         
             print(RightSensorPLC);
+       
+             
         }
     }
-}
+    private void OnTriggerExit(Collider other)
+    {
+        {
+            if (other.name.StartsWith("Box2"))
+            {
+
+                RightSensorPLC = false;
+                print(RightSensorPLC);
+            }
+        }
+    }
 }
