@@ -45,14 +45,6 @@ public class TCPClient : MonoBehaviour
 
     int currentTottIndex = 0;
 
-    [Header("[A] 모니터링 관련")]
-    public Button washer_BTN;
-    public Button dryer_BTN;
-    public Button cooling_BTN;
-    public Button cutting_BTN;
-    public Button packing_BTN;
-    public Button loading_BTN;
-
 
     //GET Param
     string requestGetBlock = "@GET,Y0,10";
@@ -187,8 +179,8 @@ public class TCPClient : MonoBehaviour
         {
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("30"));
             washer_TottIndex = 0;
-            //모니터링 - 세척 공정 완료
-            UserInterfaceManager.instance.btnChangeOffColor(washer_BTN);
+            //모니터링 - 세척 공정 완료            
+            UserInterfaceManager.instance.btnOnChangeColorText("30", "Done");
         }
 
     }
@@ -279,8 +271,8 @@ public class TCPClient : MonoBehaviour
         {
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
             dryer_TottIndex = 0;
-            //모니터링 - 건조 공정 완료
-            UserInterfaceManager.instance.btnChangeOffColor(dryer_BTN);
+            //모니터링 - 건조 공정 완료            
+            UserInterfaceManager.instance.btnOnChangeColorText("50", "Done");
         }
 
 
@@ -341,7 +333,7 @@ public class TCPClient : MonoBehaviour
 
         //모티터링 - 세척 공정 시작
         if (agvParkingSensor == 1) { 
-            UserInterfaceManager.instance.btnChangeOnColor(washer_BTN);
+            UserInterfaceManager.instance.btnOnChangeColorText("30", "ON");
         }
 
         //절단공정 - AGV 도착센서  (X40)
@@ -354,7 +346,7 @@ public class TCPClient : MonoBehaviour
         //모티터링 - 세척 공정 시작
         if (agvParkingSensor == 1)
         {
-            UserInterfaceManager.instance.btnChangeOnColor(cutting_BTN);
+            UserInterfaceManager.instance.btnOnChangeColorText("40", "ON");            
         }
 
 
@@ -363,8 +355,8 @@ public class TCPClient : MonoBehaviour
         requestMsg += "@SETDevice,X50," + agvParkingSensor;
         //모티터링 - 세척 공정 시작
         if (agvParkingSensor == 1)
-        {
-            UserInterfaceManager.instance.btnChangeOnColor(dryer_BTN);
+        {   
+            UserInterfaceManager.instance.btnOnChangeColorText("50", "ON");
         }
         return requestMsg;
 
