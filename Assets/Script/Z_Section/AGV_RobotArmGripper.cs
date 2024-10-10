@@ -125,7 +125,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
         if (!isMoving && !isForward)
         {
             StartCoroutine(MoviCylinder(gripperR, startRPos, endRPos, duration));
-            //StartCoroutine(MoviCylinder(gripperL, startLPos, endLPos, duration));
+            StartCoroutine(MoviCylinder(gripperL, startLPos, endLPos, duration));
         }
     }
 
@@ -139,7 +139,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
         if (!isMoving && isForward)
         {
             StartCoroutine(MoviCylinder(gripperR, endRPos, startRPos, duration));
-            //StartCoroutine(MoviCylinder(gripperL, endLPos, startLPos, duration));
+            StartCoroutine(MoviCylinder(gripperL, endLPos, startLPos, duration));
         }
     }
 

@@ -332,7 +332,7 @@ public class TCPClient : MonoBehaviour
         }
 
         //모티터링 - 세척 공정 시작
-        if (agvParkingSensor == 1) { 
+        if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false) { 
             UserInterfaceManager.instance.btnOnChangeColorText("30", "ON");
         }
 
