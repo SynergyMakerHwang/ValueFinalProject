@@ -4,89 +4,53 @@ using UnityEngine;
 public class DLocationSensor : MonoBehaviour
 {
     [SerializeField] Transform Hand;
-    public bool RightSensorPLC;
+    bool RightSensorPLC;
 
     Coroutine coroutine;
     public static DLocationSensor Instance;
 
-    public void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-    }
-    IEnumerator RotateGO()
+    IEnumerator RotateHand()
     {
         float CurrentTime = 0;
-        float duration = 1;
+        float duration = 4;
+        float halfduration = duration / 2;
         Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
-        Quaternion TarPos = Quaternion.Euler(20, 0, 180);
+        Quaternion TarPos = Quaternion.Euler(-10, 0, 180);
 
 
+     
         while (CurrentTime < duration)
         {
             CurrentTime += Time.deltaTime;
-            Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / duration);
-            yield return null;
+            if (CurrentTime <= halfduration)
+                Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / halfduration);
+            else
+                Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, (CurrentTime - halfduration) / halfduration);
+
         }
-        // 초기화
-        coroutine = null;
-    }
-    IEnumerator RotateBack()
-    {
-        {
-            float CurrentTime = 0;
-            float duration = 1;
-            Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
-            Quaternion TarPos = Quaternion.Euler(20, 0, 180);
 
-
-            while (CurrentTime < duration)
-            {
-                CurrentTime += Time.deltaTime;
-                if (CurrentTime < duration)
-                    Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, CurrentTime / duration);
-
-                yield return null;
-            }
-            // 초기화
-            coroutine = null;
-        }
+        yield return null;
     }
 
-    public void UpperTapingBackPLC()
+private void OnTriggerEnter(Collider other)
+{
+    if (other.name.StartsWith("Box2"))
     {
+
+        RightSensorPLC = true;
+        print(RightSensorPLC);
         if (coroutine == null)
-            coroutine = StartCoroutine(RotateBack());
-
+            coroutine = StartCoroutine(RotateHand());
     }
-    public void UpperTapingGoPLC()
-
-    {
-        if (coroutine == null)
-            coroutine = StartCoroutine(RotateGO());
-
-    }
-    private void OnTriggerEnter(Collider other)
+}
+private void OnTriggerExit(Collider other)
+{
     {
         if (other.name.StartsWith("Box2"))
         {
-
-            RightSensorPLC = true;
-         
+            RightSensorPLC = false;
             print(RightSensorPLC);
-       
-             
         }
     }
-    private void OnTriggerExit(Collider other)
-    {
-        {
-            if (other.name.StartsWith("Box2"))
-            {
-
-                RightSensorPLC = false;
-                print(RightSensorPLC);
-            }
-        }
-    }
+}
 }

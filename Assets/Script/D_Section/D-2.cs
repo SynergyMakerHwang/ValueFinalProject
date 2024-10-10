@@ -22,7 +22,7 @@ public class D2 : MonoBehaviour
     [SerializeField] Transform StartPos;
     [SerializeField] Transform EndPos;
     [SerializeField] Transform Hand;
-    [SerializeField] float speed = 50f;
+    [SerializeField] float speed = 5f;
     [SerializeField] bool Power;
     private Vector3 ResumePos; // 현재 위치 저장
     bool DIsRunPLC;
@@ -38,7 +38,7 @@ public class D2 : MonoBehaviour
     private void Start()
     {
         RobotGoPLC();
-        SpawnBoxPLC();
+        SpawnBox();
 
         //벨트 위치 초기화
         ResumePos = StartPos.localPosition;
@@ -59,7 +59,7 @@ public class D2 : MonoBehaviour
             Coroutine1 = StartCoroutine(STEPS());
     }
 
-    public void SpawnBoxPLC()
+    public void SpawnBox()
     {
         Instantiate(Box2, pallet.transform);
     }
@@ -115,10 +115,10 @@ public class D2 : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // 11 마무리 및 정렬기 해제
-        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-108, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-112, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
 
         // 11-1
-        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 300f));
+        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 100f));
 
         // 돌아오기
         //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 0, 0), 50f));
