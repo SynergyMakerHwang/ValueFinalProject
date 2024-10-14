@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class D2 : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class D2 : MonoBehaviour
     [SerializeField] Transform Pivot5;
     [SerializeField] Transform Pivot6;
     Coroutine Coroutine1;
+    public bool RobotSensorPLC;
 
     [Header("생성 우체국상자")]
     [SerializeField] GameObject Box2;
@@ -27,6 +29,7 @@ public class D2 : MonoBehaviour
     private Vector3 ResumePos; // 현재 위치 저장
     bool DIsRunPLC;
     Coroutine Coroutine2;
+    Coroutine Coroutine3;
 
     public static D2 instance;
     private void Awake()
@@ -37,8 +40,7 @@ public class D2 : MonoBehaviour
 
     private void Start()
     {
-        RobotGoPLC();
-        SpawnBox();
+
 
         //벨트 위치 초기화
         ResumePos = StartPos.localPosition;
@@ -55,18 +57,18 @@ public class D2 : MonoBehaviour
     //수정 필요
     public void RobotBackPLC()
     {
-        if (Coroutine1 != null)
-            Coroutine1 = StartCoroutine(STEPS());
+        if (Coroutine1 == null)
+            Coroutine1 = StartCoroutine(STEPBACK());
     }
 
-    public void SpawnBox()
+    public void SpawnBoxPLC()
     {
         Instantiate(Box2, pallet.transform);
     }
     IEnumerator STEPS()
     {
         // 1. 박스 집기 
-        yield return StartCoroutine(HowToMove(Pivot2, Quaternion.Euler(-50, 0, 0), Pivot3, Quaternion.Euler(-70, 0, 0), Pivot5, Quaternion.Euler(-60, 0, 0), null, Quaternion.identity, 50f));
+        yield return StartCoroutine(HowToMove(Pivot2, Quaternion.Euler(-49, 0, 0), Pivot3, Quaternion.Euler(-70, 0, 0), Pivot5, Quaternion.Euler(-60, 0, 0), null, Quaternion.identity, 50f));
 
         // 2. 흡착기 가동
         yield return new WaitForSeconds(0.5f);
@@ -115,16 +117,28 @@ public class D2 : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // 11 마무리 및 정렬기 해제
-        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-112, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 225), Pivot2, Quaternion.Euler(10, 0, 0), Pivot3, Quaternion.Euler(-106, 0, 0), Pivot5, Quaternion.Euler(0, -40, 0), 50f));
 
         // 11-1
-        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 100f));
+        yield return StartCoroutine(HowToMove(Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, null, Quaternion.identity, null, Quaternion.identity, 500f));
 
-        // 돌아오기
-        //yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 0, 0), 50f));
-
+        //로봇팔이 끝지점이다
+        RobotSensorPLC = true;
+        //동작끝났으니. 코루틴1을 null 로 바꿔준다
+        Coroutine1 = null;
     }
 
+    IEnumerator STEPBACK()
+    {
+
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 150), Pivot2, Quaternion.Euler(0, 0, 0), Pivot3, Quaternion.Euler(-90, 0, 0), Pivot5, Quaternion.Euler(0, 0, 0), 50f));
+        yield return StartCoroutine(HowToMove(Pivot1, Quaternion.Euler(0, 0, 0), null, Quaternion.identity, Pivot6, Quaternion.Euler(0, 0, -90), null, Quaternion.identity, 50f));
+
+        //로봇팔이 시작지점이다.
+        RobotSensorPLC = false;
+        //동작끝났으니. 코루틴1을 null 로 바꿔준다
+        Coroutine1 = null;
+    }
     IEnumerator HowToMove(Transform WhichPivot1, Quaternion TarRot1, Transform WhichPivot2, Quaternion TarRot2, Transform WhichPivot3, Quaternion TarRot3, Transform WhichPivot4, Quaternion TarRot4, float speed)
     {
         // 현재 회전 상태를 시작 각도로 설정
@@ -222,6 +236,52 @@ public class D2 : MonoBehaviour
         }
 
     }
+    IEnumerator HandGo()
+    {
+        float CurrentTime = 0;
+        float duration = 1;
+
+        Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
+        Quaternion TarPos = Quaternion.Euler(20, 0, 180);
+
+        while (CurrentTime < duration)
+        {
+            CurrentTime += Time.deltaTime;
+            Hand.localRotation = Quaternion.Slerp(StartPos, TarPos, CurrentTime / duration);
+            yield return null;
+        }
+        //끝나면 초기화
+        Coroutine3 = null;
+    }
+    IEnumerator HandBack()
+    {
+        float CurrentTime = 0;
+        float duration = 1;
+
+        Quaternion StartPos = Quaternion.Euler(-50, 0, 180);
+        Quaternion TarPos = Quaternion.Euler(20, 0, 180);
+
+        while (CurrentTime < duration)
+        {
+            CurrentTime += Time.deltaTime;
+            Hand.localRotation = Quaternion.Slerp(TarPos, StartPos, CurrentTime / duration);
+            yield return null;
+        }
+        //끝나면 초기화
+        Coroutine3 = null;
+    }
+
+    public void HittingGoPLC()
+    {
+        if (Coroutine3 == null)
+            Coroutine3 = StartCoroutine(HandGo());
+    }
+    public void HittingBackPLC()
+    {
+        if (Coroutine3 == null)
+            Coroutine3 = StartCoroutine(HandBack());
+    }
+
 
     public void WrapConveyorOnPLC()
     {

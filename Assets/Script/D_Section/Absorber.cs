@@ -4,7 +4,7 @@ public class Absorber : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.StartsWith("Box2") && transform.childCount == 0&&RightBoxSensor.instacne.RightBoxSensorPLC==true)
+        if (other.name.StartsWith("Box2") && transform.childCount == 0 && RightBoxSensor.instacne.RightBoxSensorPLC == true)
         {
 
 

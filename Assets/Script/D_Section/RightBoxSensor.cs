@@ -9,7 +9,7 @@ public class RightBoxSensor : MonoBehaviour
         if (instacne == null)
             instacne = this;
     }
-    private void OnTrigerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.name.StartsWith("Box2"))
         {
