@@ -8,7 +8,11 @@ public class DLocationSensor : MonoBehaviour
 
     Coroutine coroutine;
     public static DLocationSensor Instance;
-
+    public void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
 
 
     private void OnTriggerEnter(Collider other)

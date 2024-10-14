@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class CutterConveyor : MonoBehaviour
 {
+    public static CutterConveyor Instance;
+    public void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
     [SerializeField] Transform MainStart;
     [SerializeField] Transform MainEnd;
     [SerializeField] Transform SubStart;

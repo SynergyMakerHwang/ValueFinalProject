@@ -4,20 +4,23 @@ public class DWeightSensor : MonoBehaviour
 {
     int Cnt;
     public bool DWeightSensorPLC;
+
+    public static DWeightSensor instance;
+
+    public void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("FruitPouchs"))
         {
-            
             Cnt++;
-            print(Cnt);
             if (Cnt == 5)
             {
                 Cnt = 0;
-               DWeightSensorPLC = true;
-                print("Don");
-           
+                DWeightSensorPLC = true;
             }
         }
     }
@@ -25,8 +28,7 @@ public class DWeightSensor : MonoBehaviour
     {
         if (other.name.StartsWith("Box2"))
         {
-           DWeightSensorPLC = false;
-            print("Letsgo");
+            DWeightSensorPLC = false;
         }
     }
 }

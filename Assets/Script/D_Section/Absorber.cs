@@ -6,10 +6,7 @@ public class Absorber : MonoBehaviour
     {
         if (other.name.StartsWith("Box2") && transform.childCount == 0 && RightBoxSensor.instacne.RightBoxSensorPLC == true)
         {
-
-
             other.transform.SetParent(transform);
-
         }
     }
     private void OnTriggerExit(Collider other)
