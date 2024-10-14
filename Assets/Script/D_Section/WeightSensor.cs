@@ -9,11 +9,14 @@ public class DWeightSensor : MonoBehaviour
 
         if (other.CompareTag("FruitPouchs"))
         {
+            
             Cnt++;
+            print(Cnt);
             if (Cnt == 5)
             {
                 Cnt = 0;
                DWeightSensorPLC = true;
+                print("Don");
            
             }
         }
@@ -23,6 +26,7 @@ public class DWeightSensor : MonoBehaviour
         if (other.name.StartsWith("Box2"))
         {
            DWeightSensorPLC = false;
+            print("Letsgo");
         }
     }
 }
