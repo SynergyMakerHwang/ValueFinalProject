@@ -14,6 +14,7 @@ public class DWeightSensor : MonoBehaviour
             {
                 Cnt = 0;
                DWeightSensorPLC = true;
+           
             }
         }
     }
