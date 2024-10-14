@@ -27,8 +27,7 @@ public class SubConveyor : MonoBehaviour
     {
         ResumePos = StartPos.localPosition; // 시작 위치 초기화
         Belt.localPosition = ResumePos; // 벨트 초기 위치 설정
-
- 
+               
     }
 
     // Update is called once per frame

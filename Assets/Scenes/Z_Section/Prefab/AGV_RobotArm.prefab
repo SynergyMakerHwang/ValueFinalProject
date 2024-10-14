@@ -5898,10 +5898,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8acc057d50a608847a3ab3a676d624e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entireProcessList:
+  - 30
+  - 50
+  - 40
   pathPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  washerSpathPoints: []
+  washerEpathPoints: []
+  dryerSpathPoints: []
+  dryerEpathPoints: []
+  cuttingSpathPoints: []
+  cuttingMpathPoints: []
+  cuttingEpathPoints: []
+  duration: 20
 --- !u!1 &3435505006996152181
 GameObject:
   m_ObjectHideFlags: 0
@@ -13531,6 +13543,9 @@ MonoBehaviour:
   DoF_4: {fileID: 4323270267456052733}
   DoF_5: {fileID: 6362037814334369837}
   DoF_6: {fileID: 1297518421077173541}
+  isProcessCycleEndAction: 0
+  tottCnt: 0
+  publicTottIndex: 0
 --- !u!1 &7392190196507758803
 GameObject:
   m_ObjectHideFlags: 0

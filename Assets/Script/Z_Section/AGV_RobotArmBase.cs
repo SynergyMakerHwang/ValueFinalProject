@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using static Unity.VisualScripting.Metadata;
 
 
 
@@ -22,33 +23,49 @@ public class AGV_RobotArmBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-         rb = other.GetComponent<Rigidbody>();
-
-        if (other.tag.Contains("토트") || other.tag.Contains("tott"))
+        print("agv  == OnTriggerEnter");
+        if (other.tag.Contains("토트") || other.tag.Contains("tott") || other.tag.Contains("센서부분"))
         {
-         
+            if (other.name.Contains("센서부분")) {
+                rb = other.transform.parent.GetComponent<Rigidbody>();                
+            }
+            else {
+                rb = other.GetComponent<Rigidbody>();                
+
+            }
+
             rb.isKinematic = true;
-            rb.useGravity = true;
+            rb.useGravity = false;
 
             //현재 충돌 후 속도와 가속도를 제거
             rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-
-            other.transform.SetParent(transform);
-        
+            rb.angularVelocity = Vector3.zero;            
+            rb.transform.SetParent(transform);            
 
         }        
        
     }
 
 
-    private void OnTriggerExit(Collider other)
+   /* private void OnTriggerExit(Collider other)
     {
+        print("agv  == OnTriggerExit");
         rb = other.GetComponent<Rigidbody>();
-        if (other.tag.Contains("토트") || other.tag.Contains("tott"))
+        if (other.tag.Contains("토트") || other.tag.Contains("tott") || other.tag.Contains("센서부분"))
         {
-            other.transform.SetParent(null);
+
+            if (other.name.Contains("센서부분"))
+            {
+                rb = other.transform.parent.GetComponent<Rigidbody>();
+                print("agv  == other.name.Contains(센서)");
+            }
+            else
+            {
+                rb = other.GetComponent<Rigidbody>();
+                print("agv  == other.name.Contains(else)");
+            }
+
+            rb.transform.SetParent(null);
 
             if (rb != null)
             {
@@ -57,7 +74,7 @@ public class AGV_RobotArmBase : MonoBehaviour
 
             }
         }
-    }
+    }*/
 
 
 

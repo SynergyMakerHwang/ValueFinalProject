@@ -269,6 +269,7 @@ public class TCPClient : MonoBehaviour
         // 열풍건조 공정  - 완료 (Y55)
         if (point[5][5] == 1)
         {
+            print("열풍건조완료==>");
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
             dryer_TottIndex = 0;
             //모니터링 - 건조 공정 완료            
@@ -297,7 +298,7 @@ public class TCPClient : MonoBehaviour
 
 
 
-        //열풍건조 공정  - 로봇팔 하역 완료 센서 (X52)        
+        //열풍건조 공정  - 로봇팔 상/하역 완료 센서 (X52)        
         int robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
         requestMsg += "@SETDevice,X52," + robotACTEndSensor;
 

@@ -61,7 +61,7 @@ public class AGVManager : MonoBehaviour
 
     //공정의 종료 시점
     public IEnumerator moveProcessEndPostion(string processNum) {
-       
+        print("moveProcessEndPostion>>"+ processNum);
         switch (processNum)
         {
             case "30":          
@@ -135,8 +135,11 @@ public class AGVManager : MonoBehaviour
         entireProcessList = new string[] { "30", "50", "40" };
         if (entireProcessList != null)
         {
-           if (entireProcessList.Length>0 && entireProcessCurrentNum < entireProcessList.Length) {
+            print("entireProcessCurrentNum"+ entireProcessCurrentNum);
+            print("entireProcessList.Length)" + entireProcessList.Length);
+            if (entireProcessList.Length>0 && entireProcessCurrentNum < entireProcessList.Length) {
                 Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
+                print("entireProcessList[entireProcessCurrentNum])" + entireProcessList[entireProcessCurrentNum]);
                 yield return (moveLoopPoint(tmpRoot));
                 entireProcessCurrentNum++;
             }
