@@ -847,6 +847,7 @@ MonoBehaviour:
   BoxUpperWing2: {fileID: 2631506867054360724}
   BoxUpperWing3: {fileID: 7606869642420173103}
   BoxUpperWing4: {fileID: 2493037511672672934}
+  BoxTape: {fileID: 8279581190305777917, guid: ffe53c6f434690647add77bc08781227, type: 3}
 --- !u!1 &4959407537964037276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,6 +1403,7 @@ MonoBehaviour:
   BoxUpperWing2: {fileID: 0}
   BoxUpperWing3: {fileID: 0}
   BoxUpperWing4: {fileID: 0}
+  BoxTape: {fileID: 0}
 --- !u!114 &2747892071243526301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1425,6 +1427,7 @@ MonoBehaviour:
   BoxUpperWing2: {fileID: 0}
   BoxUpperWing3: {fileID: 0}
   BoxUpperWing4: {fileID: 0}
+  BoxTape: {fileID: 0}
 --- !u!1 &7469564377821167184
 GameObject:
   m_ObjectHideFlags: 0
