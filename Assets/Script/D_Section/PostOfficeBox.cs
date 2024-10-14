@@ -18,6 +18,13 @@ public class PostOfficeBox : MonoBehaviour
     [SerializeField] Transform BoxUpperWing3;
     [SerializeField] Transform BoxUpperWing4;
 
+    [Header("테이프생성")]
+    [SerializeField] GameObject BoxTape;
+    Vector3 SpawnPoint;
+    private void Start()
+    {
+        SpawnPoint = new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.3f);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Tape"))
@@ -49,6 +56,13 @@ public class PostOfficeBox : MonoBehaviour
         }
         else if (other.name.StartsWith("Hand"))
             StartCoroutine(Rotate(BoxUpperWing3, Quaternion.Euler(-90, 0, 0), 0.7f));
+        else if (other.name.StartsWith("TAPECUTTER2"))
+        {
+
+            if (transform.Find("Tape(Clone)") == null)
+
+                Instantiate(BoxTape, transform);
+        }
     }
 
     IEnumerator BoxAlign()
