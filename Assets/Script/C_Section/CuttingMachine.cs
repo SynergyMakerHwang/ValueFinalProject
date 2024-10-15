@@ -16,7 +16,7 @@ public class CuttingMachine : MonoBehaviour
     }
 
     public bool BladeLsPLC;
-    bool RightTottSensorPLC;
+    public bool RightTottSensorPLC;
 
 
     private void OnTriggerEnter(Collider other)

@@ -30,6 +30,8 @@ public class AGVManager : MonoBehaviour
     public Transform[] packingSpathPoints; // 포장공정 시작 이동 경로
     public Transform[] packingEpathPoints; // 포장공정 종료 이동 경로
 
+    public Transform[] loadingSpathPoints; // 적재공정 시작 이동 경로
+    public Transform[] loadingEpathPoints; // 적재공정 종료 이동 경로
 
     public int duration = 20;
     private int currentPointIndex = 0;
@@ -49,11 +51,11 @@ public class AGVManager : MonoBehaviour
 
         //공정별 경로 
         pathRoot.Add("30", washerSpathPoints); //세척공정
-        pathRoot.Add("40", cuttingSpathPoints); //절단공정
+        pathRoot.Add("40", cuttingSpathPoints);//절단공정
         pathRoot.Add("50", dryerSpathPoints); //열풍건조
-        pathRoot.Add("60", dryerSpathPoints); //공결건조
-       // pathRoot.Add(70, ); //포장공정
-       // pathRoot.Add(80, ); //적재공정
+        pathRoot.Add("60", dryerSpathPoints); //동결건조
+        pathRoot.Add("70", packingSpathPoints); //포장공정
+        pathRoot.Add("80", loadingSpathPoints); //적재공정
     }
 
 
@@ -94,6 +96,9 @@ public class AGVManager : MonoBehaviour
 
                 }));
                 break;
+            case "41":
+                StartCoroutine(moveLoopPoint(cuttingMpathPoints));             
+                break;
 
             case "50":                
                 StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
@@ -120,6 +125,30 @@ public class AGVManager : MonoBehaviour
                 }));
                 break;
 
+            case "70":
+                StartCoroutine(moveLoopPoint(packingEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());
+                    }
+                    print(returnValue);
+
+                }));
+                break;
+            case "80":
+                StartCoroutine(moveLoopPoint(loadingEpathPoints, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        //다음 공정으로 이동
+                        StartCoroutine(moveProcessStartPostion());
+                    }
+                    print(returnValue);
+
+                }));
+                break;
             default:                
                 break;
         }

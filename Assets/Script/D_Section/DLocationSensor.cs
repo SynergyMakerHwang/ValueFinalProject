@@ -4,7 +4,7 @@ using UnityEngine;
 public class DLocationSensor : MonoBehaviour
 {
     [SerializeField] Transform Hand;
-    bool DRightSensorPLC;
+    public bool DRightSensorPLC;
 
     Coroutine coroutine;
     public static DLocationSensor Instance;

@@ -8,7 +8,7 @@ public class TottSensor : MonoBehaviour
         if (Instance == null)
             Instance = this;
     }
-    bool IsTottSensorPLC;
+    public bool IsTottSensorPLC { get; set; }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag.Contains("토트박스"))

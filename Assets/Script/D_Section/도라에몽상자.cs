@@ -3,7 +3,7 @@ using UnityEngine;
 public class 도라에몽상자 : MonoBehaviour
 {
     public GameObject pouchPrefab; // 파우치로 변경할 프리팹
-    bool IsTotePLC;
+    public bool IsTotePLC;
     public static 도라에몽상자 instance;
     public void Awake()
     {

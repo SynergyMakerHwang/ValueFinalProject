@@ -37,11 +37,24 @@ public class TCPClient : MonoBehaviour
     [SerializeField] Dryer dryerOpenSensor;
     int dryer_TottIndex = 0; //토트작업순서
 
+
+    [Header("[C] 절단건조 공정")]
+    int cutting_TottIndex = 0; //토트작업순서
+
+    [Header("[D] 포장 공정")]
+    int packing_TottIndex = 0; //토트작업순서
+
+
+    [Header("[E] 적재 공정")]
+
+
     [Header("[Z] AGV 관련")]
     [SerializeField] AGVParkingSensor agvWasherParkingSensor;
     [SerializeField] AGVParkingSensor agvDryerParkingSensor;
     [SerializeField] AGVParkingSensor agvCuttingParkingSensor;
     [SerializeField] AGVParkingSensor agvCuttingLoadingParkingSensor;
+    [SerializeField] AGVParkingSensor agvPackingParkingSensor;
+    [SerializeField] AGVParkingSensor agvunLoadingParkingSensor;
 
     int currentTottIndex = 0;
 
@@ -269,7 +282,6 @@ public class TCPClient : MonoBehaviour
         // 열풍건조 공정  - 완료 (Y55)
         if (point[5][5] == 1)
         {
-            print("열풍건조완료==>");
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
             dryer_TottIndex = 0;
             //모니터링 - 건조 공정 완료            
@@ -306,9 +318,234 @@ public class TCPClient : MonoBehaviour
     }
 
 
+
+
+
+    //절단건조 공정 - GET
+    private void excuteCuttingProcess(int[][] point)
+    {
+        //절단건조 공정 - 메인 컨베이어 모터 발생 (Y40)
+        if (point[4][0] == 1)
+        {
+            CutterConveyor.Instance.MaingGoPLC();
+        }
+        else {
+            CutterConveyor.Instance.MainStopPLC();
+
+        }
+
+
+        //절단건조 공정 - 서브 컨베이어 모터 발생 (Y41)
+        if (point[4][1] == 1)
+        {
+            CutterConveyor.Instance.SubGoPLC();
+        }
+        else {
+            CutterConveyor.Instance.SubStopPLC();
+        }
+
+
+        // 절단건조 공정 - 상역 AGV+로봇팔 (Y42)        
+        if (point[4][2] == 1 && cutting_TottIndex < loadCnt)
+        {
+            cutting_TottIndex++;
+            //상역 동작            
+            AGV_RobotArmController.instance.excuteCycleEvent("cutting_unLoading", cutting_TottIndex);
+
+        }
+
+        // 절단건조 공정 - 블레이드CYL(단동) (Y43)        
+        if (point[4][3] == 1)        
+        {
+            CuttingMachine.Instance.BladeGoBackPLC();            
+        }
+
+
+        // 절단건조 공정 - 하역 공정으로 AGV이동 통신 (Y44)        
+        if (point[4][4] == 1)
+        {
+            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("41"));
+            cutting_TottIndex = 0;
+        }
+
+
+
+        // 절단건조 공정 - 상역 AGV+로봇팔 (Y45)        
+        if (point[4][5] == 1 && cutting_TottIndex < loadCnt)
+        {
+            cutting_TottIndex++;
+            //상역 동작            
+            AGV_RobotArmController.instance.excuteCycleEvent("cutting_loading", cutting_TottIndex);
+
+        }
+
+
+
+
+        // 절단건조 공정  - 완료 (Y46)
+        if (point[4][6] == 1)
+        {
+            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("40"));
+            dryer_TottIndex = 0;
+            //모니터링 - 절단 공정 완료            
+            UserInterfaceManager.instance.btnOnChangeColorText("40", "Done");
+        }
+
+
+
+    }
+
+    //절단 공정 - SET
+    private string requestCuttingProcess()
+    {
+
+        string requestMsg = "";
+
+
+        //절단공정  - 도트감지 센서 (X41)
+        int sensor = (TottSensor.Instance.IsTottSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X41," + sensor;
+
+
+        //절단공정  - 로봇팔 상/하역 완료 센서 (X42)        
+        int robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X42," + robotACTEndSensor;
+
+
+
+        //절단공정  - 전진 블레이드 LS (X43)
+        sensor = (CuttingMachine.Instance.BladeLsPLC == false) ? 1 : 0;
+        requestMsg += "@SETDevice,X43," + sensor;
+
+
+        //절단공정  - 후진 블레이드 LS (X44)
+        sensor = (CuttingMachine.Instance.BladeLsPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X44," + sensor;
+
+
+        //절단공정  -  AGV 하역 위치 도착 (X45)
+        sensor = (agvCuttingLoadingParkingSensor.isAgvParking == true) ? 1 : 0;        
+        requestMsg += "@SETDevice,X45," + sensor;
+
+
+        //절단공정  - 토트 정위치 센서 (X46)
+        sensor = (CuttingMachine.Instance.RightTottSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X46," + sensor;
+
+
+        //절단공정  - 로봇팔 상/하역 완료 센서 (X47)        
+        robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X47," + robotACTEndSensor;
+
+        return requestMsg;
+    }
+
+
     /***********************C-Section END *****************************/
 
     /***********************D-Section START *****************************/
+
+
+    //포장건조 공정 - GET
+    private void excutePackingProcess(int[][] point)
+    {
+        //포장 공정 - 상역 컨베이어 모터 (Y70)
+        if (point[7][0] == 1)
+        {
+            D1.instance.DConveyorOnPLC();
+        }
+
+
+        // 포장 공정 - 상역 AGV+로봇팔 (Y71)        
+        if (point[7][1] == 1 && packing_TottIndex < loadCnt)
+        {
+            packing_TottIndex++;
+            //상역 동작            
+            AGV_RobotArmController.instance.excuteCycleEvent("packing_unLoading", packing_TottIndex);
+
+        }
+
+
+        //포장 공정 - 제함 로봇팔 동작 통신 (Y72)
+        if (point[7][2] == 1)
+        {
+            D2.instance.RobotGoPLC();
+        }
+
+
+        //포장 공정 - 상부 테이핑 컨베이어 모터1 (Y73)
+        if (point[7][3] == 1)
+        {
+            D2.instance.WrapConveyorOnPLC();
+        }
+
+
+        //포장 공정 - 상부 테이핑 컨베이어 모터2 (Y74)
+        if (point[7][4] == 1)
+        {
+            D2.instance.WrapConeyorOffPLC();
+        }
+
+
+        //포장 공정 - Hitting 모터(정) (Y75)
+        if (point[7][5] == 1)
+        {
+            D2.instance.HittingGoPLC();
+        }
+
+
+        // 포장 공정  - 완료 (Y76)
+        if (point[7][6] == 1)
+        {
+            D2.instance.HittingBackPLC();
+        }
+    
+
+    }
+
+
+
+
+    //포장 공정 - SET
+    private string requestPackingProcess()
+    {
+
+        string requestMsg = "";
+
+
+        //포장 공정  - 카튼 발생 감지 센서 (X71)
+        int sensor = (RightBoxSensor.instacne.RightBoxSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X71," + sensor;
+
+
+        //포장 공정  - 토트 감지 센서(도라에몽박스) (X72)        
+        sensor = (도라에몽상자.instance.IsTotePLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X72," + sensor;
+
+
+
+        //포장 공정  - 상역 로봇팔 동작완료 sensor(X73)   
+        int robotACTEndSensor = (AGV_RobotArmController.instance.IsProcessCycleEndAction == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X73," + robotACTEndSensor;
+
+
+
+        //포장 공정  - 카튼 인케이싱 정위치 센서 (X74)
+        sensor = (DLocationSensor.Instance.DRightSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X74," + sensor;
+
+
+        //포장 공정  -  AGV 하역 위치 도착 (X75)
+        sensor = (DWeightSensor.instance.DWeightSensorPLC == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X75," + sensor;
+
+
+        return requestMsg;
+    }
+
+
+
+
     /***********************D-Section END *****************************/
 
     /***********************E-Section START *****************************/
@@ -331,11 +568,12 @@ public class TCPClient : MonoBehaviour
         if (agvParkingSensor == 1) {
             currentTottIndex = 0;
         }
-
         //모티터링 - 세척 공정 시작
         if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false) { 
             UserInterfaceManager.instance.btnOnChangeColorText("30", "ON");
         }
+
+
 
         //절단공정 - AGV 도착센서  (X40)
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
@@ -351,6 +589,8 @@ public class TCPClient : MonoBehaviour
         }
 
 
+
+
         //건조공정 - AGV 도착센서  (X50)
         agvParkingSensor = (agvDryerParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X50," + agvParkingSensor;
@@ -359,6 +599,31 @@ public class TCPClient : MonoBehaviour
         {   
             UserInterfaceManager.instance.btnOnChangeColorText("50", "ON");
         }
+
+
+        //포장공정 - AGV 도착센서  (X70)
+        agvParkingSensor = (agvPackingParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X70," + agvParkingSensor;
+        //모티터링 - 포장 공정 시작
+        if (agvParkingSensor == 1)
+        {
+            UserInterfaceManager.instance.btnOnChangeColorText("70", "ON");
+        }
+        
+        //적재공정 - AGV 도착센서  (X80)
+        //  agvParkingSensor = (agvunLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
+        requestMsg += "@SETDevice,X80," + agvParkingSensor;
+        //모티터링 - 세척 공정 시작
+        if (agvParkingSensor == 1)
+        {
+            UserInterfaceManager.instance.btnOnChangeColorText("80", "ON");
+        }
+
+
+
+
+
+
         return requestMsg;
 
 
@@ -490,6 +755,15 @@ public void requestConnect()
 
                             //(C)열풍건조공정
                             excuteDryerProcess(point);
+
+                            //(C)절단건조공정
+                            //excuteCuttingProcess(point);
+
+                            //(D)포장공정
+                           //excutePackingProcess(point);
+                         
+                            
+
                         }
                        
                     }
@@ -513,10 +787,16 @@ public void requestConnect()
                         //(C)열풍공정 
                         reWrite += requestDryerProcess();
 
+                        //(C)절단공정 
+                        // reWrite += requestCuttingProcess();
+
+                        //(D)포장공정 
+                        // reWrite += requestPackingProcess();
+
 
 
                         //print(reWrite);
-                        
+
                         if (reWrite != "")
                         {
                             
