@@ -263,10 +263,11 @@ public class AuthManager : MonoBehaviour
 
                     userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
                     print("userSignedIn"+json);
-                    history = userSignedIn.history;
+                    //history = userSignedIn.history;
 
                     if (userSignedIn.role == "admin")
                     {
+                        print("admin====");
                         closePanel();
                         adminPanel.SetActive(true);
                     }
@@ -415,7 +416,7 @@ public class AuthManager : MonoBehaviour
 
         void SetID()
         {
-            string json = $"{{\"role\":\"user\",\"name\":\"{signUpNameInput.text}\",\"email\":\"{user.Email}\"}}";
+            string json = $"{{\"role\":\"admin\",\"name\":\"{signUpNameInput.text}\",\"email\":\"{user.Email}\"}}";
 
             print(json);
 
