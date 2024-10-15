@@ -26,6 +26,11 @@ public class AGVManager : MonoBehaviour
     public Transform[] cuttingMpathPoints; // 절단공정 중간 하역 이동 경로
     public Transform[] cuttingEpathPoints; // 절단공정 종료 이동 경로
 
+
+    public Transform[] packingSpathPoints; // 포장공정 시작 이동 경로
+    public Transform[] packingEpathPoints; // 포장공정 종료 이동 경로
+
+
     public int duration = 20;
     private int currentPointIndex = 0;
 
