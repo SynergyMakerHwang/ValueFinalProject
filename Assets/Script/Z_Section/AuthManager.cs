@@ -33,7 +33,7 @@ public class AuthManager : MonoBehaviour
         public string name;
         public string role;
         public string products;
-        public string history;
+        public string[] history;
     }
     [SerializeField] GameObject[] panelList;
 
@@ -59,6 +59,12 @@ public class AuthManager : MonoBehaviour
     [SerializeField] Button signOutBtn;
     [SerializeField] TMP_Text infoTxt;
     [SerializeField] UserInfo userSignedIn;
+    public  string[] history;
+
+
+
+    [Header("관리자 UI")]
+    [SerializeField] GameObject adminPanel;
 
     [Header("Alert UI")]
     [SerializeField] GameObject verificationPanel;
@@ -239,19 +245,39 @@ public class AuthManager : MonoBehaviour
             
             if (user.IsEmailVerified)
             {
-                //공정 설정으로 페이지 전환                
-                closePanel();
-                userPanel.SetActive(true);
 
+                //공정 설정으로 페이지 전환                
+                
+                userPanel.SetActive(true);
+                UserInterfaceManager.instance.getUserProcessData();
 
                 StartCoroutine(TurnMessagePanel("로그인이 성공적으로 완료 되었습니다."));
                 print("로그인이 되었습니다.");
-
                 wrongPWCnt = 0;
 
+                DatabaseReference dbRef = FirebaseManager.instance.dbRef;                
 
+                Task t = dbRef.Child("users").Child(user.UserId).GetValueAsync().ContinueWith(task =>
+                {
+                    string json = task.Result.GetRawJsonValue();
 
-                UserInterfaceManager.instance.getUserProcessData();                
+                    userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
+                    print("userSignedIn"+json);
+                    history = userSignedIn.history;
+
+                    if (userSignedIn.role == "admin")
+                    {
+                        closePanel();
+                        adminPanel.SetActive(true);
+                    }
+                    
+
+                    if (task.Exception != null)
+                        print(task.Exception);
+                });
+              
+               
+
 
 
             }

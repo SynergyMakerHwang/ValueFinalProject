@@ -22,6 +22,9 @@ public class UserInterfaceManager : MonoBehaviour
 
     [SerializeField] GameObject monitoringPanel;
 
+    public GameObject buttonPrefab;
+    public Transform IngredientsPanel;
+
 
     [Header("[A] 모니터링 관련")]
     public Transform washer_BTN;
@@ -40,11 +43,24 @@ public class UserInterfaceManager : MonoBehaviour
 
 
 
-    Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
-    Dictionary<string, string> product = new Dictionary<string, string>();
-    ProductClass productClass;
-    ProcessClass processClass;
-    List<ProductClass> productList = new List<ProductClass>();
+    //Dictionary<string, Dictionary<string, string>> productGroupList = new Dictionary<string, Dictionary<string, string>>();
+    //Dictionary<string, string> product = new Dictionary<string, string>();
+    //ProductClass productClass;
+    //ProcessClass processClass;
+    //List<ProductClass> productList = new List<ProductClass>();
+    [SerializeField] List<Product> IngredientsList = new List<Product>();
+    public class Product
+    {
+        public string Ingredients;
+        public List<ProductDetail> productList;
+    }
+
+    public class ProductDetail
+    {
+        public string productName;
+        public string[] processList;
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
@@ -182,31 +198,46 @@ public class UserInterfaceManager : MonoBehaviour
         closePanel();
         stepFirstPanel.SetActive(true);
 
-        StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
+        /*StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonData("product", (returnValue) =>
         {
             productClass = JsonConvert.DeserializeObject<ProductClass>(returnValue);
             print(returnValue);          
 
-        }));
+        }));*/
 
-       /* StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot("product", (returnValue) =>
+        StartCoroutine(FirebaseManager.instance.ReadDataWithNewtonJsonDataSnapshot("product", (returnValue) =>
         {
-           
+
+            foreach (Transform child in IngredientsPanel) {
+                Destroy(child.gameObject);
+; ;          }
+
             print(returnValue);
             DataSnapshot snapshot = returnValue;
-
-            foreach (var item in snapshot.Children)
+            
+            foreach (var productSnapshot in snapshot.Children)
             {
-                string json = item.GetRawJsonValue();
-                print("json");
-                print(json);
-                productClass = JsonConvert.DeserializeObject<ProductClass>(json);
+                string json = productSnapshot.GetRawJsonValue();
+                Product product = JsonConvert.DeserializeObject<Product>(json);
+                IngredientsList.Add(product);
 
-                productList.Add(productClass);
+                // 불러온 데이터를 출력 (디버깅용)
+                Debug.Log("Ingredients: " + product.Ingredients);
+                GameObject newBtn = Instantiate(buttonPrefab, IngredientsPanel);
+
+                TextMeshProUGUI buttonText = newBtn.GetComponentInChildren<TextMeshProUGUI>();
+                buttonText.text = product.Ingredients;
+
+                foreach (var detail in product.productList)
+                {
+                    Debug.Log("Product Name: " + detail.productName);
+                    foreach (var process in detail.processList)
+                    {
+                        Debug.Log("Process: " + process);
+                    }
+                }
             }
-            print("productList");
-            print(productList);
-        }));*/
+        }));
 
 
      
