@@ -147,6 +147,7 @@ public class UserInterfaceManager : MonoBehaviour
             newColr = Color.gray;
         }
 
+
         switch (targetIndex)
         {
             case "30":
@@ -159,8 +160,8 @@ public class UserInterfaceManager : MonoBehaviour
                 break;
 
             case "40":
-                dryerBTNtext.text = msg;
-                target = dryer_BTN;
+                cuttingBTNtext.text = msg;
+                target = cutting_BTN;
                 btn = target.GetComponent<Button>();
                 colorBlock = btn.colors;
                 colorBlock.normalColor = newColr;
@@ -183,7 +184,22 @@ public class UserInterfaceManager : MonoBehaviour
                 colorBlock.normalColor = newColr;
                 btn.colors = colorBlock;
                 break;
-
+           case "70":
+                packingBTNtext.text = msg;
+                target = packing_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
+          case "80":
+                loadingBTNtext.text = msg;
+                target = loading_BTN;
+                btn = target.GetComponent<Button>();
+                colorBlock = btn.colors;
+                colorBlock.normalColor = newColr;
+                btn.colors = colorBlock;
+                break;
             default:
                 break;
         }

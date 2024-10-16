@@ -11,9 +11,11 @@ using UnityEngine;
 public class AGVManager : MonoBehaviour
 {
     public static AGVManager Instance;
-    public string[] entireProcessList = new string[]{ "30", "50", "40" };  
+    //string[] entireProcessList = new string[]{ "30", "40", "50" , "70", "80"};  
+    string[] entireProcessList = new string[]{ "30", "70","40", "50" , "70", "80"};  
     int entireProcessCurrentNum = 0;
 
+    public bool isAGVmoving = false;
 
     public Transform[] pathPoints; // 이동할 경로의 포인트들    
     public Transform[] washerSpathPoints; // 세척공정 시작 이동 경로
@@ -68,92 +70,112 @@ public class AGVManager : MonoBehaviour
 
     //공정의 종료 시점
     public IEnumerator moveProcessEndPostion(string processNum) {
-        print("moveProcessEndPostion>>"+ processNum);
-        switch (processNum)
-        {
-            case "30":          
-                StartCoroutine(moveLoopPoint(washerEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+
+        print("**********************entireProcessCurrentNum : " + entireProcessCurrentNum+"***************");
+        print("entireProcessList.Length : " + entireProcessList.Length);        
+        print("moveProcessEndPostion>>" + processNum);
+        print("isAGVmoving>>" + isAGVmoving);
+        if (!isAGVmoving  && entireProcessCurrentNum < entireProcessList.Length) {
+            isAGVmoving = true;
+        
+            switch (processNum)
+            {
+                case "30":
+                    StartCoroutine(moveLoopPoint(washerEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());                        
-                    }
-                    print(returnValue);
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
+                    }));
+                    break;
 
-            case "40":                
-                StartCoroutine(moveLoopPoint(cuttingEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+                case "40":
+                    StartCoroutine(moveLoopPoint(cuttingEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());
-                    }
-                    print(returnValue);
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
-            case "41":
-                StartCoroutine(moveLoopPoint(cuttingMpathPoints));             
-                break;
+                    }));
+                    break;
+                case "41":
+                    StartCoroutine(moveLoopPoint(cuttingMpathPoints));
+                    break;
 
-            case "50":                
-                StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+                case "50":
+                    print("50111>>" );
+                    StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());
-                    }
-                    print(returnValue);
+                        print("502221>>");
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            print("3323>>");
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
-            case "60":                
-                StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+                    }));
+                    break;
+                case "60":
+                    StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());
-                    }
-                    print(returnValue);
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
+                    }));
+                    break;
 
-            case "70":
-                StartCoroutine(moveLoopPoint(packingEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+                case "70":
+                    StartCoroutine(moveLoopPoint(packingEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());
-                    }
-                    print(returnValue);
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
-            case "80":
-                StartCoroutine(moveLoopPoint(loadingEpathPoints, (returnValue) =>
-                {
-                    if (returnValue)
+                    }));
+                    break;
+                case "80":
+                    StartCoroutine(moveLoopPoint(loadingEpathPoints, (returnValue) =>
                     {
-                        //다음 공정으로 이동
-                        StartCoroutine(moveProcessStartPostion());
-                    }
-                    print(returnValue);
+                        if (returnValue)
+                        {
+                            //다음 공정으로 이동
+                            StartCoroutine(moveProcessStartPostion());
+                            isAGVmoving = false;
+                        }
+                        print(returnValue);
 
-                }));
-                break;
-            default:                
-                break;
+                    }));
+                    break;
+                default:
+                    isAGVmoving = false;
+                    break;
+            }
+
+            yield return false;
+            
         }
-
-        yield return false;
+       
 
 
     }
@@ -166,16 +188,24 @@ public class AGVManager : MonoBehaviour
     public IEnumerator moveProcessStartPostion()
     {
        
-        entireProcessList = new string[] { "30", "50", "40" };
         if (entireProcessList != null)
         {
-            print("entireProcessCurrentNum"+ entireProcessCurrentNum);
-            print("entireProcessList.Length)" + entireProcessList.Length);
+            print("moveProcessStartPostion start====>");
+            print("entireProcessCurrentNum" + entireProcessCurrentNum);
+            print("entireProcessList[entireProcessCurrentNum]" + entireProcessList[entireProcessCurrentNum]);
             if (entireProcessList.Length>0 && entireProcessCurrentNum < entireProcessList.Length) {
                 Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
-                print("entireProcessList[entireProcessCurrentNum])" + entireProcessList[entireProcessCurrentNum]);
-                yield return (moveLoopPoint(tmpRoot));
-                entireProcessCurrentNum++;
+                
+                yield return(moveLoopPoint(tmpRoot, (returnValue) =>
+                {
+                    if (returnValue)
+                    {
+                        print("##########UP#####tNum : " + entireProcessCurrentNum + "#####################");
+                       
+                        entireProcessCurrentNum++;
+                    }                   
+
+                }));
             }
             
         }

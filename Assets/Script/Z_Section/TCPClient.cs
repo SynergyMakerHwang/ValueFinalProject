@@ -282,8 +282,10 @@ public class TCPClient : MonoBehaviour
         // 열풍건조 공정  - 완료 (Y55)
         if (point[5][5] == 1)
         {
-            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
+          
             dryer_TottIndex = 0;
+            StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
+          
             //모니터링 - 건조 공정 완료            
             UserInterfaceManager.instance.btnOnChangeColorText("50", "Done");
         }
@@ -455,6 +457,12 @@ public class TCPClient : MonoBehaviour
             D1.instance.DConveyorOnPLC();
         }
 
+        //포장 공정 - 카튼 발생(Y1)
+        if (point[0][1] == 1)
+        {
+            D2.instance.SpawnBoxPLC();            
+        }
+
 
         // 포장 공정 - 상역 AGV+로봇팔 (Y71)        
         if (point[7][1] == 1 && packing_TottIndex < loadCnt)
@@ -578,15 +586,17 @@ public class TCPClient : MonoBehaviour
         //절단공정 - AGV 도착센서  (X40)
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X40," + agvParkingSensor;    //절단공정 - AGV 도착센서  (X40)
+                                                               //모티터링 - 절단 공정 시작
+        if (agvParkingSensor == 1)
+        {
+            UserInterfaceManager.instance.btnOnChangeColorText("40", "ON");
+        }
+
         //절단공정 - AGV 하역 도착센서  (X45) 
         agvParkingSensor = (agvCuttingLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X45," + agvParkingSensor; //절단공정 - AGV 로딩 도착센서  (X45)
 
-        //모티터링 - 세척 공정 시작
-        if (agvParkingSensor == 1)
-        {
-            UserInterfaceManager.instance.btnOnChangeColorText("40", "ON");            
-        }
+       
 
 
 
@@ -611,7 +621,7 @@ public class TCPClient : MonoBehaviour
         }
         
         //적재공정 - AGV 도착센서  (X80)
-        //  agvParkingSensor = (agvunLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
+        agvParkingSensor = (agvunLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X80," + agvParkingSensor;
         //모티터링 - 세척 공정 시작
         if (agvParkingSensor == 1)
@@ -757,10 +767,10 @@ public void requestConnect()
                             excuteDryerProcess(point);
 
                             //(C)절단건조공정
-                            //excuteCuttingProcess(point);
+                            excuteCuttingProcess(point);
 
                             //(D)포장공정
-                           //excutePackingProcess(point);
+                           excutePackingProcess(point);
                          
                             
 
@@ -788,10 +798,10 @@ public void requestConnect()
                         reWrite += requestDryerProcess();
 
                         //(C)절단공정 
-                        // reWrite += requestCuttingProcess();
+                        reWrite += requestCuttingProcess();
 
                         //(D)포장공정 
-                        // reWrite += requestPackingProcess();
+                        reWrite += requestPackingProcess();
 
 
 
@@ -977,10 +987,12 @@ public void requestConnect()
 
     private void OnDestroy()
     {
+        OnDisConnectTCPSever();
         client.Close();
         stream.Close();
         ps.Close();
         isConnected = false;
+        
     }
 
     /***********************Z-Section END *****************************/

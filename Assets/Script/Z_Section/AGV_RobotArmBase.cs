@@ -23,7 +23,7 @@ public class AGV_RobotArmBase : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("agv  == OnTriggerEnter");
+      
         if (other.tag.Contains("토트") || other.tag.Contains("tott") || other.tag.Contains("센서부분"))
         {
             if (other.name.Contains("센서부분")) {

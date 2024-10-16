@@ -49,14 +49,23 @@ public class AGV_RobotArmGripper : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         
-        rb = other.GetComponent<Rigidbody>();
+        
         if (isGripperMode)
         {
-          
+
             
-            if (other.tag.Contains("토트") || other.tag.Contains("tott"))
+            if (other.tag.Contains("토트") || other.tag.Contains("tott") || other.tag.Contains("센서부분"))
             {
-                
+
+                if(other.name.Contains("센서부분")) {
+                    rb = other.transform.parent.GetComponent<Rigidbody>();
+                }
+                else
+                {
+                    rb = other.GetComponent<Rigidbody>();
+
+                }
+
                 rb.isKinematic = true;
                 rb.useGravity = false;
 
@@ -64,7 +73,10 @@ public class AGV_RobotArmGripper : MonoBehaviour
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
 
-                other.transform.SetParent(transform);
+                rb.transform.SetParent(transform);
+                print("OnTriggerEnter === gripper");
+                print("transform ==="+ transform);
+
                 //isAttached = true;
             }
         }      
@@ -86,14 +98,12 @@ public class AGV_RobotArmGripper : MonoBehaviour
                 {
 
                         print(childRb.transform.parent.name);
-                        childRb.isKinematic = false;
-                        childRb.useGravity = true;
-                        //childRb.transform.SetParent(null);
-
-                        print("gripper == remove");
-                    
-                   
-                
+                        if (childRb.transform.parent.name == "gripper_base_movingAct") {
+                            childRb.isKinematic = false;
+                            childRb.useGravity = true;
+                            childRb.transform.SetParent(null);
+                        }                         
+ 
                     
                 }
             }
