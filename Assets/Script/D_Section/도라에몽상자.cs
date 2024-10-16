@@ -14,7 +14,7 @@ public class 도라에몽상자 : MonoBehaviour
     {
 
         // 태그가 "Apples"인 경우
-        if (other.CompareTag("Apples"))
+        if (other.CompareTag("Apples") || other.CompareTag("Strawberrys"))
         {
             ChangeToPouch(other.gameObject);
         }
