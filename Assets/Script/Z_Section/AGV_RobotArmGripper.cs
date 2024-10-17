@@ -73,9 +73,7 @@ public class AGV_RobotArmGripper : MonoBehaviour
                 rb.linearVelocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
 
-                rb.transform.SetParent(transform);
-                print("OnTriggerEnter === gripper");
-                print("transform ==="+ transform);
+                rb.transform.SetParent(transform);            
 
                 //isAttached = true;
             }

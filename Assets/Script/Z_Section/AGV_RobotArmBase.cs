@@ -34,13 +34,15 @@ public class AGV_RobotArmBase : MonoBehaviour
 
             }
 
-            rb.isKinematic = true;
-            rb.useGravity = false;
+            if (rb.transform.parent == null) {
+                rb.isKinematic = true;
+                rb.useGravity = false;
 
-            //현재 충돌 후 속도와 가속도를 제거
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;            
-            rb.transform.SetParent(transform);            
+                //현재 충돌 후 속도와 가속도를 제거
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.transform.SetParent(transform);
+            }
 
         }        
        
