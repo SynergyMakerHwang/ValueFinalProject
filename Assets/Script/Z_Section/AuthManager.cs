@@ -27,13 +27,13 @@ public class AuthManager : MonoBehaviour
     [Serializable]
     public class UserInfo
     {
-        public string id;
-        public string pw;
+        //public string id;
+        //public string pw;
         public string email;
         public string name;
         public string role;
-        public string products;
-        public string[] history;
+        //public string products;
+        //public string[] history;
     }
     [SerializeField] GameObject[] panelList;
 
@@ -246,14 +246,16 @@ public class AuthManager : MonoBehaviour
             if (user.IsEmailVerified)
             {
 
-                //공정 설정으로 페이지 전환                
-                
-                userPanel.SetActive(true);
-                UserInterfaceManager.instance.getUserProcessData();
-
+                closePanel();
                 StartCoroutine(TurnMessagePanel("로그인이 성공적으로 완료 되었습니다."));
                 print("로그인이 되었습니다.");
                 wrongPWCnt = 0;
+                //공정 설정으로 페이지 전환
+                userPanel.gameObject.SetActive(true);                
+                UserInterfaceManager.instance.getUserProcessData();
+
+
+
 
                 DatabaseReference dbRef = FirebaseManager.instance.dbRef;                
 
@@ -264,12 +266,14 @@ public class AuthManager : MonoBehaviour
                     userSignedIn = JsonConvert.DeserializeObject<UserInfo>(json);
                     print("userSignedIn"+json);
                     //history = userSignedIn.history;
+                    if (task.IsCompleted) {
+                        
+                        if (userSignedIn.role == "admin")
+                        {
+                            adminPanel.gameObject.SetActive(true);
+                         
+                        }                      
 
-                    if (userSignedIn.role == "admin")
-                    {
-                        print("admin====");
-                        closePanel();
-                        adminPanel.SetActive(true);
                     }
                     
 
@@ -462,10 +466,10 @@ public class AuthManager : MonoBehaviour
         StartCoroutine(TurnMessagePanel($"{email}로 비밀번호 재설정 이메일을 보냈습니다. \n이메일을 확인해 주세요."));
     }
 
-    public void closePanel() {
+    public void closePanel() {        
         GameObject target = null;
         for(int i=0; i< panelList.Length; i++) {
-            target = panelList[i].gameObject;
+            target = panelList[i].gameObject;          
             target.SetActive(false);
         }
     }

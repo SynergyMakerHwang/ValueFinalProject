@@ -12,7 +12,7 @@ public class AGVManager : MonoBehaviour
 {
     public static AGVManager Instance;
     //string[] entireProcessList = new string[]{ "30", "40", "50" , "70", "80"};  
-    string[] entireProcessList = new string[]{ "30", "40", "50","70", "80"};  
+    string[] entireProcessList = new string[]{ "30", "50", "70", "80"};  
     int entireProcessCurrentNum = 0;
 
     public bool isAGVmoving = false;
@@ -71,10 +71,7 @@ public class AGVManager : MonoBehaviour
     //공정의 종료 시점
     public IEnumerator moveProcessEndPostion(string processNum) {
 
-        print("**********************entireProcessCurrentNum : " + entireProcessCurrentNum+"***************");
-        print("entireProcessList.Length : " + entireProcessList.Length);        
-        print("moveProcessEndPostion>>" + processNum);
-        print("isAGVmoving>>" + isAGVmoving);
+      
         if (!isAGVmoving  && entireProcessCurrentNum < entireProcessList.Length) {
             isAGVmoving = true;
         
@@ -112,15 +109,15 @@ public class AGVManager : MonoBehaviour
                     break;
 
                 case "50":
-                    print("50111>>" );
+                  
                     StartCoroutine(moveLoopPoint(dryerEpathPoints, (returnValue) =>
                     {
-                        print("502221>>");
+                      
                         if (returnValue)
                         {
                             //다음 공정으로 이동
                             StartCoroutine(moveProcessStartPostion());
-                            print("3323>>");
+                          
                             isAGVmoving = false;
                         }
                         print(returnValue);
@@ -190,9 +187,7 @@ public class AGVManager : MonoBehaviour
        
         if (entireProcessList != null)
         {
-            print("moveProcessStartPostion start====>");
-            print("entireProcessCurrentNum" + entireProcessCurrentNum);
-            print("entireProcessList[entireProcessCurrentNum]" + entireProcessList[entireProcessCurrentNum]);
+           
             if (entireProcessList.Length>0 && entireProcessCurrentNum < entireProcessList.Length) {
                 Transform[] tmpRoot = pathRoot[entireProcessList[entireProcessCurrentNum]];
                 
@@ -200,8 +195,7 @@ public class AGVManager : MonoBehaviour
                 {
                     if (returnValue)
                     {
-                        print("##########UP#####tNum : " + entireProcessCurrentNum + "#####################");
-                       
+                                             
                         entireProcessCurrentNum++;
                     }                   
 

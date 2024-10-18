@@ -187,7 +187,7 @@ public class TCPClient : MonoBehaviour
            
         }
 
-        //세척 공정 완료 ( Y34)
+        //세척 공정 완료 (Y34)
         if (point[3][4] == 1)
         {
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("30"));
@@ -282,7 +282,7 @@ public class TCPClient : MonoBehaviour
         // 열풍건조 공정  - 완료 (Y55)
         if (point[5][5] == 1)
         {
-          
+           
             dryer_TottIndex = 0;
             StartCoroutine(AGVManager.Instance.moveProcessEndPostion("50"));
           
@@ -587,8 +587,8 @@ public class TCPClient : MonoBehaviour
         agvParkingSensor = (agvCuttingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X40," + agvParkingSensor;    //절단공정 - AGV 도착센서  (X40)
                                                                //모티터링 - 절단 공정 시작
-        if (agvParkingSensor == 1)
-        {
+        if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false) { 
+        
             UserInterfaceManager.instance.btnOnChangeColorText("40", "ON");
         }
 
@@ -605,7 +605,7 @@ public class TCPClient : MonoBehaviour
         agvParkingSensor = (agvDryerParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X50," + agvParkingSensor;
         //모티터링 - 세척 공정 시작
-        if (agvParkingSensor == 1)
+        if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false)
         {   
             UserInterfaceManager.instance.btnOnChangeColorText("50", "ON");
         }
@@ -615,7 +615,7 @@ public class TCPClient : MonoBehaviour
         agvParkingSensor = (agvPackingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X70," + agvParkingSensor;
         //모티터링 - 포장 공정 시작
-        if (agvParkingSensor == 1)
+        if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false)
         {
             UserInterfaceManager.instance.btnOnChangeColorText("70", "ON");
         }
@@ -624,7 +624,7 @@ public class TCPClient : MonoBehaviour
         agvParkingSensor = (agvunLoadingParkingSensor.isAgvParking == true) ? 1 : 0;
         requestMsg += "@SETDevice,X80," + agvParkingSensor;
         //모티터링 - 세척 공정 시작
-        if (agvParkingSensor == 1)
+        if (agvParkingSensor == 1 && AGV_RobotArmController.instance.IsProcessCycleEndAction == false)
         {
             UserInterfaceManager.instance.btnOnChangeColorText("80", "ON");
         }

@@ -83,7 +83,7 @@ public class UserInterfaceManager : MonoBehaviour
     {
         GameObject target = null;
         for (int i = 0; i < panelList.Length; i++)
-        {
+        {   
             target = panelList[i].gameObject;
             target.SetActive(false);
         }
