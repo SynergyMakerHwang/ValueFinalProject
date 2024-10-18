@@ -21,52 +21,52 @@ public class CuttingMachine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag.Contains("토트박스센서"))
+        if (other.name.Contains("센서부분"))
         {
             RightTottSensorPLC = true;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag.Contains("토트박스센서"))
+        if (other.name.Contains("센서부분"))
         {
             RightTottSensorPLC = false;
         }
 
     }
-IEnumerator MoveCuttingPart()
-{
-    float CurrentTime = 0;
-    float duration = 1;
-
-    // Go 동작
-    while (CurrentTime < duration)
+    IEnumerator MoveCuttingPart()
     {
-        CurrentTime += Time.deltaTime;
-        CuttingPart.transform.localPosition = Vector3.Lerp(StartPos.localPosition, EndPos.localPosition, CurrentTime / duration);
-        yield return null;
-    }
-    // 위치 정리
-    CuttingPart.transform.localPosition = EndPos.localPosition;
-    BladeLsPLC = true;
+        float CurrentTime = 0;
+        float duration = 1;
 
-    // Back 동작을 위한 리셋
-    CurrentTime = 0; // 시간을 리셋합니다.
+        // Go 동작
+        while (CurrentTime < duration)
+        {
+            CurrentTime += Time.deltaTime;
+            CuttingPart.transform.localPosition = Vector3.Lerp(StartPos.localPosition, EndPos.localPosition, CurrentTime / duration);
+            yield return null;
+        }
+        // 위치 정리
+        CuttingPart.transform.localPosition = EndPos.localPosition;
+        BladeLsPLC = true;
 
-    while (CurrentTime < duration)
-    {
-        CurrentTime += Time.deltaTime;
-        CuttingPart.transform.localPosition = Vector3.Lerp(EndPos.localPosition, StartPos.localPosition, CurrentTime / duration);
-        yield return null;
+        // Back 동작을 위한 리셋
+        CurrentTime = 0; // 시간을 리셋합니다.
+
+        while (CurrentTime < duration)
+        {
+            CurrentTime += Time.deltaTime;
+            CuttingPart.transform.localPosition = Vector3.Lerp(EndPos.localPosition, StartPos.localPosition, CurrentTime / duration);
+            yield return null;
+        }
+        // 위치 정리
+        CuttingPart.transform.localPosition = StartPos.localPosition;
+        BladeLsPLC = false;
     }
-    // 위치 정리
-    CuttingPart.transform.localPosition = StartPos.localPosition;
-    BladeLsPLC = false;
-}
 
     public void BladeGoBackPLC()
     {
         StartCoroutine(MoveCuttingPart());
     }
- 
+
 }

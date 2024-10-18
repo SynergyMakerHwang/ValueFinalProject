@@ -16,12 +16,9 @@ public class DWeightSensor : MonoBehaviour
     {
         if (other.CompareTag("FruitPouchs"))
         {
-            Cnt++;
-            if (Cnt == 5)
-            {
-                Cnt = 0;
+          
                 DWeightSensorPLC = true;
-            }
+            
         }
     }
     private void OnTriggerExit(Collider other)

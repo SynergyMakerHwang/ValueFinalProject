@@ -68,7 +68,7 @@ public class D1 : MonoBehaviour
         }
 
     }
-    public void DConeyorOffPLC()
+    public void DConveyorOffPLC()
     {
         if (Coroutine != null)
         {
