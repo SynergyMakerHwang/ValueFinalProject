@@ -11,8 +11,9 @@ using UnityEngine;
 public class AGVManager : MonoBehaviour
 {
     public static AGVManager Instance;
-    //string[] entireProcessList = new string[]{ "30", "40", "50" , "70", "80"};  
-    string[] entireProcessList = new string[]{ "30", "70", "40", "50", "80"};  
+   
+    string[] entireProcessList = new string[]{ "30", "40", "70" , "80", "50"};  
+    
     int entireProcessCurrentNum = 0;
 
     public bool isAGVmoving = false;
